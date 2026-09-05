@@ -709,6 +709,34 @@ body:has(.nav-toggle:checked) { overflow: hidden; }
 .contact-route h3 { font-size: 0.95rem; margin-bottom: 0.3rem; }
 .contact-route a { font-size: 0.85rem; color: var(--color-maroon-700); font-weight: 700; }
 
+/* ---------- Maps ---------- */
+/* Live Google Maps embed: the iframe fills the ratio box. */
+.map-embed:has(iframe) {
+  background: none;
+  display: block;
+  padding: 0;
+}
+.map-embed iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+/* Grid of per-property maps (contact page, homepage) */
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+.map-card .map-embed { aspect-ratio: 4/3; margin-bottom: var(--space-2); }
+.map-card h3 { font-size: 1.05rem; margin-bottom: 0.15rem; }
+.map-card p { font-size: 0.88rem; margin: 0; }
+@media (max-width: 900px) { .map-grid { grid-template-columns: 1fr; } }
+/* Inside a half-width split the three-up grid is too cramped, so stack it
+   and give each map a wider, shorter frame. */
+.split-media .map-grid { grid-template-columns: 1fr; gap: var(--space-3); }
+.split-media .map-card .map-embed { aspect-ratio: 16/7; }
+
 /* ---------- Map placeholder ---------- */
 .map-embed {
   aspect-ratio: 16/7;
