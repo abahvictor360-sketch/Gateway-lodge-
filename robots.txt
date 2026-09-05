@@ -1,0 +1,6 @@
+# Gateway Lodge Group
+User-agent: *
+Allow: /
+Disallow: /image/_map.json
+
+Sitemap: https://www.gatewaylodgegroup.com/sitemap.xml
