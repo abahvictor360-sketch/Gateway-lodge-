@@ -704,10 +704,66 @@ body:has(.nav-toggle:checked) { overflow: hidden; }
 .form-shell input:hover, .form-shell select:hover, .form-shell textarea:hover { border-color: var(--color-gold-500); }
 .form-shell textarea { resize: vertical; min-height: 130px; }
 
-.contact-routes { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-2); margin-bottom: var(--space-4); }
-.contact-route { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-2); text-align: center; }
-.contact-route h3 { font-size: 0.95rem; margin-bottom: 0.3rem; }
-.contact-route a { font-size: 0.85rem; color: var(--color-maroon-700); font-weight: 700; }
+/* Contact routes.
+   auto-fit + minmax(0,...) so the columns stay equal: plain `1fr` is
+   minmax(auto,1fr), which lets the long email addresses refuse to shrink
+   and squeeze the last card. */
+.contact-routes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.contact-route {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.7rem;
+  min-width: 0;
+  padding: var(--space-3) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+.contact-route:hover,
+.contact-route:focus-visible {
+  border-color: var(--color-gold-500);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+}
+.contact-route-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--color-maroon-50);
+  color: var(--color-maroon-700);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.contact-route:hover .contact-route-icon {
+  background: var(--color-maroon-700);
+  color: var(--color-white);
+}
+.contact-route-label {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  line-height: 1.3;
+  color: var(--color-maroon-700);
+}
+.contact-route-value {
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--color-ink-600);
+  font-weight: 600;
+  /* break-word (not anywhere) so the <wbr> after "@" is preferred
+     over an arbitrary mid-word split */
+  overflow-wrap: break-word;
+  margin-top: auto;
+}
+.contact-route:hover .contact-route-value { color: var(--color-maroon-700); }
 
 /* ---------- Maps ---------- */
 /* Live Google Maps embed: the iframe fills the ratio box. */
@@ -841,13 +897,14 @@ body:has(.nav-toggle:checked) { overflow: hidden; }
   .feature-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-top { grid-template-columns: 1fr 1fr; }
   .booking-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .contact-routes { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 760px) {
   .nav-toggle-text { position: absolute; left: -9999px; }
-  .btn-book { padding: 0.85rem 1.3rem; letter-spacing: 0.14em; }
-  .logo { font-size: 1rem; letter-spacing: 0.1em; }
+  .btn-book { padding: 0.8rem 1.15rem; letter-spacing: 0.1em; font-size: 0.72rem; }
+  .logo { font-size: 0.86rem; letter-spacing: 0.06em; gap: 0.45rem; min-width: 0; }
+  .logo svg { width: 26px; height: 26px; }
+  .header-inner { gap: var(--space-2); }
   .booking-fields { grid-template-columns: minmax(0, 1fr); }
   .split { grid-template-columns: 1fr; gap: var(--space-3); }
   .split.reverse .split-media { order: 0; }
@@ -858,7 +915,18 @@ body:has(.nav-toggle:checked) { overflow: hidden; }
   .icon-list { grid-template-columns: 1fr; }
   .footer-top { grid-template-columns: 1fr; padding-block: var(--space-5) var(--space-4); }
   .form-grid { grid-template-columns: 1fr; }
-  .contact-routes { grid-template-columns: 1fr; }
   .hero h1 { font-size: 2.1rem; }
   .booking-panel { margin-top: var(--space-3); }
+}
+
+@media (max-width: 430px) {
+  .site-header .logo-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .site-header .logo svg { width: 30px; height: 30px; }
 }
