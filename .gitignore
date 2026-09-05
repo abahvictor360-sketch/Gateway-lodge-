@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+*.bak
+
+# Original 2752px PNG masters (~216MB) kept on disk but out of the repo.
+# The site serves the optimised .jpg versions generated from them.
+image/*.png
