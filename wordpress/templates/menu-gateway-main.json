@@ -1,0 +1,261 @@
+[
+    {
+        "id": 11103,
+        "title": "Home",
+        "url": "https://www.gatewaylodgegroup.com/",
+        "parent": "0",
+        "order": 1
+    },
+    {
+        "id": 11104,
+        "title": "Our Properties",
+        "url": "https://www.gatewaylodgegroup.com/properties/",
+        "parent": "0",
+        "order": 2
+    },
+    {
+        "id": 11105,
+        "title": "Nova Ridge",
+        "url": "https://www.gatewaylodgegroup.com/gateway-nova-ridge/",
+        "parent": "11104",
+        "order": 3
+    },
+    {
+        "id": 11106,
+        "title": "Lakeside",
+        "url": "https://www.gatewaylodgegroup.com/gateway-lodge-lakeside/",
+        "parent": "11104",
+        "order": 4
+    },
+    {
+        "id": 11107,
+        "title": "Tamale",
+        "url": "https://www.gatewaylodgegroup.com/gateway-lodge-tamale/",
+        "parent": "11104",
+        "order": 5
+    },
+    {
+        "id": 11108,
+        "title": "Future Properties",
+        "url": "https://www.gatewaylodgegroup.com/future-properties/",
+        "parent": "11104",
+        "order": 6
+    },
+    {
+        "id": 11109,
+        "title": "Stay",
+        "url": "https://www.gatewaylodgegroup.com/stay/",
+        "parent": "0",
+        "order": 7
+    },
+    {
+        "id": 11110,
+        "title": "Accommodation",
+        "url": "https://www.gatewaylodgegroup.com/accommodation/",
+        "parent": "11109",
+        "order": 8
+    },
+    {
+        "id": 11111,
+        "title": "Rooms &#038; Units",
+        "url": "https://www.gatewaylodgegroup.com/rooms-units/",
+        "parent": "11109",
+        "order": 9
+    },
+    {
+        "id": 11112,
+        "title": "Facilities &#038; Amenities",
+        "url": "https://www.gatewaylodgegroup.com/facilities/",
+        "parent": "11109",
+        "order": 10
+    },
+    {
+        "id": 11113,
+        "title": "Dining",
+        "url": "https://www.gatewaylodgegroup.com/dining/",
+        "parent": "11109",
+        "order": 11
+    },
+    {
+        "id": 11114,
+        "title": "Guest Services",
+        "url": "https://www.gatewaylodgegroup.com/guest-services/",
+        "parent": "11109",
+        "order": 12
+    },
+    {
+        "id": 11115,
+        "title": "FAQs",
+        "url": "https://www.gatewaylodgegroup.com/faqs/",
+        "parent": "11109",
+        "order": 13
+    },
+    {
+        "id": 11116,
+        "title": "Experiences",
+        "url": "https://www.gatewaylodgegroup.com/experiences/",
+        "parent": "0",
+        "order": 14
+    },
+    {
+        "id": 11117,
+        "title": "Things to Do",
+        "url": "https://www.gatewaylodgegroup.com/things-to-do/",
+        "parent": "11116",
+        "order": 15
+    },
+    {
+        "id": 11118,
+        "title": "Local Attractions",
+        "url": "https://www.gatewaylodgegroup.com/local-attractions/",
+        "parent": "11116",
+        "order": 16
+    },
+    {
+        "id": 11119,
+        "title": "Leisure",
+        "url": "https://www.gatewaylodgegroup.com/leisure/",
+        "parent": "11116",
+        "order": 17
+    },
+    {
+        "id": 11120,
+        "title": "Dining Experiences",
+        "url": "https://www.gatewaylodgegroup.com/dining-experiences/",
+        "parent": "11116",
+        "order": 18
+    },
+    {
+        "id": 11121,
+        "title": "Events &#038; Celebrations",
+        "url": "https://www.gatewaylodgegroup.com/events-celebrations/",
+        "parent": "11116",
+        "order": 19
+    },
+    {
+        "id": 11122,
+        "title": "Corporate &#038; Meetings",
+        "url": "https://www.gatewaylodgegroup.com/corporate-meetings/",
+        "parent": "11116",
+        "order": 20
+    },
+    {
+        "id": 11123,
+        "title": "Gallery",
+        "url": "https://www.gatewaylodgegroup.com/gallery/",
+        "parent": "11116",
+        "order": 21
+    },
+    {
+        "id": 11124,
+        "title": "Real Estate",
+        "url": "https://www.gatewaylodgegroup.com/real-estate/",
+        "parent": "0",
+        "order": 22
+    },
+    {
+        "id": 11125,
+        "title": "Gateway Developments",
+        "url": "https://www.gatewaylodgegroup.com/gateway-developments/",
+        "parent": "11124",
+        "order": 23
+    },
+    {
+        "id": 11126,
+        "title": "Current Projects",
+        "url": "https://www.gatewaylodgegroup.com/current-projects/",
+        "parent": "11124",
+        "order": 24
+    },
+    {
+        "id": 11127,
+        "title": "Residential",
+        "url": "https://www.gatewaylodgegroup.com/residential/",
+        "parent": "11124",
+        "order": 25
+    },
+    {
+        "id": 11128,
+        "title": "Serviced Residences",
+        "url": "https://www.gatewaylodgegroup.com/serviced-residences/",
+        "parent": "11124",
+        "order": 26
+    },
+    {
+        "id": 11129,
+        "title": "Villas &#038; Apartments",
+        "url": "https://www.gatewaylodgegroup.com/villas-apartments/",
+        "parent": "11124",
+        "order": 27
+    },
+    {
+        "id": 11130,
+        "title": "Investment Opportunities",
+        "url": "https://www.gatewaylodgegroup.com/investment-opportunities/",
+        "parent": "11124",
+        "order": 28
+    },
+    {
+        "id": 11131,
+        "title": "Offers",
+        "url": "https://www.gatewaylodgegroup.com/offers/",
+        "parent": "0",
+        "order": 29
+    },
+    {
+        "id": 11132,
+        "title": "Direct Booking Offers",
+        "url": "https://www.gatewaylodgegroup.com/direct-booking-offers/",
+        "parent": "11131",
+        "order": 30
+    },
+    {
+        "id": 11133,
+        "title": "Weekend Offers",
+        "url": "https://www.gatewaylodgegroup.com/weekend-offers/",
+        "parent": "11131",
+        "order": 31
+    },
+    {
+        "id": 11134,
+        "title": "Long Stay",
+        "url": "https://www.gatewaylodgegroup.com/long-stay/",
+        "parent": "11131",
+        "order": 32
+    },
+    {
+        "id": 11135,
+        "title": "Corporate Rates",
+        "url": "https://www.gatewaylodgegroup.com/corporate-rates/",
+        "parent": "11131",
+        "order": 33
+    },
+    {
+        "id": 11136,
+        "title": "Seasonal Promotions",
+        "url": "https://www.gatewaylodgegroup.com/seasonal-promotions/",
+        "parent": "11131",
+        "order": 34
+    },
+    {
+        "id": 11137,
+        "title": "Property-Specific Offers",
+        "url": "https://www.gatewaylodgegroup.com/property-specific-offers/",
+        "parent": "11131",
+        "order": 35
+    },
+    {
+        "id": 11138,
+        "title": "About Us",
+        "url": "https://www.gatewaylodgegroup.com/about-us/",
+        "parent": "0",
+        "order": 36
+    },
+    {
+        "id": 11139,
+        "title": "Contact",
+        "url": "https://www.gatewaylodgegroup.com/contact/",
+        "parent": "0",
+        "order": 37
+    }
+]

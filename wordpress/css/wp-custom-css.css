@@ -1,0 +1,323 @@
+/* GWL-BASE-START */
+/* Pages run full width (Astra content layout is set to page-builder), so the
+   boxed containers carry the 1240px reading width and the side gutters. */
+.elementor .e-con{max-width:100%;}
+.elementor .e-con-boxed > .e-con-inner{
+  max-width:min(1240px,100%);
+  margin-left:auto; margin-right:auto; width:100%;
+  padding-left:20px; padding-right:20px;
+}
+/* Fixed-width blocks must still shrink on narrow screens. */
+.elementor .elementor-widget{max-width:100%;}
+.elementor img{max-width:100%; height:auto;}
+@media(max-width:767px){
+  .elementor .e-con-boxed > .e-con-inner{padding-left:18px; padding-right:18px;}
+}
+/* GWL-BASE-END */
+
+/* GWL-HEADER-START */
+/* ===== Gateway Lodge : Xpro header, MENU plus off-canvas drawer =====
+   The drawer presentation is defined here for every screen size so it does
+   not depend on Xpro's own responsive stylesheet loading. Xpro's accordion
+   JavaScript still drives the submenus below 1024px; above that it does not
+   bind, so the submenus are shown open and the chevron is hidden.
+   Remove this block to fall back to Xpro's default menu behaviour. */
+
+/* ---- Off-canvas panel, all widths ---- */
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-wrapper{
+  position:fixed; top:0; left:0; right:auto; height:100vh;
+  width:460px; max-width:86%;
+  background:#FFFFFF; padding:0; overflow-y:auto; z-index:9999;
+  text-align:left;
+  transform:translate3d(-100%,0,0);
+  transition:transform .45s cubic-bezier(.7,0,.2,1);
+  box-shadow:0 0 60px rgba(32,20,17,.18);
+}
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-wrapper.active{
+  transform:translate3d(0,0,0);
+}
+.admin-bar .xpro-theme-builder-header .xpro-elementor-horizontal-navbar-wrapper{top:32px;}
+
+.xpro-theme-builder-header .xpro-elementor-horizontal-menu-overlay{
+  position:fixed; top:0; right:0; bottom:0; left:0;
+  background:rgba(20,12,10,.5);
+  opacity:0; visibility:hidden; transition:opacity .4s;
+  z-index:9998; display:block;
+}
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-wrapper.active ~ .xpro-elementor-horizontal-menu-overlay{
+  opacity:1; visibility:visible;
+}
+
+/* ---- MENU trigger ---- */
+.xpro-theme-builder-header .xpro-elementor-horizontal-menu-toggler-wrapper{display:block;}
+.xpro-theme-builder-header .xpro-elementor-horizontal-menu-toggler{
+  display:inline-flex; align-items:center; gap:.65rem;
+  background:transparent; border:0; cursor:pointer; padding:6px 2px;
+}
+.xpro-theme-builder-header .xpro-elementor-horizontal-menu-toggler::after{
+  content:"Menu";
+  font-family:Jost, "Helvetica Neue", Arial, sans-serif;
+  font-weight:600; font-size:13px; letter-spacing:.16em;
+  text-transform:uppercase; color:#201A17; line-height:1;
+}
+
+/* ---- Brand lockup and close inside the drawer ---- */
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-wrapper::before{
+  content:""; display:block; height:78px;
+  background-image:url(https://www.gatewaylodgegroup.com/wp-content/uploads/2026/09/gateway-lodge-group-mark.png); background-repeat:no-repeat; background-position:26px center; background-size:30px 30px;
+  border-bottom:1px solid #E6DDD3;
+}
+.xpro-theme-builder-header .xpro-elementor-horizontal-menu-close{
+  position:absolute; top:23px; right:22px; z-index:2;
+  display:inline-flex; background:transparent; border:0; cursor:pointer;
+}
+
+/* ---- Stacked nav rows ---- */
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar{width:100%;}
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-nav{
+  flex-direction:column; align-items:flex-start; padding-top:0; width:100%;
+}
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-nav > li{
+  position:relative; width:100%; list-style:none;
+}
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-nav > li > a{
+  margin:0; width:100%; padding:16px 26px;
+  justify-content:flex-start; border-bottom:1px solid #E6DDD3;
+}
+
+/* ---- Submenus ---- */
+.xpro-theme-builder-header .xpro-elementor-dropdown-menu{
+  position:relative; left:0; top:0; width:100%; min-width:100%; max-width:100%;
+  opacity:1; visibility:visible; transform:none;
+  box-shadow:none !important; border:0; background:#F7F3EE; padding:0;
+}
+.xpro-theme-builder-header .xpro-elementor-dropdown-menu > li{list-style:none;}
+.xpro-theme-builder-header .xpro-elementor-dropdown-menu > li > a{
+  padding:12px 26px 12px 42px; border-bottom:1px solid #E6DDD3; background:transparent;
+}
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-nav > li > a > .xpro-dropdown-menu-toggle,
+.xpro-theme-builder-header .xpro-elementor-dropdown-menu > li > a > .xpro-dropdown-menu-toggle{
+  position:absolute; right:0; padding:0; width:54px; height:100%;
+  z-index:2; line-height:1; display:flex; align-items:center; justify-content:center;
+}
+
+/* Xpro draws a pointer arrow on desktop dropdowns; the drawer has no anchor for it. */
+.xpro-theme-builder-header .xpro-elementor-dropdown-menu:before,
+.xpro-theme-builder-header .xpro-elementor-dropdown-menu:after{content:none !important; display:none !important;}
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-nav li::marker{content:none;}
+
+/* Below 1024px Xpro's script drives the accordion, so start collapsed. */
+@media (max-width: 1024px){
+  .xpro-theme-builder-header .xpro-elementor-dropdown-menu{display:none;}
+}
+
+/* Above 1024px the accordion is driven by the Gateway Lodge Site Support
+   plugin, which supplies the toggle Xpro's own script only binds below its
+   breakpoint. Submenus start collapsed and the chevron stays visible. */
+@media (min-width: 1025px){
+  .xpro-theme-builder-header .xpro-elementor-dropdown-menu{display:none;}
+  .xpro-theme-builder-header .xpro-dropdown-menu-toggle{display:flex !important;}
+}
+/* Chevron rotates when its row is open, at every width. */
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-nav li > a > .xpro-dropdown-menu-toggle{
+  transition:transform .25s ease;
+}
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-nav li > a.active > .xpro-dropdown-menu-toggle{
+  transform:rotate(180deg);
+}
+
+/* ---- Keep the header row on one line ---- */
+.xpro-theme-builder-header .elementor-widget-xpro-horizontal-menu{width:auto; flex:0 0 auto;}
+
+@media (max-width: 640px){
+  /* Only the mark is shown; the wordmark would push MENU and BOOK NOW off screen. */
+  .xpro-theme-builder-header .elementor-widget-heading{display:none;}
+  .xpro-theme-builder-header .xpro-elementor-horizontal-menu-toggler::after{display:none;}
+  .xpro-theme-builder-header .elementor-widget-button .elementor-button{
+    padding:14px 18px !important; font-size:11px !important; letter-spacing:.1em !important;
+  }
+}
+
+/* ---- Header controls ---- */
+.xpro-theme-builder-header .xpro-site-logo img{width:36px !important; height:auto !important; max-width:36px;}
+.xpro-theme-builder-header .elementor-widget-button .elementor-button{
+  background-color:#DBA845; color:#4A1119; border:1px solid #DBA845; border-radius:0;
+  font-family:Jost,"Helvetica Neue",Arial,sans-serif; font-weight:600; font-size:12px;
+  letter-spacing:.16em; text-transform:uppercase; padding:15px 26px;
+}
+.xpro-theme-builder-header .elementor-widget-button .elementor-button:hover{background-color:#ECC989; border-color:#ECC989; color:#4A1119;}
+
+/* ---- Header row layout ----
+   The boxed container renders an inner wrapper; force the row there so the
+   brand sits left and the MENU plus BOOK NOW controls sit right. */
+.xpro-theme-builder-header .elementor > .e-con > .e-con-inner,
+.xpro-theme-builder-header .elementor > .e-con.e-con-full{
+  display:flex !important; flex-direction:row !important; flex-wrap:nowrap !important;
+  align-items:center !important; justify-content:space-between !important; gap:16px;
+}
+.xpro-theme-builder-header .elementor > .e-con > .e-con-inner > .e-con{
+  flex:0 0 auto !important; width:auto !important;
+}
+.xpro-theme-builder-header .elementor > .e-con > .e-con-inner > .e-con > .e-con-inner,
+.xpro-theme-builder-header .elementor > .e-con > .e-con-inner > .e-con.e-con-full{
+  display:flex !important; flex-direction:row !important; align-items:center !important;
+  flex-wrap:nowrap !important; width:auto !important;
+}
+.xpro-theme-builder-header .elementor-widget{width:auto;}
+
+/* ---- Drawer anchoring (beats Xpro's push-right defaults) ---- */
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-wrapper,
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-wrapper.xpro-push-left,
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-wrapper.xpro-push-right{
+  left:0 !important; right:auto !important;
+  transform:translate3d(-100%,0,0) !important;
+}
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-wrapper.active,
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-wrapper.xpro-push-left.active,
+.xpro-theme-builder-header .xpro-elementor-horizontal-navbar-wrapper.xpro-push-right.active{
+  transform:translate3d(0,0,0) !important;
+}
+
+/* Phones: the drawer takes the full screen so nothing can be clipped. */
+@media (max-width: 767px){
+  .xpro-theme-builder-header .xpro-elementor-horizontal-navbar-wrapper{
+    width:100vw !important; max-width:100vw !important;
+  }
+  .xpro-theme-builder-header .xpro-elementor-horizontal-navbar-nav > li > a{padding:16px 22px;}
+  .xpro-theme-builder-header .xpro-elementor-dropdown-menu > li > a{padding-left:38px;}
+}
+/* Footer logo */
+.xpro-theme-builder-footer .xpro-site-logo img{width:38px !important; height:auto !important;}
+
+/* ---- Footer social icons: 36px outlined circles, as in the approved design ---- */
+.xpro-theme-builder-footer .xpro-social-icon-wrapper{display:flex;gap:10px;flex-wrap:wrap;padding:0;margin:0;list-style:none;}
+.xpro-theme-builder-footer .xpro-social-icon-wrapper li{list-style:none;margin:0;}
+.xpro-theme-builder-footer .xpro-social-icon-wrapper li > *,
+.xpro-theme-builder-footer .xpro-social-icon-wrapper .xpro-social-icon{
+  width:36px;height:36px;padding:0;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,0.3);color:#fff;
+  transition:background .25s ease,border-color .25s ease;
+}
+.xpro-theme-builder-footer .xpro-social-icon-wrapper .xpro-social-icon:hover{
+  background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.6);
+}
+.xpro-theme-builder-footer .xpro-social-icon-wrapper svg{width:15px;height:15px;fill:currentColor;}
+.xpro-theme-builder-footer .xpro-social-icon-wrapper i{font-size:15px;}
+
+/* ---- Hamburger glyph: the icon font renders as an inline SVG with no
+     intrinsic size, so give it explicit dimensions. ---- */
+.xpro-theme-builder-header .xpro-elementor-horizontal-menu-toggler svg,
+.xpro-theme-builder-header .xpro-elementor-horizontal-menu-close svg{
+  width:22px;height:22px;fill:currentColor;display:block;
+}
+.xpro-theme-builder-header .xpro-elementor-horizontal-menu-toggler i,
+.xpro-theme-builder-header .xpro-elementor-horizontal-menu-close i{font-size:22px;line-height:1;}
+
+/* ---- Footer social icons stay on one line (Xpro's wrapper is an
+     inline-grid by default, which wraps them onto two rows). ---- */
+.xpro-theme-builder-footer .elementor-widget-xpro-social-icon .xpro-social-icon-wrapper{
+  display:flex !important; flex-wrap:nowrap !important;
+  grid-template-columns:none !important;
+  gap:10px; padding:0; margin:0; list-style:none;
+}
+.xpro-theme-builder-footer .elementor-widget-xpro-social-icon .xpro-social-icon-wrapper > li{
+  margin:0; padding:0; list-style:none; flex:0 0 auto;
+}
+
+/* ============================================================
+   Scoped to the Elementor widget classes. The footer element has no
+   xpro-theme-builder-footer class, so earlier footer selectors never
+   matched; these do, and they beat Elementor's generated widget CSS.
+   ============================================================ */
+/* Hamburger and close glyphs */
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-toggler svg,
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-close svg{
+  width:22px !important; height:22px !important; fill:currentColor; display:block;
+}
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-toggler{
+  display:inline-flex !important; align-items:center; gap:.65rem;
+}
+
+/* Social icons on a single line */
+.elementor-widget-xpro-social-icon .xpro-social-icon-wrapper{
+  display:flex !important; flex-wrap:nowrap !important;
+  grid-template-columns:none !important; grid-template-rows:none !important;
+  gap:10px !important; padding:0; margin:0; list-style:none; width:auto;
+}
+.elementor-widget-xpro-social-icon .xpro-social-icon-wrapper > li{
+  display:block !important; margin:0; padding:0; list-style:none; flex:0 0 auto;
+}
+.elementor-widget-xpro-social-icon .xpro-social-icon-wrapper .xpro-social-icon{
+  width:36px; height:36px; border-radius:50%;
+  display:inline-flex; align-items:center; justify-content:center;
+}
+.elementor-widget-xpro-social-icon .xpro-social-icon-wrapper svg{
+  width:15px !important; height:15px !important; fill:currentColor;
+}
+
+/* ============================================================
+   Hamburger trigger drawn in CSS. Xpro renders the icon as an inline
+   icon-font SVG that resolves to zero width here, so the three bars are
+   drawn on the button instead: one bar plus two box-shadow copies.
+   ============================================================ */
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-toggler{
+  display:inline-flex !important; align-items:center; gap:.62rem;
+  width:auto !important; height:auto !important;
+  background:transparent; border:0; padding:8px 2px; cursor:pointer;
+  color:#201A17; line-height:1;
+}
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-toggler > svg,
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-toggler > i{
+  display:none !important;
+}
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-toggler::before{
+  content:""; display:block; flex:0 0 auto;
+  width:26px; height:2px; background:currentColor;
+  box-shadow:0 -7px 0 currentColor, 0 7px 0 currentColor;
+}
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-toggler::after{
+  content:"Menu"; display:block;
+  font-family:Jost,"Helvetica Neue",Arial,sans-serif;
+  font-size:13px; font-weight:600; letter-spacing:.16em;
+  text-transform:uppercase; color:#201A17; line-height:1;
+}
+/* Close button inside the drawer */
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-close{
+  width:34px; height:34px; display:inline-flex !important;
+  align-items:center; justify-content:center; color:#5C1620;
+}
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-close > svg,
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-close > i{display:none !important;}
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-close::before,
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-close::after{
+  content:""; position:absolute; width:22px; height:2px; background:currentColor;
+}
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-close{position:absolute;}
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-close::before{transform:rotate(45deg);}
+.elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-close::after{transform:rotate(-45deg);}
+@media (max-width:640px){
+  .elementor-widget-xpro-horizontal-menu .xpro-elementor-horizontal-menu-toggler::after{display:none;}
+}
+
+/* ============================================================
+   Footer brand lockup. The footer element carries no
+   xpro-theme-builder-footer class, so this is scoped to the element
+   itself; the logo is sized down so the wordmark sits on the same line
+   as the OUR PROPERTIES / EXPLORE / ABOUT column headings.
+   ============================================================ */
+footer .xpro-site-logo img{
+  width:36px !important; height:36px !important; max-width:36px; display:block;
+}
+footer .elementor-widget-xpro-site-logo{width:auto; line-height:0;}
+footer .elementor-widget-xpro-site-logo a{display:inline-block; line-height:0;}
+
+/* Lift the brand lockup so the mark and wordmark share the same line as the
+   OUR PROPERTIES / EXPLORE / ABOUT headings. */
+footer .e-con:has(> .elementor-widget-xpro-site-logo),
+footer .e-con:has(> .e-con-inner > .elementor-widget-xpro-site-logo){
+  margin-top:-19px;
+}
+footer .elementor-widget-xpro-site-logo{display:flex; align-items:center;}
+
+/* GWL-HEADER-END */
