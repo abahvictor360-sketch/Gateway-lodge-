@@ -593,6 +593,16 @@ function gwl_nrp_make_responsive( &$elements ) {
 		}
 
 		if ( 'widget' === $type ) {
+			// gwl_heading's mobile default is max( 26px, 55% of desktop ), which suits
+			// display type but blows a 12px eyebrow or an 11px figure label up to
+			// 26px on a phone. A heading should never be larger on mobile than on
+			// desktop, so clamp it.
+			if ( isset( $s['typography_font_size']['size'], $s['typography_font_size_mobile']['size'] ) ) {
+				if ( (float) $s['typography_font_size_mobile']['size'] > (float) $s['typography_font_size']['size'] ) {
+					$s['typography_font_size_mobile'] = $s['typography_font_size'];
+				}
+			}
+
 			// Display type set for a 1440px screen is too loud on a tablet.
 			if ( isset( $s['typography_font_size']['unit'], $s['typography_font_size']['size'] )
 				&& 'px' === $s['typography_font_size']['unit']
@@ -634,6 +644,12 @@ function gwl_nrp_save_page( $page_id, $elements ) {
  * XPRO header and footer
  * ====================================================================== */
 
+/** Lets a widget size to its own content rather than filling its container. */
+function gwl_nrp_auto_width( $widget ) {
+	$widget['settings']['_element_width'] = 'auto';
+	return $widget;
+}
+
 function gwl_nrp_header_template( $menu_slug, $contact_url ) {
 	$c = gwl_nrp_content();
 
@@ -671,6 +687,9 @@ function gwl_nrp_header_template( $menu_slug, $contact_url ) {
 	$nav = gwl_container(
 		array(
 			gwl_widget( 'xpro-horizontal-menu', array(
+				// Widgets default to the full width of their container, which squeezed
+				// the menu until CONTACT wrapped to a second line.
+				'_element_width'              => 'auto',
 				'nav_menu'                    => $menu_slug,
 				'responsive_show'             => 'tablet',
 				'hamburger_entrance_animation' => 'left',
@@ -702,7 +721,7 @@ function gwl_nrp_header_template( $menu_slug, $contact_url ) {
 				'close_color'                 => '#5C1620',
 				'close_size'                  => array( 'unit' => 'px', 'size' => 22 ),
 			) ),
-			gwl_button( 'Book Now', $contact_url, 'gold', 'right' ),
+			gwl_nrp_auto_width( gwl_button( 'Book Now', $contact_url, 'gold', 'right' ) ),
 		),
 		array(
 			'width' => 'full', 'dir' => 'row', 'gap' => 18, 'align' => 'center', 'justify' => 'flex-end',
