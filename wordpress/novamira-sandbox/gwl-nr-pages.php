@@ -655,11 +655,15 @@ function gwl_nrp_header_template( $menu_slug, $contact_url ) {
 		array(
 			'width' => 'full', 'dir' => 'row', 'gap' => 11, 'align' => 'center',
 			'extra' => array(
-				'flex_wrap' => 'nowrap', '_flex_size' => 'none', '_flex_grow' => 0, '_flex_shrink' => 0,
-				// e-con-full carries --width:100%. Left as-is both header children
-				// claim the full row and the bar overflows to twice its width, so
-				// clear it and let each size to its own content.
-				'width' => array( 'unit' => '%', 'size' => '' ),
+				'flex_wrap' => 'nowrap',
+				// e-con-full carries --width:100%, and _flex_size 'none' compiles to
+				// flex:0 0 auto, which ignores the shrink control. Left that way both
+				// children claim the whole row and the bar runs to twice its width.
+				// Explicit halves keep the brand left and the nav right instead.
+				'width'        => array( 'unit' => '%', 'size' => 50 ),
+				'_flex_size'   => 'custom',
+				'_flex_grow'   => 1,
+				'_flex_shrink' => 1,
 			),
 		)
 	);
@@ -703,8 +707,11 @@ function gwl_nrp_header_template( $menu_slug, $contact_url ) {
 		array(
 			'width' => 'full', 'dir' => 'row', 'gap' => 18, 'align' => 'center', 'justify' => 'flex-end',
 			'extra' => array(
-				'flex_wrap' => 'nowrap', '_flex_size' => 'none', '_flex_grow' => 0, '_flex_shrink' => 1,
-				'width' => array( 'unit' => '%', 'size' => '' ),
+				'flex_wrap'    => 'nowrap',
+				'width'        => array( 'unit' => '%', 'size' => 50 ),
+				'_flex_size'   => 'custom',
+				'_flex_grow'   => 1,
+				'_flex_shrink' => 1,
 			),
 		)
 	);
