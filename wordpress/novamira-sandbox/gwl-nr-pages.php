@@ -911,6 +911,20 @@ function gwl_nrp_custom_css() {
 		. "   width Astra's own column would have had. */\n"
 		. ".ast-page-builder-template .site-content > .ast-container { display: block; }\n"
 		. ".ast-page-builder-template .site-content > .ast-container > .elementor { width: 100%; }\n"
+		. "\n"
+		. "/* Widgets in a row container share its width between them, which squeezed\n"
+		. "   the header menu until CONTACT wrapped and broke the button to two lines.\n"
+		. "   Both should size to their own content. */\n"
+		. ".xpro-theme-builder-header .elementor-widget-xpro-horizontal-menu,\n"
+		. ".xpro-theme-builder-header .elementor-widget-button {\n"
+		. "  width: auto; max-width: none; flex: 0 0 auto;\n"
+		. "}\n"
+		. ".xpro-theme-builder-header .elementor-widget-button .elementor-button { white-space: nowrap; }\n"
+		. "@media (max-width: 767px) {\n"
+		. "  .xpro-theme-builder-header .elementor-widget-button .elementor-button {\n"
+		. "    padding: 12px 14px; font-size: 10px;\n"
+		. "  }\n"
+		. "}\n"
 		. "/* GWL-END */";
 
 	$existing = wp_get_custom_css();
