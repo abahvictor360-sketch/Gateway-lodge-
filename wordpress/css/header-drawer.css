@@ -363,11 +363,6 @@ footer .elementor-widget-xpro-site-logo{display:flex; align-items:center;}
 .xpro-theme-builder-header .xpro-elementor-horizontal-menu-toggler::after{
   color:#FFFFFF !important; transition:color .35s ease;
 }
-/* The mark is maroon and gold, which disappears against the hero, so it
-   is knocked out to white until the header goes solid. */
-.xpro-theme-builder-header .xpro-site-logo img{
-  filter:brightness(0) invert(1); transition:filter .35s ease;
-}
 
 /* ---- Solid state ---- */
 .xpro-theme-builder-header.gwl-header-solid{
@@ -382,7 +377,6 @@ footer .elementor-widget-xpro-site-logo{display:flex; align-items:center;}
 .xpro-theme-builder-header.gwl-header-solid .xpro-elementor-horizontal-menu-toggler::after{
   color:#201A17 !important;
 }
-.xpro-theme-builder-header.gwl-header-solid .xpro-site-logo img{ filter:none; }
 
 /* While the drawer is open the header always reads as a surface: the
    drawer is white and the trigger row sits against it. */
@@ -391,7 +385,6 @@ footer .elementor-widget-xpro-site-logo{display:flex; align-items:center;}
 .xpro-theme-builder-header.gwl-drawer-open .elementor-widget-heading .elementor-heading-title{ color:#5C1620 !important; }
 .xpro-theme-builder-header.gwl-drawer-open .xpro-elementor-horizontal-menu-toggler,
 .xpro-theme-builder-header.gwl-drawer-open .xpro-elementor-horizontal-menu-toggler::after{ color:#201A17 !important; }
-.xpro-theme-builder-header.gwl-drawer-open .xpro-site-logo img{ filter:none; }
 
 /* The header no longer takes up flow space, so the hero has to open
    clear of it. Elementor's own hero padding is replaced rather than
@@ -415,7 +408,6 @@ html{ scroll-padding-top:calc(var(--gwl-header-h) + 16px); }
 @media (prefers-reduced-motion:reduce){
   .xpro-theme-builder-header,
   .xpro-theme-builder-header::before,
-  .xpro-theme-builder-header .elementor-heading-title,
-  .xpro-theme-builder-header .xpro-site-logo img{ transition:none; }
+  .xpro-theme-builder-header .elementor-heading-title{ transition:none; }
 }
 /* GWL-STICKY-END */
