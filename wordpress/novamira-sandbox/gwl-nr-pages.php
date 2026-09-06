@@ -772,10 +772,14 @@ function gwl_nrp_themer( $slug, $title, $type, $elements ) {
 
 	gwl_save_elementor( $id, $elements, 'xpro-themer' );
 
+	// XPRO resolves templates through get_settings( 'type_header' ), which compares
+	// this meta against that same string, so the value is 'type_header', not 'header'.
 	update_post_meta( $id, 'xpro_theme_builder_template_type', $type );
 	update_post_meta( $id, 'xpro_theme_builder_target_include_locations', array( 'rule' => array( 'basic-global' ) ) );
-	update_post_meta( $id, 'xpro_theme_builder_target_exclude_locations', array( 'rule' => array() ) );
-	update_post_meta( $id, 'xpro_theme_builder_target_user_roles', array( 'rule' => array() ) );
+	// Leave the exclusion and user-role rules absent: an empty rule array reads as
+	// "exclude everywhere" and the template never renders.
+	delete_post_meta( $id, 'xpro_theme_builder_target_exclude_locations' );
+	delete_post_meta( $id, 'xpro_theme_builder_target_user_roles' );
 
 	return $id;
 }
@@ -939,8 +943,8 @@ function gwl_nrp_build() {
 	set_theme_mod( 'nav_menu_locations', $locations );
 
 	// 6. XPRO header and footer -------------------------------------------
-	$header_id = gwl_nrp_themer( 'novaridge-header', 'Nova Ridge Header', 'header', gwl_nrp_header_template( $menu_slug, $urls['contact'] ) );
-	$footer_id = gwl_nrp_themer( 'novaridge-footer', 'Nova Ridge Footer', 'footer', gwl_nrp_footer_template( $urls ) );
+	$header_id = gwl_nrp_themer( 'novaridge-header', 'Nova Ridge Header', 'type_header', gwl_nrp_header_template( $menu_slug, $urls['contact'] ) );
+	$footer_id = gwl_nrp_themer( 'novaridge-footer', 'Nova Ridge Footer', 'type_footer', gwl_nrp_footer_template( $urls ) );
 
 	// 7. Clear caches ------------------------------------------------------
 	if ( class_exists( '\\Elementor\\Plugin' ) ) {
