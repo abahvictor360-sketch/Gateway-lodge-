@@ -455,7 +455,7 @@ function gwl_nr_build() {
 	gwl_save_elementor( $page_id, gwl_nr_sections( $c, $form_id ) );
 
 	// Full-bleed: Astra's 1240px container would otherwise gutter the hero.
-	update_post_meta( $page_id, '_wp_page_template', 'elementor_header_footer' );
+	update_post_meta( $page_id, '_wp_page_template', 'elementor_canvas' );
 	update_post_meta( $page_id, 'site-content-layout', 'page-builder' );
 	update_post_meta( $page_id, 'ast-site-content-layout', 'full-width-container' );
 	update_post_meta( $page_id, 'site-sidebar-layout', 'no-sidebar' );
