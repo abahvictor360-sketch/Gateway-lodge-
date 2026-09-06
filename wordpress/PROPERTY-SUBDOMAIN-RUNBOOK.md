@@ -62,7 +62,15 @@ Each step depends on the one before it.
 
 1. **Media** — sideload images with `media_sideload_image( $url, 0, $alt, 'id' )`,
    video with `download_url()` + `media_handle_sideload()`. Store the id map in
-   the `gwl_media_map` option, keyed by the short names the builder uses.
+   the `gwl_media_map` option.
+
+   **Key every entry by the repo filename without its extension**
+   (`hero-living`, `novaridge-tour`), because that is what
+   `build-wp-property-content.py` derives from `<slug>/media/`. Nova Ridge
+   originally stored the video under `tour`, the config asked for
+   `novaridge-tour`, the lookup returned nothing and the hero silently fell back
+   to the still. If a key is missing the build does not fail — it just quietly
+   loses that image.
 2. **Site logo** — `set_theme_mod( 'custom_logo', $id )`. `xpro-site-logo` reads
    `custom_logo`; without it the header shows nothing. Use
    `novaridge/media/gateway-logo.png` (rendered from the SVG; WordPress will not
@@ -170,7 +178,13 @@ identical, which wasted a lot of time chasing the wrong cause.
 the next front-end request, so **request each page once** before inspecting
 `wp-content/uploads/elementor/css/post-<id>.css`.
 
-### 10. Other
+### 10. A missing media key fails silently
+
+`gwl_media()` returns an empty url for an unknown key, and the page still builds.
+After a build, assert the hero video appears in the served HTML rather than
+assuming it does.
+
+### 11. Other
 
 - `xpro-contact-form` is XPRO's own form builder, **not** WPForms.
 - XPRO renders Font Awesome icons as inline SVG, so grepping for `fab fa-` finds
@@ -213,7 +227,29 @@ XPRO menu never initialises. Layout still measures correctly.
 
 ---
 
-## 6. What changes per property
+## 6. Building a property
+
+Everything is driven by slug. Once the install and connector exist:
+
+```php
+require_once WP_CONTENT_DIR . '/novamira-sandbox/gwl-nr-pages.php';
+gwl_nrp_build( 'lakeside' );   // or 'tamale'
+```
+
+That creates the four pages, the menu, the front page, the WPForms form, the XPRO
+header and footer, the SEO and the Customizer CSS. The content comes from
+`gwl-property-content.php` and the footer from `gwl-property-footers.php`, both
+generated:
+
+```bash
+python3 tools/build-wp-property-content.py
+python3 tools/build-wp-footers.py
+```
+
+Media and the site logo still have to be sideloaded first (step 1 and 2 above),
+and the Elementor kit applied (step 3).
+
+## 7. What changes per property
 
 Everything else is shared. Per property you need:
 
@@ -234,7 +270,7 @@ do not deploy it as-is.
 
 ---
 
-## 7. Still open on Nova Ridge
+## 8. Still open on Nova Ridge
 
 - Phone is the site-wide placeholder `+233 24 000 0000`.
 - STAAH booking engine needs credentials via Ace Management Consult. A comment in
