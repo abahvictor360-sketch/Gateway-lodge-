@@ -619,138 +619,17 @@ function gwl_nrp_header_template( $menu_slug, $contact_url ) {
 	);
 }
 
+/**
+ * The footer is the group site's own footer, not a restyled copy of it.
+ * tools/build-novaridge-footer.py takes wordpress/templates/footer-11063.json,
+ * keeps every style setting and swaps the link columns and copy for Nova
+ * Ridge's, emitting gwl-nr-footer-data.php beside this file.
+ */
 function gwl_nrp_footer_template( $urls ) {
-	$c = gwl_nrp_content();
-
-	$link_list = function ( $items ) {
-		$li = array();
-		foreach ( $items as $text => $url ) {
-			$li[] = array(
-				'_id'  => gwl_id(),
-				'text' => $text,
-				'link' => array( 'url' => $url, 'is_external' => '', 'nofollow' => '' ),
-				'selected_icon' => array( 'value' => '', 'library' => '' ),
-			);
-		}
-		return gwl_widget( 'icon-list', array(
-			'icon_list'    => $li,
-			'view'         => 'traditional',
-			'text_color'   => 'rgba(255,255,255,0.8)',
-			'text_color_hover' => '#ECC989',
-			'icon_typography_typography' => 'custom',
-			'icon_typography_font_family' => 'Jost',
-			'icon_typography_font_size'  => array( 'unit' => 'px', 'size' => 15 ),
-			'space_between' => array( 'unit' => 'px', 'size' => 10 ),
-		) );
-	};
-
-	$col_head = function ( $t ) {
-		return gwl_heading( $t, array(
-			'tag' => 'h3', 'align' => 'left', 'color' => '#FFFFFF', 'family' => 'Jost',
-			'weight' => '600', 'size' => 11, 'ls' => 0.18, 'tt' => 'uppercase', 'lh' => 1.4,
-		) );
-	};
-
-	$brand_col = gwl_container(
-		array(
-			gwl_container(
-				array(
-					gwl_widget( 'xpro-site-logo', array( 'logo_type' => 'default', 'thumbnail_size' => 'thumbnail', 'link_type' => 'default', 'align' => 'left', 'width' => array( 'unit' => 'px', 'size' => 38 ) ) ),
-					gwl_heading( $c['short'], array( 'tag' => 'div', 'align' => 'left', 'size' => 20, 'lh' => 1, 'ls' => 0.11, 'tt' => 'uppercase', 'color' => '#FFFFFF' ) ),
-				),
-				array( 'width' => 'full', 'dir' => 'row', 'gap' => 10, 'align' => 'center', 'extra' => array( 'flex_wrap' => 'nowrap' ) )
-			),
-			gwl_text(
-				'<p>Gateway Nova Ridge is part of Gateway Lodge Group, a growing collection of hospitality destinations across Ghana.</p>',
-				array( 'align' => 'left', 'size' => 15, 'color' => 'rgba(255,255,255,0.7)' )
-			),
-			gwl_widget( 'xpro-social-icon', array(
-				'item' => array(
-					array( '_id' => gwl_id(), 'social_icon' => array( 'value' => 'fab fa-facebook-f', 'library' => 'fa-brands' ), 'social_link' => array( 'url' => 'https://facebook.com/gatewaylodgegroup', 'is_external' => 'on', 'nofollow' => '' ) ),
-					array( '_id' => gwl_id(), 'social_icon' => array( 'value' => 'fab fa-instagram', 'library' => 'fa-brands' ), 'social_link' => array( 'url' => 'https://instagram.com/gatewaylodgegroup', 'is_external' => 'on', 'nofollow' => '' ) ),
-					array( '_id' => gwl_id(), 'social_icon' => array( 'value' => 'fab fa-linkedin-in', 'library' => 'fa-brands' ), 'social_link' => array( 'url' => 'https://linkedin.com/company/gatewaylodgegroup', 'is_external' => 'on', 'nofollow' => '' ) ),
-					array( '_id' => gwl_id(), 'social_icon' => array( 'value' => 'fab fa-whatsapp', 'library' => 'fa-brands' ), 'social_link' => array( 'url' => $c['whatsapp'], 'is_external' => 'on', 'nofollow' => '' ) ),
-				),
-				'social_align_horizontal' => 'left',
-				'social_icon_color'       => '#FFFFFF',
-				'social_icon_hover_color' => '#ECC989',
-				'social_icon_bg_color'    => 'rgba(0,0,0,0)',
-				'social_icon_hover_bg_color' => 'rgba(0,0,0,0)',
-				'social_icon_border_border' => 'solid',
-				'social_icon_border_width' => array( 'unit' => 'px', 'top' => '1', 'right' => '1', 'bottom' => '1', 'left' => '1', 'isLinked' => '1' ),
-				'social_icon_border_color' => 'rgba(255,255,255,0.25)',
-				'social_icon_border_radius' => array( 'unit' => 'px', 'top' => '0', 'right' => '0', 'bottom' => '0', 'left' => '0', 'isLinked' => '1' ),
-				'social_icon_padding'     => gwl_pad( 10, 10, 10, 10 ),
-				'icon_size'               => array( 'unit' => 'px', 'size' => 15 ),
-				'social_item_space_between' => array( 'unit' => 'px', 'size' => 10 ),
-			) ),
-		),
-		array( 'width' => 'full', 'gap' => 16, 'basis' => 34, 'grow' => 1 )
-	);
-
-	$cols = array(
-		$brand_col,
-		gwl_container(
-			array( $col_head( 'This property' ), $link_list( array(
-				'Home'       => $urls['home'],
-				'About'      => $urls['about'],
-				'Facilities' => $urls['facilities'],
-				'Contact'    => $urls['contact'],
-			) ) ),
-			array( 'width' => 'full', 'gap' => 8, 'basis' => 22, 'grow' => 1 )
-		),
-		gwl_container(
-			array( $col_head( 'Gateway Lodge Group' ), $link_list( array(
-				'Group website'  => $c['group'] . '/',
-				'Our properties' => $c['group'] . '/properties.html',
-				'Offers'         => $c['group'] . '/offers.html',
-				'About us'       => $c['group'] . '/about.html',
-			) ) ),
-			array( 'width' => 'full', 'gap' => 8, 'basis' => 22, 'grow' => 1 )
-		),
-		gwl_container(
-			array( $col_head( 'Reservations' ), $link_list( array(
-				$c['phone'] => 'tel:' . str_replace( ' ', '', $c['phone'] ),
-				'WhatsApp'  => $c['whatsapp'],
-				$c['email'] => 'mailto:' . $c['email'],
-			) ) ),
-			array( 'width' => 'full', 'gap' => 8, 'basis' => 22, 'grow' => 1 )
-		),
-	);
-
-	$bottom = gwl_container(
-		array(
-			gwl_text( '<p>&copy; ' . date( 'Y' ) . ' Gateway Lodge Group. All Rights Reserved.</p>', array( 'align' => 'left', 'size' => 14, 'color' => 'rgba(255,255,255,0.65)' ) ),
-			gwl_text(
-				'<p><a href="' . esc_url( $c['group'] ) . '/privacy-policy.html">Privacy Policy</a> &nbsp;&nbsp; <a href="' . esc_url( $c['group'] ) . '/terms.html">Terms &amp; Conditions</a></p>',
-				array( 'align' => 'right', 'size' => 14, 'color' => 'rgba(255,255,255,0.65)' )
-			),
-		),
-		array(
-			'width' => 'boxed', 'dir' => 'row', 'gap' => 16, 'align' => 'center', 'justify' => 'space-between',
-			'pad' => gwl_pad( 22, 0, 0, 0 ),
-			'extra' => array(
-				'flex_wrap'     => 'wrap',
-				'border_border' => 'solid',
-				'border_width'  => array( 'unit' => 'px', 'top' => '1', 'right' => '0', 'bottom' => '0', 'left' => '0', 'isLinked' => '' ),
-				'border_color'  => 'rgba(255,255,255,0.15)',
-			),
-		)
-	);
-
-	return array(
-		gwl_container(
-			array(
-				gwl_container( $cols, array( 'width' => 'boxed', 'dir' => 'row', 'gap' => 40, 'align' => 'flex-start', 'extra' => array( 'flex_wrap' => 'wrap' ) ) ),
-				$bottom,
-			),
-			array(
-				'width' => 'full', 'bg' => '#4A1119', 'gap' => 44,
-				'pad' => gwl_pad( 72, 0, 26, 0 ),
-				'extra' => array( 'padding_mobile' => gwl_pad( 52, 0, 22, 0 ) ),
-			)
-		),
-	);
+	$file = __DIR__ . '/gwl-nr-footer-data.php';
+	if ( ! file_exists( $file ) ) { return array(); }
+	$data = require $file;
+	return is_array( $data ) ? $data : array();
 }
 
 /** Creates or updates an XPRO Theme Builder template and shows it site-wide. */
