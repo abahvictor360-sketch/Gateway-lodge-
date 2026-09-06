@@ -92,7 +92,12 @@ function gwl_nrp_stats( $stats ) {
 				gwl_heading( $s[0], array( 'tag' => 'div', 'align' => 'center', 'size' => 40, 'size_m' => 30, 'color' => '#ECC989', 'lh' => 1.1 ) ),
 				gwl_heading( $s[1], array( 'tag' => 'div', 'align' => 'center', 'family' => 'Jost', 'weight' => '600', 'size' => 11, 'ls' => 0.2, 'tt' => 'uppercase', 'color' => 'rgba(255,255,255,0.82)', 'lh' => 1.5 ) ),
 			),
-			array( 'width' => 'full', 'gap' => 2, 'basis' => 25, 'grow' => 1, 'pad' => gwl_pad( 34, 16, 34, 16 ) )
+			array(
+				'width' => 'full', 'gap' => 2, 'basis' => 25, 'grow' => 1,
+				'pad'   => gwl_pad( 34, 16, 34, 16 ),
+				// Four figures stacked is a lot of scrolling; pair them instead.
+				'extra' => array( 'width_mobile' => array( 'unit' => '%', 'size' => 50 ) ),
+			)
 		);
 	}
 	return gwl_container(
@@ -532,6 +537,100 @@ function gwl_nrp_contact( $urls, $form_id ) {
 }
 
 /* =========================================================================
+ * Responsive pass
+ * ====================================================================== */
+
+/**
+ * Elementor sizes flex children through `width`, and gwl_container copies the
+ * desktop share straight onto tablet. That leaves four-across cards and
+ * side-by-side splits intact between 768px and 1024px, where they are far too
+ * narrow. Fixed pixel widths (the capped section heads) also overflow a phone.
+ *
+ * This walks a finished element tree and fills in the tablet and mobile values
+ * the builder does not, so every page gets the same treatment without each
+ * call site having to remember.
+ */
+function gwl_nrp_make_responsive( &$elements ) {
+	foreach ( $elements as &$el ) {
+		if ( empty( $el['settings'] ) || ! is_array( $el['settings'] ) ) { $el['settings'] = array(); }
+		$s    = &$el['settings'];
+		$type = isset( $el['elType'] ) ? $el['elType'] : '';
+
+		if ( 'container' === $type ) {
+			if ( isset( $s['width']['unit'], $s['width']['size'] ) ) {
+				$unit = $s['width']['unit'];
+				$size = (float) $s['width']['size'];
+
+				if ( '%' === $unit && $size > 0 ) {
+					// Narrow columns (cards, figures) pair up on tablet; anything
+					// already at about half the row goes full width.
+					$s['width_tablet'] = ( $size < 30 )
+						? array( 'unit' => '%', 'size' => 48 )
+						: array( 'unit' => '%', 'size' => 100 );
+					if ( ! isset( $s['width_mobile'] ) ) {
+						$s['width_mobile'] = array( 'unit' => '%', 'size' => 100 );
+					}
+				} elseif ( 'px' === $unit ) {
+					// A capped block must not be wider than the screen holding it.
+					$s['width_tablet'] = array( 'unit' => '%', 'size' => 100 );
+					$s['width_mobile'] = array( 'unit' => '%', 'size' => 100 );
+				}
+			}
+
+			// Ease the section rhythm off before the mobile value takes over.
+			if ( isset( $s['padding']['top'] ) && ! isset( $s['padding_tablet'] ) ) {
+				$top    = (int) $s['padding']['top'];
+				$bottom = (int) $s['padding']['bottom'];
+				if ( $top >= 80 || $bottom >= 80 ) {
+					$s['padding_tablet'] = gwl_pad(
+						(int) round( $top * 0.7 ),
+						(int) $s['padding']['right'],
+						(int) round( $bottom * 0.7 ),
+						(int) $s['padding']['left']
+					);
+				}
+			}
+		}
+
+		if ( 'widget' === $type ) {
+			// Display type set for a 1440px screen is too loud on a tablet.
+			if ( isset( $s['typography_font_size']['unit'], $s['typography_font_size']['size'] )
+				&& 'px' === $s['typography_font_size']['unit']
+				&& ! isset( $s['typography_font_size_tablet'] ) ) {
+				$desktop = (float) $s['typography_font_size']['size'];
+				if ( $desktop >= 30 ) {
+					$mobile = isset( $s['typography_font_size_mobile']['size'] )
+						? (float) $s['typography_font_size_mobile']['size']
+						: $desktop * 0.55;
+					$s['typography_font_size_tablet'] = array(
+						'unit' => 'px',
+						'size' => max( $mobile, round( $desktop * 0.74 ) ),
+					);
+				}
+			}
+
+			// Same story for widgets capped to a pixel measure.
+			if ( isset( $s['_element_custom_width']['unit'] )
+				&& 'px' === $s['_element_custom_width']['unit'] ) {
+				$s['_element_width']                 = 'initial';
+				$s['_element_custom_width_tablet']    = array( 'unit' => '%', 'size' => 100 );
+				$s['_element_custom_width_mobile']    = array( 'unit' => '%', 'size' => 100 );
+			}
+		}
+
+		if ( ! empty( $el['elements'] ) && is_array( $el['elements'] ) ) {
+			gwl_nrp_make_responsive( $el['elements'] );
+		}
+	}
+}
+
+/** Builds a page's elements and saves them with the responsive pass applied. */
+function gwl_nrp_save_page( $page_id, $elements ) {
+	gwl_nrp_make_responsive( $elements );
+	gwl_save_elementor( $page_id, $elements );
+}
+
+/* =========================================================================
  * XPRO header and footer
  * ====================================================================== */
 
@@ -811,10 +910,10 @@ function gwl_nrp_build() {
 	$form_id = gwl_nrp_form();
 
 	// 4. Page content ------------------------------------------------------
-	gwl_save_elementor( $ids['home'], gwl_nrp_home( $urls ) );
-	gwl_save_elementor( $ids['about'], gwl_nrp_about( $urls ) );
-	gwl_save_elementor( $ids['facilities'], gwl_nrp_facilities( $urls ) );
-	gwl_save_elementor( $ids['contact'], gwl_nrp_contact( $urls, $form_id ) );
+	gwl_nrp_save_page( $ids['home'], gwl_nrp_home( $urls ) );
+	gwl_nrp_save_page( $ids['about'], gwl_nrp_about( $urls ) );
+	gwl_nrp_save_page( $ids['facilities'], gwl_nrp_facilities( $urls ) );
+	gwl_nrp_save_page( $ids['contact'], gwl_nrp_contact( $urls, $form_id ) );
 	foreach ( $ids as $id ) { gwl_nrp_page_meta( $id ); }
 
 	// 5. Menu --------------------------------------------------------------
