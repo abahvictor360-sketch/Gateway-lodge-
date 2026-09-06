@@ -874,10 +874,35 @@ function gwl_nrp_page( $slug, $title ) {
 function gwl_nrp_page_meta( $page_id ) {
 	update_post_meta( $page_id, '_wp_page_template', 'elementor_header_footer' );
 	update_post_meta( $page_id, 'site-content-layout', 'page-builder' );
-	update_post_meta( $page_id, 'ast-site-content-layout', 'full-width-container' );
+	// Stretched, not "full width container": the latter still leaves Astra's
+	// container in charge of the width.
+	update_post_meta( $page_id, 'ast-site-content-layout', 'full-width-layout' );
 	update_post_meta( $page_id, 'site-sidebar-layout', 'no-sidebar' );
 	update_post_meta( $page_id, 'ast-title-bar-display', 'disabled' );
 	update_post_meta( $page_id, 'ast-featured-img', 'disabled' );
+}
+
+/**
+ * Astra makes .ast-container a flex row for its content and sidebar columns.
+ * A page-builder template has no #primary column to fill it, so the Elementor
+ * wrapper becomes a lone flex item and shrinks to fit, rendering the page at
+ * roughly half width. This restores the full width its own column would have.
+ *
+ * Written to the Customizer's Additional CSS so it stays visible and editable.
+ */
+function gwl_nrp_custom_css() {
+	$rule = "/* GWL-START */\n"
+		. "/* Astra makes .ast-container a flex row for its content and sidebar columns.\n"
+		. "   A page-builder template has no #primary column to fill it, so the Elementor\n"
+		. "   wrapper shrinks to fit and the page renders half width. Give it the full\n"
+		. "   width Astra's own column would have had. */\n"
+		. ".ast-page-builder-template .site-content > .ast-container { display: block; }\n"
+		. ".ast-page-builder-template .site-content > .ast-container > .elementor { width: 100%; }\n"
+		. "/* GWL-END */";
+
+	$existing = wp_get_custom_css();
+	$cleaned  = trim( preg_replace( '~/\* GWL-START \*/.*?/\* GWL-END \*/~s', '', $existing ) );
+	wp_update_custom_css_post( trim( $cleaned . "\n\n" . $rule ) );
 }
 
 function gwl_nrp_build() {
@@ -946,7 +971,10 @@ function gwl_nrp_build() {
 	$header_id = gwl_nrp_themer( 'novaridge-header', 'Nova Ridge Header', 'type_header', gwl_nrp_header_template( $menu_slug, $urls['contact'] ) );
 	$footer_id = gwl_nrp_themer( 'novaridge-footer', 'Nova Ridge Footer', 'type_footer', gwl_nrp_footer_template( $urls ) );
 
-	// 7. Clear caches ------------------------------------------------------
+	// 7. Theme-level CSS the layout depends on -----------------------------
+	gwl_nrp_custom_css();
+
+	// 8. Clear caches ------------------------------------------------------
 	if ( class_exists( '\\Elementor\\Plugin' ) ) {
 		\Elementor\Plugin::$instance->files_manager->clear_cache();
 	}
