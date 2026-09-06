@@ -384,3 +384,96 @@ function gwl_booking_settings_page() {
 	</div>
 	<?php
 }
+
+/* ==========================================================================
+   4. Sticky header
+   --------------------------------------------------------------------------
+   The header is fixed at the top on every page. It stays transparent while
+   it is over the hero media and turns solid white once the hero has
+   scrolled past; the CSS for both states lives in the GWL-STICKY block of
+   the Customizer's Additional CSS.
+
+   Xpro's own sticky option is not used: it wraps the header in a
+   transformed element, which becomes the containing block for the
+   off-canvas drawer's position:fixed and collapses it.
+   ========================================================================== */
+
+function gwl_enqueue_sticky_header() {
+	$handle = 'gwl-sticky-header';
+	wp_register_script( $handle, '', array(), '1.0.0', true );
+	wp_enqueue_script( $handle );
+
+	$js = <<<'JS'
+( function () {
+	'use strict';
+
+	var header = document.querySelector( '.xpro-theme-builder-header' );
+	if ( ! header ) {
+		return;
+	}
+
+	var root    = document.documentElement;
+	var hero    = document.querySelector( '.site-content .elementor > .e-con.e-parent' );
+	var ticking = false;
+
+	// Only a hero carrying its own media is dark enough to put white
+	// controls on. Anything else (archives, the leftover demo pages) gets
+	// the solid header from the start and is padded down instead.
+	function isMediaHero( el ) {
+		if ( ! el ) {
+			return false;
+		}
+		if ( el.querySelector( 'video' ) ) {
+			return true;
+		}
+		var bg = window.getComputedStyle( el ).backgroundImage;
+		return !! bg && bg !== 'none';
+	}
+
+	var overlay = isMediaHero( hero );
+	if ( ! overlay ) {
+		document.body.classList.add( 'gwl-no-hero' );
+	}
+
+	function measure() {
+		root.style.setProperty( '--gwl-header-h', header.offsetHeight + 'px' );
+	}
+
+	function update() {
+		ticking = false;
+		var solid = overlay
+			? hero.getBoundingClientRect().bottom <= header.offsetHeight
+			: true;
+		header.classList.toggle( 'gwl-header-solid', solid );
+	}
+
+	function onScroll() {
+		if ( ! ticking ) {
+			ticking = true;
+			window.requestAnimationFrame( update );
+		}
+	}
+
+	measure();
+	update();
+
+	window.addEventListener( 'scroll', onScroll, { passive: true } );
+	window.addEventListener( 'resize', function () {
+		measure();
+		update();
+	} );
+
+	// The drawer is white, so the trigger row behind it has to be too,
+	// whatever the scroll position is. Xpro toggles .active on the panel.
+	var panel = header.querySelector( '.xpro-elementor-horizontal-navbar-wrapper' );
+	if ( panel && window.MutationObserver ) {
+		new window.MutationObserver( function () {
+			header.classList.toggle( 'gwl-drawer-open', panel.classList.contains( 'active' ) );
+		} ).observe( panel, { attributes: true, attributeFilter: [ 'class' ] } );
+	}
+}() );
+JS;
+
+	wp_add_inline_script( $handle, $js );
+}
+add_action( 'wp_enqueue_scripts', 'gwl_enqueue_sticky_header', 20 );

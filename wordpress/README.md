@@ -13,7 +13,7 @@ Drops into `wp-content/novamira-sandbox/`, which auto-loads every `.php` in it.
 
 | File | On the server | What it does |
 | --- | --- | --- |
-| `gateway-lodge-site.php` | enabled | Runtime plugin. `[gateway_booking]` shortcode (placeholder / url / embed modes), its styles, the Settings -> Gateway Booking admin page, and the inline JS that drives the desktop submenu accordion in the header drawer. |
+| `gateway-lodge-site.php` | enabled | Runtime plugin. `[gateway_booking]` shortcode (placeholder / url / embed modes), its styles, the Settings -> Gateway Booking admin page, the inline JS that drives the desktop submenu accordion in the header drawer, and the sticky-header scroll handler. |
 | `gwl-builder.php` | disabled | Elementor primitives: containers, headings, eyebrows, text, buttons, images, cards, icon lists, and `gwl_save_elementor()`. |
 | `gwl-pages.php` | disabled | Section-level helpers built on the above: hero, intro, features, split, cards, CTA, FAQ, publish. |
 | `gwl-convert.php` | disabled | HTML -> Elementor conversion, part 1: DOM helpers, the 40-page slug map, keyword-to-icon map, buttons, icon lists, FAQ, cards. |
@@ -56,6 +56,33 @@ the submenu accordion, the inline social row, footer logo alignment, and the
 Scoping note: the footer wrapper is `.elementor-11063`, **not**
 `.xpro-theme-builder-footer` - that class does not exist. The header does use
 `.xpro-theme-builder-header`.
+
+### The sticky header (GWL-STICKY block)
+
+The header is `position: fixed` on every page. It is transparent while it sits
+over the hero media and turns solid white once the hero has scrolled past;
+`gwl_enqueue_sticky_header()` adds `.gwl-header-solid` from a rAF-throttled
+scroll handler, and `.gwl-drawer-open` from a MutationObserver on the drawer
+panel. Pages without a media hero get `body.gwl-no-hero` and are padded down
+instead of overlaid.
+
+Four things this had to work around:
+
+- **Do not put `filter` or `backdrop-filter` on the header element.** Either
+  makes it a containing block and collapses the drawer's `position: fixed` -
+  the same failure that made Xpro's own sticky option unusable. A plain
+  `position: fixed` ancestor is fine; the drawer still measures to the viewport.
+- The cream surface is painted by the header's Elementor container
+  (`.elementor > .e-con`), not by the wrapper. It is forced transparent so the
+  two states switch in one place.
+- That container also carries a 1px bottom border, which reads as a stray
+  hairline across the hero. It is hidden while transparent.
+- The MENU toggler colour needs `!important`: Elementor's per-element rule
+  (`.elementor-11062 .elementor-element-x .toggler`) out-specifies a two-class
+  selector.
+
+Header height is published as `--gwl-header-h`, measured on load and resize, and
+used for the hero's top padding and `scroll-padding-top` for in-page anchors.
 
 ## templates/
 

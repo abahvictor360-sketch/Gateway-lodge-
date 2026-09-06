@@ -321,3 +321,122 @@ footer .e-con:has(> .e-con-inner > .elementor-widget-xpro-site-logo){
 footer .elementor-widget-xpro-site-logo{display:flex; align-items:center;}
 
 /* GWL-HEADER-END */
+
+/* GWL-STICKY-START */
+/* ============================================================
+   Sticky header: transparent while it sits over the hero media,
+   solid white once the hero has scrolled past.
+
+   Every page on this site opens with a full-bleed dark hero (video on
+   the home page, a photograph elsewhere), so the header can float over
+   it and only take on a surface when there is ordinary page content
+   behind it. The solid state is toggled by adding .gwl-header-solid
+   from the sandbox plugin's scroll handler.
+
+   Note: no filter or backdrop-filter on the header element itself.
+   Either one would make it a containing block and break the drawer's
+   position:fixed, which is the bug that forced Xpro's own sticky option
+   to be turned off in the first place.
+   ============================================================ */
+:root{ --gwl-header-h:101px; }
+
+.xpro-theme-builder-header{
+  position:fixed; top:0; left:0; right:0; z-index:9990;
+  background-color:transparent;
+  transition:background-color .35s ease, box-shadow .35s ease;
+}
+.admin-bar .xpro-theme-builder-header{ top:32px; }
+@media (max-width:782px){ .admin-bar .xpro-theme-builder-header{ top:46px; } }
+
+/* A soft scrim, so the wordmark and MENU stay legible if the hero frame
+   underneath happens to be bright. It fades out with the solid state. */
+.xpro-theme-builder-header::before{
+  content:""; position:absolute; top:0; left:0; right:0; bottom:-48px; z-index:-1; pointer-events:none;
+  background:linear-gradient(to bottom, rgba(20,10,12,.5), rgba(20,10,12,0));
+  transition:opacity .35s ease;
+}
+
+/* The header row's own Elementor container paints the cream surface. It is
+   cleared here so the transparent/solid switch happens in one place, on the
+   wrapper, rather than fighting two backgrounds. */
+.xpro-theme-builder-header .elementor > .e-con,
+.xpro-theme-builder-header .elementor > .e-con > .e-con-inner{
+  background-color:transparent !important;
+}
+
+/* That container also carries the 1px rule under the header row, which reads
+   as a stray hairline across the hero. It comes back with the solid state,
+   where it belongs. */
+.xpro-theme-builder-header .elementor > .e-con{
+  border-bottom-color:transparent !important;
+  transition:border-bottom-color .35s ease;
+}
+.xpro-theme-builder-header.gwl-header-solid .elementor > .e-con,
+.xpro-theme-builder-header.gwl-drawer-open .elementor > .e-con{
+  border-bottom-color:#E6DDD3 !important;
+}
+
+/* ---- Transparent state: light controls over dark media ---- */
+.xpro-theme-builder-header .elementor-widget-heading .elementor-heading-title{
+  color:#FFFFFF !important; transition:color .35s ease;
+}
+.xpro-theme-builder-header .xpro-elementor-horizontal-menu-toggler,
+.xpro-theme-builder-header .xpro-elementor-horizontal-menu-toggler::after{
+  color:#FFFFFF !important; transition:color .35s ease;
+}
+/* The mark is maroon and gold, which disappears against the hero, so it
+   is knocked out to white until the header goes solid. */
+.xpro-theme-builder-header .xpro-site-logo img{
+  filter:brightness(0) invert(1); transition:filter .35s ease;
+}
+
+/* ---- Solid state ---- */
+.xpro-theme-builder-header.gwl-header-solid{
+  background-color:#FFFFFF;
+  box-shadow:0 1px 0 rgba(74,17,25,.07), 0 12px 32px rgba(20,10,12,.09);
+}
+.xpro-theme-builder-header.gwl-header-solid::before{ opacity:0; }
+.xpro-theme-builder-header.gwl-header-solid .elementor-widget-heading .elementor-heading-title{
+  color:#5C1620 !important;
+}
+.xpro-theme-builder-header.gwl-header-solid .xpro-elementor-horizontal-menu-toggler,
+.xpro-theme-builder-header.gwl-header-solid .xpro-elementor-horizontal-menu-toggler::after{
+  color:#201A17 !important;
+}
+.xpro-theme-builder-header.gwl-header-solid .xpro-site-logo img{ filter:none; }
+
+/* While the drawer is open the header always reads as a surface: the
+   drawer is white and the trigger row sits against it. */
+.xpro-theme-builder-header.gwl-drawer-open{ background-color:#FFFFFF; }
+.xpro-theme-builder-header.gwl-drawer-open::before{ opacity:0; }
+.xpro-theme-builder-header.gwl-drawer-open .elementor-widget-heading .elementor-heading-title{ color:#5C1620 !important; }
+.xpro-theme-builder-header.gwl-drawer-open .xpro-elementor-horizontal-menu-toggler,
+.xpro-theme-builder-header.gwl-drawer-open .xpro-elementor-horizontal-menu-toggler::after{ color:#201A17 !important; }
+.xpro-theme-builder-header.gwl-drawer-open .xpro-site-logo img{ filter:none; }
+
+/* The header no longer takes up flow space, so the hero has to open
+   clear of it. Elementor's own hero padding is replaced rather than
+   added to, which also evens out the 120px home / 96px inner difference. */
+.site-content .elementor > .e-con.e-parent:first-child{
+  padding-top:calc(var(--gwl-header-h) + 44px) !important;
+}
+
+/* Pages with no media hero to float over (archives, search, the leftover
+   demo pages) keep their own spacing and are simply pushed down. The
+   plugin's script marks them. */
+body.gwl-no-hero .site-content{ padding-top:var(--gwl-header-h); }
+body.gwl-no-hero .site-content .elementor > .e-con.e-parent:first-child{
+  padding-top:0 !important;
+}
+
+/* In-page anchors (#enquire and friends) would otherwise land underneath
+   the fixed header. */
+html{ scroll-padding-top:calc(var(--gwl-header-h) + 16px); }
+
+@media (prefers-reduced-motion:reduce){
+  .xpro-theme-builder-header,
+  .xpro-theme-builder-header::before,
+  .xpro-theme-builder-header .elementor-heading-title,
+  .xpro-theme-builder-header .xpro-site-logo img{ transition:none; }
+}
+/* GWL-STICKY-END */
