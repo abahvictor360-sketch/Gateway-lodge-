@@ -25,8 +25,24 @@ require_once __DIR__ . '/gwl-pages.php';
 
 /** Full-height opening hero with a looping video background. */
 function gwl_nrp_video_hero( $kids ) {
-	$video  = gwl_media( 'tour' );
-	$poster = gwl_media( 'hero-living' );
+	$c      = gwl_nrp_content();
+	$video  = $c['hero_video'] ? gwl_media( $c['hero_video'] ) : array( 'url' => '', 'id' => '' );
+	$poster = gwl_media( $c['hero_poster'] );
+	// Lakeside has no walkthrough film yet, so it opens on a still instead.
+	$media  = $video['url']
+		? array(
+			'background_background'        => 'video',
+			'background_video_link'        => $video['url'],
+			'background_play_on_mobile'    => 'yes',
+			'background_video_fallback'    => array( 'url' => $poster['url'], 'id' => $poster['id'], 'size' => '' ),
+		)
+		: array(
+			'background_background' => 'classic',
+			'background_image'      => array( 'url' => $poster['url'], 'id' => $poster['id'], 'size' => '' ),
+			'background_position'   => 'center center',
+			'background_size'       => 'cover',
+			'background_repeat'     => 'no-repeat',
+		);
 	return gwl_container(
 		array( gwl_container( $kids, array( 'width' => 'boxed', 'gap' => 14, 'align' => 'flex-start' ) ) ),
 		array(
@@ -37,10 +53,6 @@ function gwl_nrp_video_hero( $kids ) {
 			'extra'   => array(
 				'min_height_mobile'             => array( 'unit' => 'vh', 'size' => 86 ),
 				'padding_mobile'                => gwl_pad( 120, 0, 60, 0 ),
-				'background_background'         => 'video',
-				'background_video_link'         => $video['url'],
-				'background_play_on_mobile'     => 'yes',
-				'background_video_fallback'     => array( 'url' => $poster['url'], 'id' => $poster['id'], 'size' => '' ),
 				'background_overlay_background' => 'gradient',
 				'background_overlay_color'      => 'rgba(28,11,13,0.82)',
 				'background_overlay_color_b'    => 'rgba(28,11,13,0.20)',
@@ -48,7 +60,7 @@ function gwl_nrp_video_hero( $kids ) {
 				'background_overlay_gradient_angle' => array( 'unit' => 'deg', 'size' => 90 ),
 				'background_overlay_color_stop'     => array( 'unit' => '%', 'size' => 0 ),
 				'background_overlay_color_b_stop'   => array( 'unit' => '%', 'size' => 78 ),
-			),
+			) + $media,
 		)
 	);
 }
@@ -213,7 +225,7 @@ function gwl_nrp_cta( $contact_url ) {
 				array(
 					gwl_eyebrow( 'Ready when you are' ),
 					gwl_slash(),
-					gwl_heading( 'Book Gateway Nova Ridge', array( 'tag' => 'h2', 'size' => 44, 'color' => '#FFFFFF' ) ),
+					gwl_heading( 'Book ' . $c['property'], array( 'tag' => 'h2', 'size' => 44, 'color' => '#FFFFFF' ) ),
 					gwl_text(
 						'<p>Book direct for the best available rate. Reservations answer by phone and WhatsApp every day, or send the enquiry form and we will come back to you.</p>',
 						array( 'size' => 17, 'color' => 'rgba(255,255,255,0.8)', 'maxw' => 640 )
@@ -240,65 +252,25 @@ function gwl_nrp_cta( $contact_url ) {
  * Content
  * ====================================================================== */
 
-function gwl_nrp_content() {
-	static $c = null;
-	if ( null !== $c ) { return $c; }
-	$c = array(
-		'property' => 'Gateway Nova Ridge',
-		'short'    => 'Nova Ridge',
-		'locality' => 'Ridge, Accra',
-		'address'  => '4 Drake Avenue area, Ridge, Accra, Ghana',
-		'units'    => '1 Unit',
-		'phone'    => '+233 24 000 0000',
-		'whatsapp' => 'https://wa.me/233240000000',
-		'email'    => 'reservations@gatewaylodgegroup.com',
-		'group'    => 'https://www.gatewaylodgegroup.com',
-		'tagline'  => 'A private high-rise residence in Accra&rsquo;s most established address, kept to the Gateway Lodge standard and yours alone for the length of your stay.',
-		'stats'    => array(
-			array( '1', 'Private unit' ),
-			array( '2', 'Bedrooms' ),
-			array( '24/7', 'Guest support' ),
-			array( '15 min', 'To the airport' ),
-		),
-		'pillars' => array(
-			array( 'Yours alone', 'A single unit, so the apartment is never shared, split or reassigned mid-stay.' ),
-			array( 'Built for longer stays', 'A real kitchen, laundry and a desk: the things that matter after night three.' ),
-			array( 'A settled address', 'Ridge puts the ministries, the CBD and Kotoka within an easy drive.' ),
-		),
-		'rooms' => array(
-			array( 'bedroom-king', 'Principal Bedroom', 'A king bed, blackout curtains, fitted wardrobes and an en-suite bathroom.' ),
-			array( 'bedroom-second', 'Second Bedroom', 'A second double room with its own wardrobe and mirror, for family or a colleague.' ),
-			array( 'lounge-tv-wall', 'Living Room', 'Deep seating for six, a smart television and light on two sides through the day.' ),
-			array( 'kitchen-wide', 'Kitchen &amp; Dining', 'A full fitted kitchen with oven, hob, microwave and a dining table for four.' ),
-		),
-		'facilities' => array(
-			array( 'fas fa-wifi', 'High-Speed Wi-Fi', 'Fibre throughout the apartment, steady enough for calls and uploads.' ),
-			array( 'fas fa-utensils', 'Full Kitchen', 'Oven, hob, microwave, fridge-freezer, kettle and a stocked utensil drawer.' ),
-			array( 'fas fa-snowflake', 'Air Conditioning', 'Individually controlled in every bedroom and the living room.' ),
-			array( 'fas fa-bolt', 'Backup Power', 'The building runs on standby power, so the apartment stays on.' ),
-			array( 'fas fa-tshirt', 'Laundry', 'In-apartment washing, with a pressing and laundry service on request.' ),
-			array( 'fas fa-laptop', 'Desk &amp; Workspace', 'A proper surface to work from, not a chair pulled up to the dining table.' ),
-			array( 'fas fa-tree', 'Private Balcony', 'Table and chairs, and a long view over the Ridge treeline.' ),
-			array( 'fas fa-car', 'Secure Parking', 'Gated, monitored parking within the building for one vehicle.' ),
-			array( 'fas fa-shield-alt', '24-Hour Security', 'Manned entry and CCTV across the building&rsquo;s common areas.' ),
-			array( 'fas fa-concierge-bell', 'Guest Support', 'One number, answered at any hour, for anything the stay needs.' ),
-			array( 'fas fa-elevator', 'Lift Access', 'Serviced lifts to the apartment floor.' ),
-			array( 'fas fa-broom', 'Housekeeping', 'Scheduled servicing and fresh linen, arranged around you.' ),
-		),
-		'location_points' => array(
-			'Walking distance to Ridge&rsquo;s embassies and government offices',
-			'About 15 minutes by car to Kotoka International Airport',
-			'Ten minutes to Osu, Airport Residential and the CBD',
-			'Ridge Hospital and Accra&rsquo;s main clinics close by',
-		),
-		'faqs' => array(
-			array( 'Is the whole apartment mine?', 'Yes. Nova Ridge is a single unit, so it is never shared or split between parties.' ),
-			array( 'Do you take long stays?', 'We do. The kitchen, laundry and workspace are built for stays measured in weeks rather than nights. Ask reservations about the long-stay rate.' ),
-			array( 'Is parking included?', 'Yes, one gated parking space within the building comes with the apartment.' ),
-			array( 'What happens in a power cut?', 'The building runs on standby power, so the apartment stays lit and cooled.' ),
-		),
-	);
-	return $c;
+/** The property currently being built. */
+function gwl_nrp_slug( $set = null ) {
+	static $slug = 'novaridge';
+	if ( null !== $set ) { $slug = $set; }
+	return $slug;
+}
+
+/**
+ * Per-property content, generated from the same source as the static pages by
+ * tools/build-wp-property-content.py so the two cannot drift apart.
+ */
+function gwl_nrp_content( $slug = null ) {
+	static $all = null;
+	if ( null === $all ) {
+		$file = __DIR__ . '/gwl-property-content.php';
+		$all  = file_exists( $file ) ? require $file : array();
+	}
+	$slug = $slug ? $slug : gwl_nrp_slug();
+	return isset( $all[ $slug ] ) ? $all[ $slug ] : array();
 }
 
 /* =========================================================================
@@ -338,13 +310,11 @@ function gwl_nrp_home( $urls ) {
 		gwl_nrp_stats( $c['stats'] ),
 
 		gwl_nrp_split(
-			'lounge-open-plan',
-			'The Residence',
-			'One apartment. No lobby, no queue, no neighbours in the corridor.',
-			array(
-				'Nova Ridge is a single serviced apartment on an upper floor of a residential tower in Ridge, the quiet tree-lined district that sits between central Accra&rsquo;s business addresses and the embassies. You arrive to an apartment that has been prepared for you, and it stays that way.',
-			),
-			array_merge( $pillars, array( gwl_button( 'More about the residence', $urls['about'], 'outline_dark', 'left' ) ) ),
+			$c['about_image'],
+			$c['about_kicker'],
+			$c['about_head'],
+			array_slice( $c['about_body'], 0, 1 ),
+			array_merge( $pillars, array( gwl_button( 'More about the property', $urls['about'], 'outline_dark', 'left' ) ) ),
 			'left'
 		),
 
@@ -368,7 +338,7 @@ function gwl_nrp_home( $urls ) {
 		gwl_nrp_section(
 			array(
 				gwl_section_head( 'Gallery', 'A closer look' ),
-				gwl_nrp_gallery( array( 'hero-living', 'lounge-tv-wall', 'kitchen-dining', 'bedroom-suite', 'balcony-skyline', 'dining-nook' ), '3', 340 ),
+				gwl_nrp_gallery( $c['gallery_home'], '3', 340 ),
 			),
 			'#F7F3EE'
 		),
@@ -383,39 +353,32 @@ function gwl_nrp_about( $urls ) {
 	foreach ( $c['pillars'] as $p ) { $pillars[] = gwl_nrp_pillar( $p[0], $p[1] ); }
 
 	return array(
-		gwl_nrp_banner( 'lounge-daylight', 'About', 'The Residence', 'A single serviced apartment in Ridge, run to the Gateway Lodge standard.' ),
+		gwl_nrp_banner( $c['banner_about'], 'About', $c['about_kicker'], $c['banner_subs']['about'] ),
 
 		gwl_nrp_split(
-			'lounge-open-plan',
-			'Who we are',
-			'A hotel standard, in a home that is only yours.',
-			array(
-				'Gateway Nova Ridge is the smallest and most private of the three Gateway Lodge properties: one apartment, on an upper floor of a residential tower in Ridge. There is no reception floor and no corridor of other guests. You let yourself in, and for as long as you stay the apartment belongs to you.',
-				'Inside there is an open living room that runs into a full kitchen, a dining table, two bedrooms dressed in hotel linen, two bathrooms, and a balcony looking over the green of Ridge towards the city.',
-			),
+			$c['about_image'],
+			$c['about_sections'][0]['kicker'],
+			$c['about_sections'][0]['head'],
+			$c['about_sections'][0]['paras'],
 			$pillars,
 			'left'
 		),
 
 		gwl_nrp_split(
-			'balcony-skyline',
-			'The address',
-			'Ridge, where Accra keeps its quiet.',
-			array(
-				'Ridge is the district of embassies, ministries and old trees, a few minutes from the central business district but a world away from its noise. It is the address people choose when they want to be close to everything and hear none of it.',
-			),
+			$c['gallery_facilities'][0],
+			$c['about_sections'][1]['kicker'],
+			$c['about_sections'][1]['head'],
+			$c['about_sections'][1]['paras'],
 			array( gwl_icon_list( $c['location_points'] ) ),
 			'right',
 			'#F7F3EE'
 		),
 
 		gwl_nrp_split(
-			'kitchen-dining',
-			'How we run it',
-			'Serviced, not staffed over.',
-			array(
-				'Housekeeping comes on a rhythm that suits your stay rather than a fixed hotel schedule. Laundry, pressing, airport transfers and grocery runs are arranged on request. One number reaches the team at any hour.',
-			),
+			$c['facilities_image'],
+			$c['about_sections'][2]['kicker'],
+			$c['about_sections'][2]['head'],
+			$c['about_sections'][2]['paras'],
 			array( gwl_button( 'Talk to reservations', $urls['contact'], 'outline_dark', 'left' ) ),
 			'left'
 		),
@@ -430,15 +393,13 @@ function gwl_nrp_facilities( $urls ) {
 	foreach ( $c['facilities'] as $f ) { $features[] = gwl_feature( $f[0], $f[1], $f[2] ); }
 
 	return array(
-		gwl_nrp_banner( 'kitchen', 'Facilities', 'Facilities &amp; Amenities', 'Everything an extended stay asks for is already fitted.' ),
+		gwl_nrp_banner( $c['banner_facilities'], 'Facilities', 'Facilities &amp; Amenities', $c['banner_subs']['facilities'] ),
 
 		gwl_nrp_split(
-			'kitchen-wide',
-			'The apartment',
-			'Complete on arrival, and kept that way.',
-			array(
-				'Nothing on this page is an upgrade or an extra line on the folio. The kitchen is a real kitchen, the laundry is in the apartment, the desk is a desk. The team keeps it all in order for as long as you stay.',
-			),
+			$c['facilities_image'],
+			'The property',
+			$c['facilities_head'],
+			array( $c['facilities_body'] ),
 			array(),
 			'right'
 		),
@@ -450,11 +411,7 @@ function gwl_nrp_facilities( $urls ) {
 		gwl_nrp_section(
 			array(
 				gwl_section_head( 'Gallery', 'Room by room' ),
-				gwl_nrp_gallery(
-					array( 'bedroom-king', 'bedroom-suite', 'bathroom', 'lounge-sofas', 'hallway', 'balcony', 'kitchen-dining', 'bedroom-window', 'lounge-tv-wall' ),
-					'3',
-					320
-				),
+				gwl_nrp_gallery( $c['gallery_facilities'], '3', 320 ),
 			),
 			'#F7F3EE'
 		),
@@ -486,7 +443,7 @@ function gwl_nrp_contact( $urls, $form_id ) {
 	) );
 
 	$map = gwl_widget( 'google_maps', array(
-		'address' => '4 Drake Avenue, Ridge, Accra, Ghana',
+		'address' => $c['map_address'],
 		'zoom'    => array( 'size' => 15 ),
 		'height'  => array( 'unit' => 'px', 'size' => 420 ),
 	) );
@@ -503,7 +460,7 @@ function gwl_nrp_contact( $urls, $form_id ) {
 	}
 
 	return array(
-		gwl_nrp_banner( 'hallway', 'Contact', 'Contact Nova Ridge', 'Reservations answer by phone and WhatsApp every day.' ),
+		gwl_nrp_banner( $c['banner_contact'], 'Contact', 'Contact ' . $c['short'], $c['banner_subs']['contact'] ),
 
 		gwl_container(
 			array(
@@ -760,10 +717,11 @@ function gwl_nrp_header_template( $menu_slug, $contact_url ) {
  * Ridge's, emitting gwl-nr-footer-data.php beside this file.
  */
 function gwl_nrp_footer_template( $urls ) {
-	$file = __DIR__ . '/gwl-nr-footer-data.php';
+	$file = __DIR__ . '/gwl-property-footers.php';
 	if ( ! file_exists( $file ) ) { return array(); }
-	$data = require $file;
-	return is_array( $data ) ? $data : array();
+	$all  = require $file;
+	$slug = gwl_nrp_slug();
+	return ( is_array( $all ) && isset( $all[ $slug ] ) ) ? $all[ $slug ] : array();
 }
 
 /** Creates or updates an XPRO Theme Builder template and shows it site-wide. */
@@ -803,13 +761,15 @@ function gwl_nrp_themer( $slug, $title, $type, $elements ) {
 
 /** The Nova Ridge enquiry form, in WPForms. */
 function gwl_nrp_form() {
-	$existing = get_option( 'gwl_nr_form_id' );
+	$c        = gwl_nrp_content();
+	$option   = 'gwl_form_id_' . $c['slug'];
+	$existing = get_option( $option );
 	if ( $existing && get_post( $existing ) ) { return (int) $existing; }
 	if ( ! post_type_exists( 'wpforms' ) ) { return 0; }
 
 	$post_id = wp_insert_post( array(
 		'post_type'   => 'wpforms',
-		'post_title'  => 'Nova Ridge Enquiry',
+		'post_title'  => $c['short'] . ' Enquiry',
 		'post_status' => 'publish',
 		'post_author' => 1,
 	) );
@@ -838,7 +798,7 @@ function gwl_nrp_form() {
 			'8' => array( 'id' => '8', 'type' => 'textarea', 'label' => 'Message', 'size' => 'medium' ),
 		),
 		'settings' => array(
-			'form_title'             => 'Nova Ridge Enquiry',
+			'form_title'             => $c['short'] . ' Enquiry',
 			'submit_text'            => 'Send Enquiry',
 			'submit_text_processing' => 'Sending...',
 			'confirmations'          => array(
@@ -849,10 +809,10 @@ function gwl_nrp_form() {
 			),
 			'notifications'          => array(
 				1 => array(
-					'notification_name' => 'Nova Ridge enquiry',
-					'email'             => 'reservations@gatewaylodgegroup.com',
-					'subject'           => 'Nova Ridge enquiry from {field_id="1"}',
-					'sender_name'       => 'Gateway Nova Ridge',
+					'notification_name' => $c['short'] . ' enquiry',
+					'email'             => $c['email'],
+					'subject'           => $c['short'] . ' enquiry from {field_id="1"}',
+					'sender_name'       => $c['property'],
 					'sender_address'    => '{admin_email}',
 					'replyto'           => '{field_id="2"}',
 					'message'           => '{all_fields}',
@@ -862,7 +822,7 @@ function gwl_nrp_form() {
 	);
 
 	wp_update_post( array( 'ID' => $post_id, 'post_content' => wp_slash( wp_json_encode( $form ) ) ) );
-	update_option( 'gwl_nr_form_id', $post_id );
+	update_option( $option, $post_id );
 	return (int) $post_id;
 }
 
@@ -932,7 +892,36 @@ function gwl_nrp_custom_css() {
 	wp_update_custom_css_post( trim( $cleaned . "\n\n" . $rule ) );
 }
 
-function gwl_nrp_build() {
+/**
+ * AIOSEO titles and descriptions. The aioseo-posts ability reports "Post not
+ * found" until AIOSEO has a row for the post, so go through the model, which
+ * creates one.
+ */
+function gwl_nrp_seo( $ids, $urls, $c ) {
+	if ( ! class_exists( '\\AIOSEO\\Plugin\\Common\\Models\\Post' ) ) { return; }
+	$hero = gwl_media( $c['hero_poster'] );
+	$pages = array( 'home' => array( $c['property'] . ' | ' . $c['locality'], $c['meta_desc'] ) );
+	foreach ( $c['seo'] as $key => $pair ) { $pages[ $key ] = $pair; }
+
+	foreach ( $pages as $key => $pair ) {
+		if ( empty( $ids[ $key ] ) ) { continue; }
+		\AIOSEO\Plugin\Common\Models\Post::savePost( $ids[ $key ], array(
+			'title'               => $pair[0],
+			'description'         => $pair[1],
+			'canonical_url'       => $urls[ $key ],
+			'og_title'            => $pair[0],
+			'og_description'      => $pair[1],
+			'og_image_type'       => 'custom_image',
+			'og_image_custom_url' => $hero['url'],
+			'twitter_use_og'      => true,
+		) );
+	}
+}
+
+function gwl_nrp_build( $slug = 'novaridge' ) {
+	gwl_nrp_slug( $slug );
+	$c = gwl_nrp_content( $slug );
+	if ( empty( $c ) ) { return 'unknown property: ' . $slug; }
 	$report = array();
 
 	// 1. Pages -------------------------------------------------------------
@@ -951,8 +940,8 @@ function gwl_nrp_build() {
 	// 2. Front page --------------------------------------------------------
 	update_option( 'show_on_front', 'page' );
 	update_option( 'page_on_front', $ids['home'] );
-	update_option( 'blogname', 'Gateway Nova Ridge' );
-	update_option( 'blogdescription', 'Serviced apartment in Ridge, Accra. Part of Gateway Lodge Group.' );
+	update_option( 'blogname', $c['property'] );
+	update_option( 'blogdescription', $c['locality'] . '. Part of Gateway Lodge Group.' );
 	$urls['home'] = home_url( '/' );
 
 	// 3. Form --------------------------------------------------------------
@@ -966,10 +955,10 @@ function gwl_nrp_build() {
 	foreach ( $ids as $id ) { gwl_nrp_page_meta( $id ); }
 
 	// 5. Menu --------------------------------------------------------------
-	$menu_slug = 'novaridge-main';
+	$menu_slug = $c['slug'] . '-main';
 	$menu = wp_get_nav_menu_object( $menu_slug );
 	if ( ! $menu ) {
-		$menu_id = wp_create_nav_menu( 'Nova Ridge Main' );
+		$menu_id = wp_create_nav_menu( $c['short'] . ' Main' );
 		$menu    = wp_get_nav_menu_object( $menu_id );
 	} else {
 		$menu_id = $menu->term_id;
@@ -995,13 +984,16 @@ function gwl_nrp_build() {
 	set_theme_mod( 'nav_menu_locations', $locations );
 
 	// 6. XPRO header and footer -------------------------------------------
-	$header_id = gwl_nrp_themer( 'novaridge-header', 'Nova Ridge Header', 'type_header', gwl_nrp_header_template( $menu_slug, $urls['contact'] ) );
-	$footer_id = gwl_nrp_themer( 'novaridge-footer', 'Nova Ridge Footer', 'type_footer', gwl_nrp_footer_template( $urls ) );
+	$header_id = gwl_nrp_themer( $c['slug'] . '-header', $c['short'] . ' Header', 'type_header', gwl_nrp_header_template( $menu_slug, $urls['contact'] ) );
+	$footer_id = gwl_nrp_themer( $c['slug'] . '-footer', $c['short'] . ' Footer', 'type_footer', gwl_nrp_footer_template( $urls ) );
 
-	// 7. Theme-level CSS the layout depends on -----------------------------
+	// 7. SEO ---------------------------------------------------------------
+	gwl_nrp_seo( $ids, $urls, $c );
+
+	// 8. Theme-level CSS the layout depends on -----------------------------
 	gwl_nrp_custom_css();
 
-	// 8. Clear caches ------------------------------------------------------
+	// 9. Clear caches ------------------------------------------------------
 	if ( class_exists( '\\Elementor\\Plugin' ) ) {
 		\Elementor\Plugin::$instance->files_manager->clear_cache();
 	}
@@ -1015,6 +1007,7 @@ function gwl_nrp_build() {
 		'header_id' => $header_id,
 		'footer_id' => $footer_id,
 	);
+	$report['slug'] = $c['slug'];
 	update_option( 'gwl_nrp_report', $report );
 	return $report;
 }

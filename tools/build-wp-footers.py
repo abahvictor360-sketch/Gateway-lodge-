@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+"""Derive each property's footer from the live group-site footer.
+
+wordpress/templates/footer-11063.json is the export of the real gatewaylodgegroup.com
+footer, and it is the approved design. This keeps every style setting in it
+untouched and swaps only the content: the three link columns, the brand
+paragraph and the bottom bar.
+
+Emits wordpress/novamira-sandbox/gwl-property-footers.php, keyed by slug, which
+the Elementor builder saves as each site's XPRO footer template.
+
+Run from the repo root:  python3 tools/build-wp-footers.py
+"""
+
+import copy
+import hashlib
+import importlib.util
+import json
+import os
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC = os.path.join(ROOT, "wordpress", "templates", "footer-11063.json")
+LANDINGS = os.path.join(ROOT, "tools", "build-landings.py")
+OUT = os.path.join(ROOT, "wordpress", "novamira-sandbox", "gwl-property-footers.php")
+
+GROUP = "https://www.gatewaylodgegroup.com"
+
+
+def load_properties():
+    spec = importlib.util.spec_from_file_location("build_landings", LANDINGS)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod.PROPERTIES
+
+
+def link(url, external=""):
+    return {"url": url, "is_external": external, "nofollow": ""}
+
+
+class Transformer:
+    """Ids must be unique per document, so derive fresh ones per property."""
+
+    def __init__(self, slug, site, phone, email, short):
+        self.slug = slug
+        self.seen = set()
+        self.site = site
+        self.short = short
+        tel = "tel:" + phone.replace(" ", "")
+        whatsapp = "https://wa.me/" + phone.replace(" ", "").replace("+", "")
+        self.columns = [
+            (short, [
+                ("Home", site + "/"),
+                ("About", site + "/about/"),
+                ("Facilities", site + "/facilities/"),
+                ("Contact", site + "/contact/"),
+            ]),
+            ("Gateway Lodge Group", [
+                ("Group Website", GROUP + "/"),
+                ("Our Properties", GROUP + "/properties/"),
+                ("Offers", GROUP + "/offers/"),
+                ("About Us", GROUP + "/about-us/"),
+            ]),
+            ("Reservations", [
+                (phone, tel),
+                ("WhatsApp", whatsapp),
+                (email, "mailto:" + email),
+            ]),
+        ]
+        self.col = 0
+        self.pending = None
+
+    def new_id(self, old):
+        for salt in range(200):
+            h = hashlib.md5(f"{self.slug}-footer:{old}:{salt}".encode()).hexdigest()[:7]
+            if h not in self.seen:
+                self.seen.add(h)
+                return h
+        raise RuntimeError("could not allocate id")
+
+    def walk(self, elements, intro):
+        for el in elements:
+            if "id" in el:
+                el["id"] = self.new_id(el["id"])
+            s = el.setdefault("settings", {})
+            w = el.get("widgetType")
+
+            if w == "heading" and s.get("title") == "Gateway Lodge Group":
+                # The brand lockup beside the logo links back to this site's home.
+                s["link"] = link(self.site + "/")
+
+            elif w == "heading" and s.get("title") in ("Our Properties", "Explore", "About"):
+                s["title"] = self.columns[self.col][0]
+                self.pending = self.col
+                self.col += 1
+
+            elif w == "icon-list" and self.pending is not None:
+                items = []
+                for text, url in self.columns[self.pending][1]:
+                    external = "on" if url.startswith("http") and self.site not in url else ""
+                    items.append({
+                        "_id": self.new_id(text + url),
+                        "text": text,
+                        "link": link(url, external),
+                        "selected_icon": {"value": "", "library": ""},
+                    })
+                s["icon_list"] = items
+                self.pending = None
+
+            elif w == "text-editor":
+                editor = s.get("editor", "")
+                if "growing collection of hospitality destinations" in editor:
+                    s["editor"] = intro
+                elif "Privacy Policy" in editor:
+                    s["editor"] = (
+                        '<p><a style="color:rgba(255,255,255,0.55)" href="{g}/privacy-policy-2/">'
+                        'Privacy Policy</a> &nbsp;&nbsp; '
+                        '<a style="color:rgba(255,255,255,0.55)" href="{g}/terms/">'
+                        'Terms &amp; Conditions</a></p>'
+                    ).format(g=GROUP)
+
+            elif w == "xpro-social-icon":
+                for item in s.get("item", []):
+                    item["_id"] = self.new_id(item.get("_id", ""))
+
+            self.walk(el.get("elements", []), intro)
+
+
+def main():
+    with open(SRC, encoding="utf-8") as f:
+        base = json.load(f)
+
+    footers = {}
+    for prop in load_properties():
+        data = copy.deepcopy(base)
+        site = f"https://{prop['domain']}"
+        intro = (f"<p>{prop['name']} is part of Gateway Lodge Group, a growing collection of "
+                 f"hospitality destinations across Ghana.</p>")
+        Transformer(prop["slug"], site, prop["phone"], prop["email"], prop["short"]).walk(data, intro)
+        footers[prop["slug"]] = data
+
+    payload = json.dumps(footers, ensure_ascii=False, separators=(",", ":"))
+    with open(OUT, "w", encoding="utf-8") as f:
+        f.write(
+            "<?php\n"
+            "/**\n"
+            " * Gateway Lodge Group : XPRO footer template data, keyed by property slug.\n"
+            " *\n"
+            " * GENERATED by tools/build-wp-footers.py from the group site's own footer\n"
+            " * (wordpress/templates/footer-11063.json). Every style setting is the group\n"
+            " * footer's; only the link columns and copy differ per property. Do not\n"
+            " * hand-edit: change the script and re-run it.\n"
+            " */\n\n"
+            "return json_decode( <<<'GWLJSON'\n" + payload + "\nGWLJSON\n, true );\n"
+        )
+    print(f"wrote {os.path.relpath(OUT, ROOT)} ({os.path.getsize(OUT)} bytes)"
+          f" for {', '.join(footers)}")
+
+
+if __name__ == "__main__":
+    main()
