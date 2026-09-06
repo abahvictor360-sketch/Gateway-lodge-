@@ -126,10 +126,10 @@ function gwl_nr_content() {
 		),
 
 		'about_head' => 'One apartment. No lobby, no queue, no neighbours in the corridor.',
-		'about_body' => 'Nova Ridge is a single serviced apartment on an upper floor of a residential tower in Ridge &mdash; the quiet, tree-lined district that sits between central Accra&rsquo;s business addresses and the embassies. You are not checking into a hotel floor. You arrive to an apartment that has been prepared for you and stays that way.</p><p>Inside: an open living room that runs into a full kitchen, a dining table, two bedrooms dressed in hotel linen, two bathrooms, and a balcony that looks out over the green of Ridge towards the city. It suits the guest who is in Accra for a fortnight as easily as the one here for two nights.',
+		'about_body' => 'Nova Ridge is a single serviced apartment on an upper floor of a residential tower in Ridge, the quiet tree-lined district that sits between central Accra&rsquo;s business addresses and the embassies. You are not checking into a hotel floor. You arrive to an apartment that has been prepared for you and stays that way.</p><p>Inside: an open living room that runs into a full kitchen, a dining table, two bedrooms dressed in hotel linen, two bathrooms, and a balcony that looks out over the green of Ridge towards the city. It suits the guest who is in Accra for a fortnight as easily as the one here for two nights.',
 		'pillars' => array(
 			array( 'Yours alone', 'A single unit, so the apartment is never shared, split or reassigned mid-stay.' ),
-			array( 'Built for longer stays', 'A real kitchen, laundry and a desk &mdash; the things that matter after night three.' ),
+			array( 'Built for longer stays', 'A real kitchen, laundry and a desk: the things that matter after night three.' ),
 			array( 'A settled address', 'Ridge puts the ministries, the CBD and Kotoka within an easy drive.' ),
 		),
 
@@ -374,8 +374,8 @@ function gwl_nr_form() {
 		'1' => array( 'id' => '1', 'type' => 'name', 'label' => 'Full Name', 'format' => 'simple', 'required' => '1', 'size' => 'large' ),
 		'2' => array( 'id' => '2', 'type' => 'email', 'label' => 'Email', 'required' => '1', 'size' => 'large' ),
 		'3' => array( 'id' => '3', 'type' => 'text', 'label' => 'Phone', 'size' => 'large' ),
-		'4' => array( 'id' => '4', 'type' => 'date-time', 'label' => 'Check-in', 'format' => 'date', 'size' => 'large' ),
-		'5' => array( 'id' => '5', 'type' => 'date-time', 'label' => 'Check-out', 'format' => 'date', 'size' => 'large' ),
+		'4' => array( 'id' => '4', 'type' => 'text', 'label' => 'Check-in', 'size' => 'large', 'placeholder' => 'e.g. 12 March 2027' ),
+		'5' => array( 'id' => '5', 'type' => 'text', 'label' => 'Check-out', 'size' => 'large', 'placeholder' => 'e.g. 19 March 2027' ),
 		'6' => array( 'id' => '6', 'type' => 'number', 'label' => 'Guests', 'size' => 'large' ),
 		'7' => array(
 			'id' => '7', 'type' => 'select', 'label' => 'Enquiry Type', 'required' => '1', 'size' => 'large',

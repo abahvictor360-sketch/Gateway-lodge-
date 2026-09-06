@@ -82,8 +82,8 @@ PROPERTIES = [
         "units": "1 Unit",
         "tagline": "A private high-rise residence in Accra&rsquo;s most established address, "
                    "kept to the Gateway Lodge standard and yours alone for the length of your stay.",
-        "meta_desc": "Gateway Nova Ridge is a private, fully serviced apartment in Ridge, Accra "
-                     "&mdash; one unit, floor-to-ceiling city views and the full Gateway Lodge "
+        "meta_desc": "Gateway Nova Ridge is a private, fully serviced apartment in Ridge, Accra: "
+                     "one unit, floor-to-ceiling city views and the full Gateway Lodge "
                      "Group standard of hospitality. Book direct.",
         "hero_video": "media/novaridge-tour.mp4",
         "hero_poster": "media/hero-living.jpg",
@@ -95,7 +95,7 @@ PROPERTIES = [
         "about_head": "One apartment. No lobby, no queue, no neighbours in the corridor.",
         "about_body": [
             "Nova Ridge is a single serviced apartment on an upper floor of a residential tower in "
-            "Ridge &mdash; the quiet, tree-lined district that sits between central Accra&rsquo;s "
+            "Ridge, the quiet tree-lined district that sits between central Accra&rsquo;s "
             "business addresses and the embassies. You are not checking into a hotel floor. You "
             "arrive to an apartment that has been prepared for you and stays that way.",
             "Inside: an open living room that runs into a full kitchen, a dining table, two "
@@ -105,7 +105,7 @@ PROPERTIES = [
         ],
         "pillars": [
             ("Yours alone", "A single unit, so the apartment is never shared, split or reassigned mid-stay."),
-            ("Built for longer stays", "A real kitchen, laundry and a desk &mdash; the things that matter after night three."),
+            ("Built for longer stays", "A real kitchen, laundry and a desk: the things that matter after night three."),
             ("A settled address", "Ridge puts the ministries, the CBD and Kotoka within an easy drive."),
         ],
         "rooms": [
@@ -172,7 +172,7 @@ PROPERTIES = [
         "tagline": "Twelve units on the quiet side of Accra, where the drive home ends beside "
                    "the water instead of in the traffic.",
         "meta_desc": "Gateway Lodge Lakeside offers twelve serviced rooms and units in Lakeside "
-                     "Estate, Accra &mdash; calm surroundings, full facilities and the Gateway "
+                     "Estate, Accra, with calm surroundings, full facilities and the Gateway "
                      "Lodge Group standard of hospitality. Book direct.",
         "hero_video": None,
         "hero_poster": "media/726ee4b1-f8fd-45a0-bd12-98235b1d3c98.jpg",
@@ -210,7 +210,7 @@ PROPERTIES = [
         "facilities_image_alt": "Dining room laid for service at Gateway Lodge Lakeside",
         "facilities_head": "A lodge that runs properly, every day",
         "facilities_body": "Twelve units is the size where service either holds or slips. Lakeside is "
-                           "staffed to hold it &mdash; a desk that is always answered, kitchen hours "
+                           "staffed to hold it: a desk that is always answered, kitchen hours "
                            "that suit real arrivals, and housekeeping that does not need chasing.",
         "facilities": [
             ("concierge", "24-Hour Front Desk", "Staffed through the night for late arrivals and early departures."),
@@ -259,9 +259,9 @@ PROPERTIES = [
         "address": "Tamale, Northern Region, Ghana",
         "units": "6 Units",
         "tagline": "Six fully furnished apartments in Tamale, built for the way people actually "
-                   "work in the north &mdash; a night, a week, or a whole season.",
+                   "work in the north, for a night, a week, or a whole season.",
         "meta_desc": "Gateway Lodge Tamale offers six fully furnished one and two-bedroom serviced "
-                     "apartments in Tamale, Northern Region &mdash; short and long stays, secure "
+                     "apartments in Tamale, Northern Region, for short and long stays, secure "
                      "parking and full facilities. Book direct.",
         "hero_video": "media/tamale-tour.mp4",
         "hero_poster": "media/hero-courtyard.jpg",
@@ -274,7 +274,7 @@ PROPERTIES = [
         "about_body": [
             "Tamale is the working capital of northern Ghana, and most people who come here come "
             "for a stretch: a project, a posting, a season of fieldwork. Gateway Lodge Tamale is "
-            "built for exactly that &mdash; six fully furnished apartments in a purpose-built, "
+            "built for exactly that: six fully furnished apartments in a purpose-built, "
             "walled block, in one and two-bedroom layouts.",
             "Each apartment has its own kitchen, its own living room and its own bathroom, so a "
             "long stay does not mean living out of a suitcase. Housekeeping, laundry, secure "
@@ -289,7 +289,7 @@ PROPERTIES = [
             ("media/bedroom-king.jpg", "Bedroom with teal curtains at Gateway Lodge Tamale",
              "One-Bedroom Apartment", "A double bedroom, a full living room, kitchen and bathroom, for one or two guests."),
             ("media/living-lounge.jpg", "Living room with sofas and coffee table at Gateway Lodge Tamale",
-             "Two-Bedroom Apartment", "Two bedrooms off a shared living room &mdash; the layout families and pairs of colleagues take."),
+             "Two-Bedroom Apartment", "Two bedrooms off a shared living room, the layout families and pairs of colleagues take."),
             ("media/kitchen.jpg", "Fitted kitchen with cooker and washing machine at Gateway Lodge Tamale",
              "Private Kitchen", "Cooker, fridge, microwave, washing machine and worktop space in every apartment."),
             ("media/terrace.jpg", "Shaded terrace seating at Gateway Lodge Tamale",
@@ -876,7 +876,7 @@ def build(p):
   "@context": "https://schema.org",
   "@type": "LodgingBusiness",
   "name": "{p["name"]}",
-  "description": "{p["meta_desc"].replace("&mdash;", "—").replace("&rsquo;", "’")}",
+  "description": "{p["meta_desc"].replace("&mdash;", ",").replace("&rsquo;", "’")}",
   "url": "{url}",
   "image": "{og}",
   "telephone": "{p["phone"]}",
