@@ -200,9 +200,9 @@ PROPERTIES = [
         # real interiors from Nova Ridge and Tamale, and their alt text says so
         # rather than claiming to be Lakeside. Swap these for the real shoot.
         "rooms": [
-            ("media/tm-bedroom-suite.jpg", "Suite bedroom in a Gateway Lodge Group apartment",
+            ("media/nr-bedroom-window.jpg", "Suite bedroom in a Gateway Lodge Group apartment",
              "Lakeside Suite", "The largest category: a king bed, a separate seating area and a full bathroom."),
-            ("media/nr-bedroom-second.jpg", "Second bedroom in a Gateway Lodge Group apartment",
+            ("media/tm-bedroom-second.jpg", "Second bedroom in a Gateway Lodge Group apartment",
              "Twin Room", "Two beds and a garden outlook, for colleagues travelling together or a family."),
             ("media/nr-lounge-open-plan.jpg", "Open-plan living area in a Gateway Lodge Group apartment",
              "Serviced Unit", "A kitchenette, a living area and a desk, built for stays measured in weeks."),

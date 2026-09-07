@@ -168,6 +168,7 @@ function gwl_image( $key, $o = array() ) {
 		$s['_element_custom_width'] = array( 'unit' => '%', 'size' => 100 );
 	}
 	if ( isset( $o['link'] ) ) { $s['link_to'] = 'custom'; $s['link'] = array( 'url' => $o['link'], 'is_external' => '', 'nofollow' => '' ); }
+	if ( isset( $o['cls'] ) ) { $s['_css_classes'] = $o['cls']; }
 	return gwl_widget( 'image', $s );
 }
 

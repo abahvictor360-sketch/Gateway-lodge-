@@ -298,12 +298,12 @@ return array(
 		'about_image' => '9b1028a4-660c-497a-9914-83998ffb6fb7',
 		'rooms' => array(
 			array(
-				'tm-bedroom-suite',
+				'nr-bedroom-window',
 				'Lakeside Suite',
 				'The largest category: a king bed, a separate seating area and a full bathroom.',
 			),
 			array(
-				'nr-bedroom-second',
+				'tm-bedroom-second',
 				'Twin Room',
 				'Two beds and a garden outlook, for colleagues travelling together or a family.',
 			),

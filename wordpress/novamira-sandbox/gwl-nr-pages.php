@@ -142,7 +142,9 @@ function gwl_nrp_pillar( $title, $body ) {
 function gwl_nrp_card( $imgkey, $title, $body, $basis = 25 ) {
 	return gwl_container(
 		array(
-			gwl_image( $imgkey ),
+			// A class so the row of cards holds one image shape whatever each photo's
+			// native ratio is; see the aspect rule in gwl_nrp_custom_css().
+			gwl_image( $imgkey, array( 'cls' => 'gwl-card-image' ) ),
 			gwl_container(
 				array(
 					gwl_heading( $title, array( 'tag' => 'h3', 'align' => 'left', 'size' => 24 ) ),
@@ -913,6 +915,11 @@ function gwl_nrp_custom_css() {
 		. "  padding-top: 9px; padding-bottom: 9px;\n"
 		. "}\n"
 		. ".xpro-theme-builder-header-nav .e-con-inner { transition: padding 0.25s ease; }\n"
+		. "\n"
+		. "/* Accommodation cards sit in one row, so their photographs have to share a\n"
+		. "   shape. Source images vary between 3:2 and 4:3, which left one card's\n"
+		. "   picture visibly shorter than the rest. */\n"
+		. ".gwl-card-image img { aspect-ratio: 3 / 2; object-fit: cover; width: 100%; height: auto; }\n"
 		. "/* GWL-END */";
 
 	$existing = wp_get_custom_css();
