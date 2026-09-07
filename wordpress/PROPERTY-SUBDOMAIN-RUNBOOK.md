@@ -165,6 +165,13 @@ identical, which wasted a lot of time chasing the wrong cause.
   with `Accept: application/vnd.github.raw` and a `User-Agent`.
 - After any build, assert a marker string from the new code is present in the
   file on disk before trusting the result.
+- **Write the file in one call and run the build in the next.** PHP's opcode
+  cache can still serve the previously compiled version of a file overwritten
+  earlier in the same request, so a build that fetches and then immediately
+  requires a builder file runs the *old* code. The Lakeside build silently kept
+  the previous Customizer CSS this way, while the fetch itself reported success.
+  Assert on an effect (a rule present in `wp_get_custom_css()`), not just on the
+  bytes on disk.
 
 ### 8. WPForms Lite has no date field
 
@@ -340,8 +347,17 @@ All of this already exists for all three properties in `tools/build-landings.py`
 (`PROPERTIES`), which is the single source of truth for the copy — the static
 pages and the WordPress build should not drift apart.
 
-**Lakeside still uses placeholder imagery.** It needs a real shoot before launch;
-do not deploy it as-is.
+**Lakeside has still not been photographed.** Its own set is stock imagery of a
+resort hotel, so only the exteriors are used: hero, banners and the atmospheric
+gallery slots. The room cards and the rest of the gallery borrow real interiors
+from Nova Ridge and Tamale, copied into `lakeside/media/` with `nr-` and `tm-`
+prefixes and given alt text that says "a Gateway Lodge Group apartment" rather
+than claiming to be Lakeside. Replace all of it with a real shoot before launch.
+
+**Check borrowed photographs by eye.** Two of Tamale's filenames do not describe
+their contents: `bedroom-suite.jpg` is a street view of the block and
+`bedroom-tv.jpg` is a bathroom. Trusting the names put an exterior on the
+Lakeside Suite card.
 
 ---
 
