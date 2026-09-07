@@ -184,7 +184,36 @@ the next front-end request, so **request each page once** before inspecting
 After a build, assert the hero video appears in the served HTML rather than
 assuming it does.
 
-### 11. Other
+### 11. XPRO widget controls that look like they should just work
+
+Three of these were reported as visual bugs on Nova Ridge after launch. Read the
+widget's own control schema before assuming a shape:
+
+```php
+$w = \Elementor\Plugin::$instance->widgets_manager->get_widget_types( 'xpro-simple-gallery' );
+$c = $w->get_controls();   // ['gallery']['type'], ['gallery']['fields'], selectors, defaults
+```
+
+- **`xpro-simple-gallery`'s `gallery` is a repeater of *filter groups*, not a
+  media gallery.** Each row is `[ '_id', 'filter', 'is_default_filter',
+  'images' ]`, and `images` is the actual gallery of `[ 'id', 'url' ]`. Passing
+  image rows straight into `gallery` renders the widget with **no pictures at
+  all** and no error. Emit one row (`is_default_filter => 'yes'`) and set
+  `show_filter => ''` so the filter bar stays hidden.
+- **`xpro-social-icon` lays its icons out in a CSS grid**, and
+  `social_icon_column_grid` defaults to `3` — six icons break onto two rows. Set
+  it to the number of icons. The gaps are `social_icon_item_space_vertical`
+  (column gap) and `social_item_space_between` (row gap); `social_icon_spacing`
+  is not a control and is ignored.
+- **`xpro-site-logo` renders the chosen thumbnail at its natural size.** With
+  `thumbnail_size => 'thumbnail'` that is 150x150, which makes the footer brand
+  lockup three times taller than the link columns beside it. Set `width`,
+  `height` and `object-fit => 'contain'`.
+- A **nested row container** carries Elementor's default 10px padding, which
+  insets the logo from its column's left edge and drops it below the headings in
+  the columns beside it. Zero the padding on the lockup row.
+
+### 12. Other
 
 - `xpro-contact-form` is XPRO's own form builder, **not** WPForms.
 - XPRO renders Font Awesome icons as inline SVG, so grepping for `fab fa-` finds
@@ -222,8 +251,12 @@ window.scrollTo(9999, 0);
 `clientWidth` can be the closed off-canvas drawer, which Astra clips with
 `body { overflow-x: hidden }` — check `maxScrollX`, not `scrollWidth` alone.
 
-`jQuery is not defined` in the mirror is expected: JS is not mirrored, so the
-XPRO menu never initialises. Layout still measures correctly.
+Mirror the **scripts** too when the thing you are checking is JS-driven. The
+XPRO gallery is a Cube Portfolio grid: without its script the section renders as
+a bare spinner, so a CSS-only mirror cannot tell an empty gallery from a working
+one. Collect same-origin `<script src>` the same way as the stylesheets. Without
+them, `jQuery is not defined` is expected and static layout still measures
+correctly, but the menu and the gallery will not.
 
 ---
 
@@ -277,3 +310,5 @@ do not deploy it as-is.
   the booking band marks where the widget goes.
 - Only the home page has been rendered and inspected visually; the other three
   were checked structurally.
+- The booking button reads **Book Now** (it still links to WhatsApp until the
+  STAAH engine is wired up).

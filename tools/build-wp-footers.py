@@ -84,6 +84,16 @@ class Transformer:
             s = el.setdefault("settings", {})
             w = el.get("widgetType")
 
+            if el.get("elType") == "container" and any(
+                k.get("widgetType") == "xpro-site-logo" for k in el.get("elements", [])
+            ):
+                # The brand lockup is a nested row, and Elementor's default 10px
+                # container padding insets it from the column edge, so the logo sits
+                # lower and further right than the headings in the columns beside it.
+                s["padding"] = {"unit": "px", "top": "0", "right": "0",
+                                "bottom": "0", "left": "0", "isLinked": "1"}
+                s["flex_align_items"] = "center"
+
             if w == "heading" and s.get("title") == "Gateway Lodge Group":
                 # The brand lockup beside the logo links back to this site's home.
                 s["link"] = link(self.site + "/")
@@ -122,8 +132,8 @@ class Transformer:
                 # The widget defaults to the 150px thumbnail at full size, which makes
                 # the brand lockup three times taller than the link columns beside it.
                 # Cap it so the logo row lines up with the other columns' headings.
-                s["width"] = {"unit": "px", "size": 40}
-                s["height"] = {"unit": "px", "size": 40}
+                s["width"] = {"unit": "px", "size": 32}
+                s["height"] = {"unit": "px", "size": 32}
                 s["object-fit"] = "contain"
 
             elif w == "xpro-social-icon":
