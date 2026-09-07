@@ -79,6 +79,7 @@ Each step depends on the one before it.
    active kit's `_elementor_page_settings`. Gives brand colours, Cormorant
    Garamond / Jost and the 1240px container.
 4. **Pages, menu, front page, form, header, footer** — one call to the builder.
+   The header comes out sticky; see section 5.
 5. **Customizer CSS** — the builder writes it; see Gotcha 1.
 6. **AIOSEO** — `\AIOSEO\Plugin\Common\Models\Post::savePost( $id, $data )`.
    The `aioseo-posts/seo-data-update` ability fails with "Post not found" until
@@ -217,22 +218,6 @@ $c = $w->get_controls();   // ['gallery']['type'], ['gallery']['fields'], select
   sat flush against the screen edge. Set `padding_mobile` too whenever a boxed
   container carries an explicit desktop padding.
 
-### The sticky header
-
-XPRO Theme Builder has this built in, so no CSS of our own pins anything:
-
-- `update_post_meta( $header_id, 'xpro_theme_builder_sticky', 'enable' )` puts
-  `xtb-header-sticky` on the `<header>`. XPRO's script then adds `xtb-appear`
-  past 220px of scroll and sets the header's `min-height` to the tallest nav it
-  has measured, so the page does not jump when the bar leaves the flow.
-- Write the meta on the footer template too (as `''`).
-  `xpro_theme_builder_render_header()` reads it as `$sticky[0]` with no `isset`
-  guard, which notices when the row is missing.
-- **Do not use XPRO's `xpro_header_sticky_padding` on a boxed container.** Its
-  selector is the container, but a boxed container carries its padding on
-  `.e-con-inner`, so the control *adds* to the pinned bar instead of tightening
-  it. Target the inner element from the Customizer CSS instead.
-
 ### 12. Other
 
 - `xpro-contact-form` is XPRO's own form builder, **not** WPForms.
@@ -242,7 +227,44 @@ XPRO Theme Builder has this built in, so no CSS of our own pins anything:
 
 ---
 
-## 5. Verifying without being able to load the site
+## 5. The sticky header
+
+XPRO Theme Builder pins the header itself, so none of our own CSS positions it.
+`gwl_nrp_themer()` sets the meta as part of the normal build; there is nothing
+extra to do per property.
+
+```php
+update_post_meta( $header_id, 'xpro_theme_builder_sticky', 'enable' );
+```
+
+That puts `xtb-header-sticky` on the `<header>`. XPRO's own script then adds
+`xtb-appear` once the page has scrolled past **220px**, at which point its CSS
+fixes `.xpro-theme-builder-header-nav` to the top with a fade-down animation and
+a drop shadow. The script also sets the header's `min-height` to the tallest nav
+it has measured, so the page does not jump when the bar leaves the flow.
+
+Three things to know:
+
+- **Write the meta on the footer template too, as `''`.**
+  `xpro_theme_builder_render_header()` reads it as `$sticky[0]` with no `isset`
+  guard, so a missing row notices.
+- **Do not use XPRO's `xpro_header_sticky_padding` on a boxed container.** The
+  control's selector is the container, but a boxed container carries its padding
+  on `.e-con-inner`. Setting it *added* 16px to the pinned bar instead of
+  trimming it. The Customizer CSS targets the inner element instead:
+  `.xtb-appear .xpro-theme-builder-header-nav .e-con-inner { padding: 9px 0 }`,
+  with a `transition` on the resting rule. Nova Ridge's bar is 105px at rest and
+  95px pinned, and the reserved `min-height` stays at 105px, so nothing shifts.
+- **220px is hard-coded in XPRO's script**, not a setting. On the home page the
+  bar therefore appears while the visitor is still inside the video hero.
+  Changing that means overriding the scroll handler with our own JS.
+
+The header background must stay opaque (`#FBF9F6`), or the pinned bar shows the
+page through it.
+
+---
+
+## 6. Verifying without being able to load the site
 
 This environment cannot reach `*.gatewaylodgegroup.com` or the Vercel preview.
 Server-side checks confirm that rules exist; they cannot show how they compose.
@@ -280,7 +302,7 @@ correctly, but the menu and the gallery will not.
 
 ---
 
-## 6. Building a property
+## 7. Building a property
 
 Everything is driven by slug. Once the install and connector exist:
 
@@ -302,7 +324,7 @@ python3 tools/build-wp-footers.py
 Media and the site logo still have to be sideloaded first (step 1 and 2 above),
 and the Elementor kit applied (step 3).
 
-## 7. What changes per property
+## 8. What changes per property
 
 Everything else is shared. Per property you need:
 
@@ -323,7 +345,7 @@ do not deploy it as-is.
 
 ---
 
-## 8. Still open on Nova Ridge
+## 9. Still open on Nova Ridge
 
 - Phone is the site-wide placeholder `+233 24 000 0000`.
 - STAAH booking engine needs credentials via Ace Management Consult. A comment in
