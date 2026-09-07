@@ -94,6 +94,12 @@ class Transformer:
                                 "bottom": "0", "left": "0", "isLinked": "1"}
                 s["flex_align_items"] = "center"
 
+            if el.get("elType") == "container" and s.get("flex_justify_content") == "space-between":
+                # The copyright bar keeps its two halves side by side on a phone, which
+                # overflows and drags both flush against the left edge of the screen.
+                s["flex_direction_mobile"] = "column"
+                s["flex_align_items_mobile"] = "flex-start"
+
             if w == "heading" and s.get("title") == "Gateway Lodge Group":
                 # The brand lockup beside the logo links back to this site's home.
                 s["link"] = link(self.site + "/")
@@ -127,6 +133,7 @@ class Transformer:
                         '<a style="color:rgba(255,255,255,0.55)" href="{g}/terms/">'
                         'Terms &amp; Conditions</a></p>'
                     ).format(g=GROUP)
+                    s["align_mobile"] = "left"
 
             elif w == "xpro-site-logo":
                 # The widget defaults to the 150px thumbnail at full size, which makes
