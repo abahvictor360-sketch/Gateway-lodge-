@@ -344,7 +344,7 @@ function gwl_nr_sections( $c, $form_id ) {
 					// into this container to take reservations on the page itself.
 					gwl_container(
 						array(
-							gwl_button( 'Book on WhatsApp', $c['whatsapp'], 'gold' ),
+							gwl_button( 'Book Now', $c['whatsapp'], 'gold' ),
 							gwl_button( 'Call reservations', 'tel:' . str_replace( ' ', '', $c['phone'] ), 'outline_light' ),
 							gwl_button( 'Send an enquiry', '#contact', 'outline_light' ),
 						),

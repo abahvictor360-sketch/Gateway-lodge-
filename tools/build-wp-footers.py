@@ -118,9 +118,23 @@ class Transformer:
                         'Terms &amp; Conditions</a></p>'
                     ).format(g=GROUP)
 
+            elif w == "xpro-site-logo":
+                # The widget defaults to the 150px thumbnail at full size, which makes
+                # the brand lockup three times taller than the link columns beside it.
+                # Cap it so the logo row lines up with the other columns' headings.
+                s["width"] = {"unit": "px", "size": 40}
+                s["height"] = {"unit": "px", "size": 40}
+                s["object-fit"] = "contain"
+
             elif w == "xpro-social-icon":
                 for item in s.get("item", []):
                     item["_id"] = self.new_id(item.get("_id", ""))
+                # The wrapper is a CSS grid whose column count defaults to 3, so six
+                # icons break onto a second row. One column per icon keeps them inline.
+                s["social_icon_column_grid"] = str(max(1, min(6, len(s.get("item", [])))))
+                s.pop("social_icon_spacing", None)  # not a control on this widget
+                s["social_icon_item_space_vertical"] = {"unit": "px", "size": 12}
+                s["social_item_space_between"] = {"unit": "px", "size": 12}
 
             self.walk(el.get("elements", []), intro)
 

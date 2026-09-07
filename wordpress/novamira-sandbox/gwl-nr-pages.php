@@ -157,13 +157,25 @@ function gwl_nrp_card( $imgkey, $title, $body, $basis = 25 ) {
 
 /** XPRO Simple Gallery, with its lightbox on. */
 function gwl_nrp_gallery( $keys, $per_row = '3', $height = 340 ) {
-	$items = array();
+	// xpro-simple-gallery's `gallery` control is a repeater of filter groups, each
+	// holding its own `images` gallery. Passing image rows directly renders nothing.
+	$images = array();
 	foreach ( $keys as $k ) {
 		$m = gwl_media( $k );
-		if ( $m['id'] ) { $items[] = array( 'id' => $m['id'], 'url' => $m['url'] ); }
+		if ( $m['id'] ) { $images[] = array( 'id' => $m['id'], 'url' => $m['url'] ); }
 	}
+	if ( ! $images ) { return null; }
+	$group = array(
+		array(
+			'_id'               => gwl_id(),
+			'filter'            => 'Gallery',
+			'is_default_filter' => 'yes',
+			'images'            => $images,
+		),
+	);
 	return gwl_widget( 'xpro-simple-gallery', array(
-		'gallery'             => $items,
+		'gallery'             => $group,
+		'show_filter'         => '',
 		'thumbnail_size'      => 'large',
 		'item_per_row'        => $per_row,
 		'item_per_row_tablet' => '2',
@@ -232,7 +244,7 @@ function gwl_nrp_cta( $contact_url ) {
 					),
 					gwl_container(
 						array(
-							gwl_button( 'Book on WhatsApp', $c['whatsapp'], 'gold' ),
+							gwl_button( 'Book Now', $c['whatsapp'], 'gold' ),
 							gwl_button( 'Call reservations', 'tel:' . str_replace( ' ', '', $c['phone'] ), 'outline_light' ),
 							gwl_button( 'Send an enquiry', $contact_url, 'outline_light' ),
 						),

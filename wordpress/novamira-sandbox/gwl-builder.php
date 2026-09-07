@@ -19,6 +19,9 @@ function gwl_pad( $t, $r, $b, $l ) {
 
 /** A container. $o keys: bg, bgimg, overlay, width(boxed|full), dir, gap, pad, align, cols, minh, id */
 function gwl_container( $children, $o = array() ) {
+	// A helper that has nothing to render returns null; drop those rather than
+	// letting a null land in the element tree.
+	$children = array_values( array_filter( (array) $children ) );
 	$s = array(
 		'content_width' => isset( $o['width'] ) ? $o['width'] : 'boxed',
 		'flex_direction' => isset( $o['dir'] ) ? $o['dir'] : 'column',

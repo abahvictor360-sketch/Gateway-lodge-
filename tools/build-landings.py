@@ -1073,7 +1073,7 @@ def build(p):
     <p>Book direct for the best available rate. Reservations answer by phone and WhatsApp every
       day, or send the enquiry form and we will come back to you.</p>
     <div class="btn-row">
-      <a class="btn btn-gold" href="{whatsapp}">Book on WhatsApp</a>
+      <a class="btn btn-gold" href="{whatsapp}">Book Now</a>
       <a class="btn btn-ghost" href="{tel}">Call reservations</a>
       <a class="btn btn-ghost" href="#contact">Send an enquiry</a>
     </div>
