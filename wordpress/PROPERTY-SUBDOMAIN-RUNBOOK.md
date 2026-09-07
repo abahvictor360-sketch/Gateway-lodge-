@@ -19,7 +19,7 @@ enquiry form.
 | Pages | Home, About, Facilities, Contact |
 | Menu | `<slug>-main`, four items, assigned to every registered theme location |
 | Front page | Home (`show_on_front` = page) |
-| Header | XPRO Theme Builder template, type `type_header`, shown site-wide |
+| Header | XPRO Theme Builder template, type `type_header`, shown site-wide, sticky |
 | Footer | XPRO template, derived from the group site's own footer |
 | Form | WPForms, on Contact, routed to `reservations@gatewaylodgegroup.com` |
 | Page template | `elementor_header_footer` + Astra stretched layout |
@@ -216,6 +216,22 @@ $c = $w->get_controls();   // ['gallery']['type'], ['gallery']['fields'], select
   the footer's copyright bar (padding `20 0 0 0`) lost the 10px mobile gutter and
   sat flush against the screen edge. Set `padding_mobile` too whenever a boxed
   container carries an explicit desktop padding.
+
+### The sticky header
+
+XPRO Theme Builder has this built in, so no CSS of our own pins anything:
+
+- `update_post_meta( $header_id, 'xpro_theme_builder_sticky', 'enable' )` puts
+  `xtb-header-sticky` on the `<header>`. XPRO's script then adds `xtb-appear`
+  past 220px of scroll and sets the header's `min-height` to the tallest nav it
+  has measured, so the page does not jump when the bar leaves the flow.
+- Write the meta on the footer template too (as `''`).
+  `xpro_theme_builder_render_header()` reads it as `$sticky[0]` with no `isset`
+  guard, which notices when the row is missing.
+- **Do not use XPRO's `xpro_header_sticky_padding` on a boxed container.** Its
+  selector is the container, but a boxed container carries its padding on
+  `.e-con-inner`, so the control *adds* to the pinned bar instead of tightening
+  it. Target the inner element from the Customizer CSS instead.
 
 ### 12. Other
 
