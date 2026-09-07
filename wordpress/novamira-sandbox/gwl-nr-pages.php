@@ -716,6 +716,9 @@ function gwl_nrp_header_template( $menu_slug, $contact_url ) {
 					'border_border' => 'solid',
 					'border_width'  => array( 'unit' => 'px', 'top' => '0', 'right' => '0', 'bottom' => '1', 'left' => '0', 'isLinked' => '' ),
 					'border_color'  => '#E6DDD3',
+					// XPRO applies these only while the bar is pinned, so the header
+					// tightens up once it starts following the page.
+					'xpro_header_sticky_padding' => gwl_pad( 8, 0, 8, 0 ),
 				),
 			)
 		),
@@ -724,9 +727,9 @@ function gwl_nrp_header_template( $menu_slug, $contact_url ) {
 
 /**
  * The footer is the group site's own footer, not a restyled copy of it.
- * tools/build-novaridge-footer.py takes wordpress/templates/footer-11063.json,
- * keeps every style setting and swaps the link columns and copy for Nova
- * Ridge's, emitting gwl-nr-footer-data.php beside this file.
+ * tools/build-wp-footers.py takes wordpress/templates/footer-11063.json, keeps
+ * every style setting and swaps the link columns and copy per property,
+ * emitting gwl-property-footers.php beside this file.
  */
 function gwl_nrp_footer_template( $urls ) {
 	$file = __DIR__ . '/gwl-property-footers.php';
@@ -763,6 +766,12 @@ function gwl_nrp_themer( $slug, $title, $type, $elements ) {
 	// "exclude everywhere" and the template never renders.
 	delete_post_meta( $id, 'xpro_theme_builder_target_exclude_locations' );
 	delete_post_meta( $id, 'xpro_theme_builder_target_user_roles' );
+
+	// XPRO's sticky header: this meta puts `xtb-header-sticky` on the <header>, and
+	// its own script pins the nav once the page has scrolled past 220px. Always
+	// written, because xpro_theme_builder_render_header() reads it as $sticky[0]
+	// with no isset guard and notices when the row is missing entirely.
+	update_post_meta( $id, 'xpro_theme_builder_sticky', 'type_header' === $type ? 'enable' : '' );
 
 	return $id;
 }
