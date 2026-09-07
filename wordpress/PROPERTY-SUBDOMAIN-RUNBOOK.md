@@ -212,6 +212,10 @@ $c = $w->get_controls();   // ['gallery']['type'], ['gallery']['fields'], select
 - A **nested row container** carries Elementor's default 10px padding, which
   insets the logo from its column's left edge and drops it below the headings in
   the columns beside it. Zero the padding on the lockup row.
+- An **explicit `padding` replaces a boxed container's responsive default**, so
+  the footer's copyright bar (padding `20 0 0 0`) lost the 10px mobile gutter and
+  sat flush against the screen edge. Set `padding_mobile` too whenever a boxed
+  container carries an explicit desktop padding.
 
 ### 12. Other
 
