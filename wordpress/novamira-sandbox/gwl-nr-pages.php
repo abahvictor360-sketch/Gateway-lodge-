@@ -716,9 +716,6 @@ function gwl_nrp_header_template( $menu_slug, $contact_url ) {
 					'border_border' => 'solid',
 					'border_width'  => array( 'unit' => 'px', 'top' => '0', 'right' => '0', 'bottom' => '1', 'left' => '0', 'isLinked' => '' ),
 					'border_color'  => '#E6DDD3',
-					// XPRO applies these only while the bar is pinned, so the header
-					// tightens up once it starts following the page.
-					'xpro_header_sticky_padding' => gwl_pad( 8, 0, 8, 0 ),
 				),
 			)
 		),
@@ -906,6 +903,16 @@ function gwl_nrp_custom_css() {
 		. "    padding: 12px 14px; font-size: 10px;\n"
 		. "  }\n"
 		. "}\n"
+		. "\n"
+		. "/* Sticky header. XPRO pins .xpro-theme-builder-header-nav past 220px and\n"
+		. "   reserves the tallest height it has seen, so a shorter pinned bar leaves\n"
+		. "   the page where it was. The padding sits on .e-con-inner, not on the\n"
+		. "   container itself, which is why XPRO's own sticky padding control adds to\n"
+		. "   the bar instead of tightening it. */\n"
+		. ".xtb-appear .xpro-theme-builder-header-nav .e-con-inner {\n"
+		. "  padding-top: 9px; padding-bottom: 9px;\n"
+		. "}\n"
+		. ".xpro-theme-builder-header-nav .e-con-inner { transition: padding 0.25s ease; }\n"
 		. "/* GWL-END */";
 
 	$existing = wp_get_custom_css();
