@@ -99,6 +99,10 @@ class Transformer:
                 # overflows and drags both flush against the left edge of the screen.
                 s["flex_direction_mobile"] = "column"
                 s["flex_align_items_mobile"] = "flex-start"
+                # Its explicit padding also overrides the boxed container's default
+                # 10px gutter on mobile, leaving the text flush with the screen edge.
+                s["padding_mobile"] = {"unit": "px", "top": "20", "right": "10",
+                                       "bottom": "0", "left": "10", "isLinked": ""}
 
             if w == "heading" and s.get("title") == "Gateway Lodge Group":
                 # The brand lockup beside the logo links back to this site's home.
