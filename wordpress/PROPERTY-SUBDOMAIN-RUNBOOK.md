@@ -225,7 +225,67 @@ $c = $w->get_controls();   // ['gallery']['type'], ['gallery']['fields'], select
   sat flush against the screen edge. Set `padding_mobile` too whenever a boxed
   container carries an explicit desktop padding.
 
-### 12. Other
+### 12. A hero video that never plays
+
+The film was fine; its container was not. An MP4 keeps its index in a `moov`
+atom, and if that atom sits after the media data the browser has to fetch the
+whole file before it can read a single frame. Lakeside's 18MB original had its
+`moov` at byte 18,364,882, so the hero showed the fallback still indefinitely.
+Elementor also sizes a hosted background video only once metadata arrives, so
+until then the `<video>` stayed at its intrinsic 300x150 inside a 900px hero.
+
+Every server-side check passed while this was broken: the attachment existed,
+the URL returned 200 with `Accept-Ranges: bytes`, and `background_video_link`
+was correct in `_elementor_data`.
+
+Check any film before it goes up, and re-encode if the atom is at the back:
+
+```
+python3 -c "d=open('f.mp4','rb').read(); print(d.find(b'moov'), d.find(b'mdat'))"
+ffmpeg -i in.mp4 -vf "hqdn3d=2:1.5:3:3,scale=1024:576:flags=lanczos" \
+  -c:v libx264 -profile:v high -preset slower -crf 29 -pix_fmt yuv420p \
+  -g 60 -an -movflags +faststart out.mp4
+```
+
+`-an` drops the audio track, which a muted background video never plays.
+The proof it worked: `ffprobe` reads full metadata from the first 100KB
+(`head -c 102400 out.mp4 > prefix.mp4 && ffprobe prefix.mp4`), where the same
+test on the original gives "moov atom not found" - exactly what the browser saw.
+
+Nova Ridge's and Tamale's films were already faststart; only a file handed over
+straight from a phone or a camera is likely to need this.
+
+### 13. A container's CSS classes use a different key from a widget's
+
+`gwl_container( ..., array( 'cls' => 'x' ) )` wrote `_css_classes`, the widget
+control. A container's is `css_classes`, with no underscore. Elementor saved
+the widget key without complaint and rendered no class at all, so a stylesheet
+rule written against it matched nothing. Confirm against the live install:
+
+```php
+\Elementor\Plugin::$instance->elements_manager->get_element_types('container')->get_controls()
+```
+
+### 14. A background overlay disappears under a background video
+
+A container paints its overlay as a `::before` with no z-index of its own,
+while the background video is a real child element at z-index 0, so the video
+covers the overlay completely and hero copy ends up on raw footage. Lifting the
+overlay works; lowering the video does not, because at `z-index: -1` it falls
+behind the container's own background image and the still shows instead:
+
+```css
+.gwl-video-hero::before { z-index: 1; }
+.gwl-video-hero > .e-con,
+.gwl-video-hero > .elementor-element { position: relative; z-index: 2; }
+```
+
+Also set `background_overlay_opacity` to 1 where the gradient already carries
+its own alphas, or Elementor's 0.5 default halves them.
+
+Only visible once the film plays, which is why it survived the first build.
+
+### 15. Other
 
 - `xpro-contact-form` is XPRO's own form builder, **not** WPForms.
 - XPRO renders Font Awesome icons as inline SVG, so grepping for `fab fa-` finds
@@ -306,6 +366,31 @@ a bare spinner, so a CSS-only mirror cannot tell an empty gallery from a working
 one. Collect same-origin `<script src>` the same way as the stylesheets. Without
 them, `jQuery is not defined` is expected and static layout still measures
 correctly, but the menu and the gallery will not.
+
+Three things that quietly break the mirror:
+
+- **Collect assets with both quote styles.** WordPress prints stylesheet links
+  with single quotes and scripts with double, so a regex that only sees `"`
+  returns every script and not one stylesheet. The mirror then renders
+  unstyled while reporting 23 assets collected, and every measurement is wrong.
+- **Rewrite the escaped form of the site URL as well as the plain one.**
+  Elementor's webpack `publicPath` reaches the page as `https:\/\/site` inside
+  JSON, so replacing only `https://site` leaves the runtime fetching absolute
+  URLs. Its handler chunks then fail to load, and anything they drive — the
+  background video among them — silently does nothing. Also copy
+  `elementor/assets/js/*.bundle.min.js` in, since nothing links them from the
+  HTML.
+- **This Chromium cannot decode H.264.** `canPlayType('video/mp4; codecs="avc1.42E01E"')`
+  returns `''`, so a perfectly good MP4 reports `error.code 4` and the element
+  stays at 300x150. It proves nothing about the live site. To exercise the
+  video path, transcode a few seconds to VP9 and serve it under the same name:
+
+  ```
+  ffmpeg -t 8 -i tour.mp4 -c:v libvpx-vp9 -b:v 500k -cpu-used 5 -an tour.webm
+  ```
+
+  Then `!video.paused && video.currentTime > 0` is a real pass, and the codec
+  itself is settled separately with `ffprobe`.
 
 ---
 
