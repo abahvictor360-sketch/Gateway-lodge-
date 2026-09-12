@@ -347,12 +347,21 @@ All of this already exists for all three properties in `tools/build-landings.py`
 (`PROPERTIES`), which is the single source of truth for the copy — the static
 pages and the WordPress build should not drift apart.
 
-**Lakeside has still not been photographed.** Its own set is stock imagery of a
-resort hotel, so only the exteriors are used: hero, banners and the atmospheric
-gallery slots. The room cards and the rest of the gallery borrow real interiors
-from Nova Ridge and Tamale, copied into `lakeside/media/` with `nr-` and `tm-`
-prefixes and given alt text that says "a Gateway Lodge Group apartment" rather
-than claiming to be Lakeside. Replace all of it with a real shoot before launch.
+**Lakeside has now been photographed** (12 Sep 2026): 30 stills and a
+walkthrough film of the real block, replacing the stock resort imagery and the
+interiors borrowed from the other two. Every picture on the site is its own.
+
+**Re-shooting a property is not only a media swap.** Lakeside's copy had been
+written around the placeholders and claimed a lakefront — "the drive home ends
+beside the water", walkable grounds, a *Lakeside Grounds* facility with "seating
+out by the water", gallery captions naming a pool and a lake at sunset. The real
+photographs show a gated terraced block with no water anywhere. Read the copy
+against the new pictures before shipping them: the tagline, stats band, pillars,
+facilities list and every alt string had to change too.
+
+**Resize before committing.** The shoot arrived at 4096x3072, 17MB for 30 files.
+At 1600px wide and quality 80 that is 5.3MB, which is the right trade for a hero
+and gallery. Name each file for what it shows, not what the camera called it.
 
 **Check borrowed photographs by eye.** Two of Tamale's filenames do not describe
 their contents: `bedroom-suite.jpg` is a street view of the block and
