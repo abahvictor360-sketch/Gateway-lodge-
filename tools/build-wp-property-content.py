@@ -213,6 +213,17 @@ SEO = {
 }
 
 
+def load_module():
+    spec = importlib.util.spec_from_file_location("build_landings", SRC)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def media_refs(prop):
+    return load_module().media_refs(prop)
+
+
 def load_properties():
     spec = importlib.util.spec_from_file_location("build_landings", SRC)
     mod = importlib.util.module_from_spec(spec)
@@ -244,6 +255,20 @@ def php(value, indent=1):
 
 def strip_tags(text):
     return re.sub(r"</?p>", "", text)
+
+
+def media_manifest(prop):
+    """key -> path in the repo, for every image and film the pages reference.
+
+    gwl_media() looks each element up in the `gwl_media_map` option by key, and
+    a key that is missing fails silently: the widget is dropped and the page
+    renders without it. Emitting the manifest here means the upload step can be
+    driven from the same source as the copy, and can say what it could not find.
+    """
+    paths = {}
+    for _, rel in media_refs(prop):
+        paths[key(rel)] = f"{prop['slug']}/{rel}"
+    return dict(sorted(paths.items()))
 
 
 def build(prop):
@@ -299,6 +324,11 @@ def build(prop):
             for k, h, p in ABOUT_SECTIONS[slug]
         ],
         "banner_subs": BANNER_SUBS[slug],
+
+        # Every file the build will ask for, as key => repo path, so the media
+        # upload is driven by the same source of truth as the pages rather than
+        # by PHP typed out by hand each time a property goes up.
+        "media": media_manifest(prop),
 
         "location_points": prop["location_points"],
         "faqs": [list(f) for f in FAQS[slug]],

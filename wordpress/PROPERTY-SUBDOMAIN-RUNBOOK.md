@@ -60,9 +60,12 @@ return [ 'home' => home_url(), 'abspath' => ABSPATH, 'theme' => get_stylesheet()
 
 Each step depends on the one before it.
 
-1. **Media** — sideload images with `media_sideload_image( $url, 0, $alt, 'id' )`,
-   video with `download_url()` + `media_handle_sideload()`. Store the id map in
-   the `gwl_media_map` option.
+1. **Media** — `gwl_nrp_sideload( '<slug>', '<branch>' )`. It reads the `media`
+   manifest the generator emits into `gwl-property-content.php`, uploads only
+   what `gwl_media_map` is missing, and returns what it uploaded and what it
+   could not fetch. Idempotent, so it is safe to run before every build, and it
+   replaces uploading files by hand. A build also reports `media_missing`, so a
+   key that never made it is named rather than costing a section quietly.
 
    **Key every entry by the repo filename without its extension**
    (`hero-living`, `novaridge-tour`), because that is what

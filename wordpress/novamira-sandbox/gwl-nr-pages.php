@@ -967,6 +967,76 @@ function gwl_nrp_seo( $ids, $urls, $c ) {
 	}
 }
 
+/**
+ * Which of a property's media are not yet in gwl_media_map.
+ *
+ * gwl_media() returns an empty url for a key it cannot find, and every helper
+ * that takes one drops its widget rather than failing, so a missing key costs
+ * a whole section without saying anything. The manifest in
+ * gwl-property-content.php lists what the pages will ask for, so the answer is
+ * knowable before a build rather than after a page renders short.
+ */
+function gwl_nrp_media_missing( $slug ) {
+	$c = gwl_nrp_content( $slug );
+	if ( empty( $c['media'] ) ) { return array(); }
+	$map     = get_option( 'gwl_media_map', array() );
+	$missing = array();
+	foreach ( $c['media'] as $key => $path ) {
+		if ( empty( $map[ $key ] ) || ! wp_get_attachment_url( $map[ $key ] ) ) {
+			$missing[ $key ] = $path;
+		}
+	}
+	return $missing;
+}
+
+/**
+ * Upload whatever the property's pages need and are missing, from the repo.
+ *
+ * Idempotent: a key already pointing at a live attachment is left alone, so
+ * this is safe to run before every build. Files come through the GitHub API
+ * rather than raw.githubusercontent, which serves stale content for a while
+ * after a push.
+ */
+function gwl_nrp_sideload( $slug, $ref = 'main' ) {
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+
+	$missing = gwl_nrp_media_missing( $slug );
+	if ( ! $missing ) { return array( 'uploaded' => array(), 'failed' => array(), 'already' => 'all present' ); }
+
+	add_filter( 'http_request_args', function ( $args, $url ) {
+		if ( false !== strpos( $url, 'api.github.com' ) ) {
+			$args['headers']['Accept']     = 'application/vnd.github.raw';
+			$args['headers']['User-Agent'] = 'gwl-deploy';
+		}
+		return $args;
+	}, 10, 2 );
+
+	$base     = 'https://api.github.com/repos/abahvictor360-sketch/Gateway-lodge-/contents/';
+	$map      = get_option( 'gwl_media_map', array() );
+	$uploaded = array();
+	$failed   = array();
+
+	foreach ( $missing as $key => $path ) {
+		$tmp = download_url( $base . $path . '?ref=' . rawurlencode( $ref ), 300 );
+		if ( is_wp_error( $tmp ) ) {
+			$failed[ $key ] = $tmp->get_error_message();
+			continue;
+		}
+		$id = media_handle_sideload( array( 'name' => basename( $path ), 'tmp_name' => $tmp ), 0 );
+		if ( is_wp_error( $id ) ) {
+			@unlink( $tmp );
+			$failed[ $key ] = $id->get_error_message();
+			continue;
+		}
+		$map[ $key ]     = $id;
+		$uploaded[ $key ] = $id;
+	}
+	update_option( 'gwl_media_map', $map, false );
+	return array( 'uploaded' => $uploaded, 'failed' => $failed );
+}
+
 function gwl_nrp_build( $slug = 'novaridge' ) {
 	gwl_nrp_slug( $slug );
 	$c = gwl_nrp_content( $slug );
@@ -1057,6 +1127,8 @@ function gwl_nrp_build( $slug = 'novaridge' ) {
 		'footer_id' => $footer_id,
 	);
 	$report['slug'] = $c['slug'];
+	// Say so rather than letting a short page be discovered by looking at it.
+	$report['media_missing'] = gwl_nrp_media_missing( $c['slug'] );
 	update_option( 'gwl_nrp_report', $report );
 	return $report;
 }
