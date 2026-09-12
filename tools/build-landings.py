@@ -1154,6 +1154,118 @@ def build(p):
     print(f'built {p["slug"]}/  ->  {p["domain"]}')
 
 
+def media_refs(p):
+    """Every media path the page will ask for, as (field, path) pairs."""
+    refs = []
+    for key in ("hero_video", "hero_poster", "about_image", "facilities_image"):
+        if p[key]:
+            refs.append((key, p[key]))
+    refs += [("rooms", r[0]) for r in p["rooms"]]
+    refs += [("gallery", g[0]) for g in p["gallery"]]
+    return refs
+
+
+def copy_strings(p):
+    """Every string that reaches a visitor's screen."""
+    out = [p["tagline"], p["meta_desc"], p["about_head"], p["facilities_head"],
+           p["facilities_body"]]
+    out += p["about_body"] + p["location_points"]
+    out += [t for pair in p["stats"] for t in pair]
+    out += [t for row in p["pillars"] for t in row]
+    out += [t for row in p["rooms"] for t in row[1:]]
+    out += [t for row in p["facilities"] for t in row[1:]]
+    out += [g[1] for g in p["gallery"]]
+    return out
+
+
+def check_media_exists(p):
+    """A missing image is silent in both builds.
+
+    The static page renders a broken image; the WordPress build skips the key
+    and drops the widget without a word, which is how Lakeside's gallery came
+    to be empty. Catch it here, where the filename is still in front of you.
+    """
+    problems = []
+    for field, rel in media_refs(p):
+        if not os.path.exists(os.path.join(ROOT, p["slug"], rel)):
+            problems.append(f'{p["slug"]}: {field} points at {rel}, which does not exist')
+    return problems
+
+
+def check_media_orphans(p):
+    """Files sitting in media/ that nothing on the page asks for.
+
+    Lakeside carried 27 of these after its real shoot replaced the stock set,
+    and they stayed in the WordPress library long after the pages stopped
+    using them. Not an error - a shoot legitimately delivers more than the
+    page needs - but worth seeing before they are uploaded.
+    """
+    folder = os.path.join(ROOT, p["slug"], "media")
+    if not os.path.isdir(folder):
+        return []
+    used = {os.path.basename(rel) for _, rel in media_refs(p)}
+    # The group logo is sideloaded as the site logo rather than placed on a
+    # page, so nothing in PROPERTIES refers to it.
+    used.add("gateway-logo.png")
+    spare = sorted(f for f in os.listdir(folder)
+                   if not f.startswith(".") and f not in used)
+    if not spare:
+        return []
+    shown = ", ".join(spare[:6]) + (f" and {len(spare) - 6} more" if len(spare) > 6 else "")
+    return [f'{p["slug"]}: {len(spare)} unused file(s) in media/ ({shown})']
+
+
+def check_card_shapes(p):
+    """Room cards sit in one row, so their photographs have to share a shape.
+
+    The CSS pins them to 3:2 and crops, so a 4:3 source loses more than the
+    photographer intended rather than breaking the row. Worth knowing which.
+    """
+    try:
+        from PIL import Image
+    except ImportError:
+        return []
+    shapes = {}
+    for rel in [r[0] for r in p["rooms"]]:
+        path = os.path.join(ROOT, p["slug"], rel)
+        if not os.path.exists(path):
+            continue
+        with Image.open(path) as im:
+            w, h = im.size
+        shapes.setdefault(round(w / h, 2), []).append(os.path.basename(rel))
+    if len(shapes) <= 1:
+        return []
+    listed = "; ".join(f"{ratio}: {', '.join(names)}" for ratio, names in sorted(shapes.items()))
+    return [f'{p["slug"]}: room cards mix aspect ratios and will be cropped to 3:2 ({listed})']
+
+
+def check_copy(p):
+    """The em dash is banned in customer-facing copy by the design direction."""
+    bad = [t for t in copy_strings(p) if "\u2014" in t or "&mdash;" in t]
+    if not bad:
+        return []
+    return [f'{p["slug"]}: em dash in copy: "{t[:70]}"' for t in bad]
+
+
+def check_image_weight(p):
+    """Images go up at the size they are committed at.
+
+    Nothing downsamples them on the way to the media library, so a 4000px
+    original becomes a 4000px original on a phone's connection.
+    """
+    problems = []
+    for field, rel in media_refs(p):
+        if rel.endswith(".mp4"):
+            continue
+        path = os.path.join(ROOT, p["slug"], rel)
+        if not os.path.exists(path):
+            continue
+        kb = os.path.getsize(path) // 1024
+        if kb > 600:
+            problems.append(f'{p["slug"]}: {rel} is {kb}KB; resize before committing')
+    return problems
+
+
 def check_hero_video(p):
     """A hero film must carry its index up front, or it will never play.
 
@@ -1186,9 +1298,15 @@ def check_hero_video(p):
 
 
 if __name__ == "__main__":
+    CHECKS = (check_media_exists, check_hero_video, check_image_weight,
+              check_card_shapes, check_copy, check_media_orphans)
     problems = []
     for prop in PROPERTIES:
         build(prop)
-        problems += check_hero_video(prop)
+        for check in CHECKS:
+            problems += check(prop)
     for problem in problems:
         print("WARNING  " + problem)
+    if problems:
+        print(f"\n{len(problems)} warning(s). None of these stop a build; all of "
+              "them have reached a live site at least once.")

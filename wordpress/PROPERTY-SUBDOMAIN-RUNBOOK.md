@@ -257,7 +257,8 @@ straight from a phone or a camera is likely to need this.
 
 `tools/build-landings.py` now checks every property's hero film on each run and
 prints a `WARNING` naming the file if its index is at the back, so a future
-shoot cannot reach a subdomain the way this one did.
+shoot cannot reach a subdomain the way this one did. It is one of the checks
+listed under **Checks before a deploy** below.
 
 ### 13. A container's CSS classes use a different key from a widget's
 
@@ -397,6 +398,40 @@ Three things that quietly break the mirror:
   itself is settled separately with `ffprobe`.
 
 ---
+
+## 6a. Checks before a deploy
+
+Two scripts catch the faults that are visible without a browser. Neither
+replaces the mirror render - they catch the ones that are cheap to catch.
+
+```bash
+python3 tools/build-landings.py      # rebuilds, then warns
+python3 tools/check-wp-builder.py    # exits non-zero on a real fault
+```
+
+`build-landings.py` warns and keeps going, because most of what it finds is a
+judgement call rather than a fault:
+
+| Check | What already went wrong |
+|---|---|
+| `check_media_exists` | A missing key is silent in both builds - the static page shows a broken image, the WordPress build drops the widget without a word. |
+| `check_hero_video` | An MP4 with its `moov` atom at the back never starts. |
+| `check_image_weight` | Nothing downsamples on the way to the media library; an image goes up at the size it was committed at. |
+| `check_card_shapes` | Room cards share a row, so mixed aspect ratios get cropped to 3:2. Tells you which photographs lose the most. |
+| `check_copy` | The em dash is banned in customer-facing copy. |
+| `check_media_orphans` | Lakeside's real shoot left 27 unused files behind, which then sat in the media library. Informational - a shoot delivers more than a page needs. |
+
+`check-wp-builder.py` **exits non-zero**, because both of its findings are
+faults rather than judgement calls:
+
+- a generated PHP file out of date with `PROPERTIES`, whether hand-edited or
+  simply never regenerated - it re-runs the generator and tells you to commit;
+- `gwl_container()` writing `_css_classes`, the widget control, where a
+  container reads `css_classes`.
+
+Both were proved against the real broken inputs: the original 18MB film, a
+hand-edited generated file, and the underscored key.
+
 
 ## 7. Building a property
 
