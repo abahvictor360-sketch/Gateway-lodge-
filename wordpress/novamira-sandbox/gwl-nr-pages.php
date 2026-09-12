@@ -50,9 +50,15 @@ function gwl_nrp_video_hero( $kids ) {
 			'justify' => 'flex-end',
 			'minh'    => 100,
 			'pad'     => gwl_pad( 150, 0, 90, 0 ),
+			// A hook for the stacking fix in gwl_nrp_custom_css(): a container's
+			// overlay is a ::before, which the background-video layer covers.
+			'cls'     => 'gwl-video-hero',
 			'extra'   => array(
 				'min_height_mobile'             => array( 'unit' => 'vh', 'size' => 86 ),
 				'padding_mobile'                => gwl_pad( 120, 0, 60, 0 ),
+				// The gradient already carries its own alphas, so keep Elementor's
+				// overlay opacity out of it rather than having them halved.
+				'background_overlay_opacity'    => array( 'unit' => 'px', 'size' => 1 ),
 				'background_overlay_background' => 'gradient',
 				'background_overlay_color'      => 'rgba(28,11,13,0.82)',
 				'background_overlay_color_b'    => 'rgba(28,11,13,0.20)',
@@ -920,6 +926,14 @@ function gwl_nrp_custom_css() {
 		. "   shape. Source images vary between 3:2 and 4:3, which left one card's\n"
 		. "   picture visibly shorter than the rest. */\n"
 		. ".gwl-card-image img { aspect-ratio: 3 / 2; object-fit: cover; width: 100%; height: auto; }\n"
+		. "\n"
+		. "/* A container paints its background overlay as a ::before carrying no\n"
+		. "   z-index, while the background video is a real child at z-index 0. The\n"
+		. "   video therefore covers the overlay and the hero copy sits on raw\n"
+		. "   footage. Lift the overlay over the video, then the copy over both. */\n"
+		. ".gwl-video-hero::before { z-index: 1; }\n"
+		. ".gwl-video-hero > .e-con,\n"
+		. ".gwl-video-hero > .elementor-element { position: relative; z-index: 2; }\n"
 		. "/* GWL-END */";
 
 	$existing = wp_get_custom_css();
