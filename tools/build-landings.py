@@ -1154,6 +1154,41 @@ def build(p):
     print(f'built {p["slug"]}/  ->  {p["domain"]}')
 
 
+def check_hero_video(p):
+    """A hero film must carry its index up front, or it will never play.
+
+    An MP4 keeps its index in a `moov` atom. When that atom sits after the
+    media data the browser has to download the whole file before it can read a
+    single frame, so an autoplaying hero shows its poster and nothing else -
+    on a phone, indefinitely. Lakeside's first cut had `moov` at byte
+    18,364,882 of 18,403,507 and looked perfect by every other measure.
+
+    Re-encode anything that fails this with the index moved to the front:
+
+        ffmpeg -i in.mp4 -vf "hqdn3d=2:1.5:3:3,scale=1024:576:flags=lanczos" \
+          -c:v libx264 -profile:v high -preset slower -crf 29 \
+          -pix_fmt yuv420p -g 60 -an -movflags +faststart out.mp4
+    """
+    if not p["hero_video"]:
+        return []
+    path = os.path.join(ROOT, p["slug"], p["hero_video"])
+    if not os.path.exists(path):
+        return [f'{p["slug"]}: {p["hero_video"]} is missing']
+    with open(path, "rb") as f:
+        head = f.read(4 * 1024 * 1024)
+    moov, mdat = head.find(b"moov"), head.find(b"mdat")
+    if moov == -1 or (mdat != -1 and moov > mdat):
+        size = os.path.getsize(path)
+        return [f'{p["slug"]}: {p["hero_video"]} is not faststart '
+                f"(moov after mdat in a {size:,}-byte file); re-encode with "
+                "-movflags +faststart or the hero will show its poster only"]
+    return []
+
+
 if __name__ == "__main__":
+    problems = []
     for prop in PROPERTIES:
         build(prop)
+        problems += check_hero_video(prop)
+    for problem in problems:
+        print("WARNING  " + problem)

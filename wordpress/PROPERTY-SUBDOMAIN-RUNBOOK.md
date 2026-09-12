@@ -255,6 +255,10 @@ test on the original gives "moov atom not found" - exactly what the browser saw.
 Nova Ridge's and Tamale's films were already faststart; only a file handed over
 straight from a phone or a camera is likely to need this.
 
+`tools/build-landings.py` now checks every property's hero film on each run and
+prints a `WARNING` naming the file if its index is at the back, so a future
+shoot cannot reach a subdomain the way this one did.
+
 ### 13. A container's CSS classes use a different key from a widget's
 
 `gwl_container( ..., array( 'cls' => 'x' ) )` wrote `_css_classes`, the widget
