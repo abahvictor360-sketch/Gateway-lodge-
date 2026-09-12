@@ -70,7 +70,10 @@ function gwl_container( $children, $o = array() ) {
 	}
 	if ( isset( $o['border_color'] ) ) { $s['border_border'] = 'solid'; $s['border_width'] = array( 'unit' => 'px', 'top' => '1', 'right' => '1', 'bottom' => '1', 'left' => '1', 'isLinked' => '1' ); $s['border_color'] = $o['border_color']; }
 	if ( isset( $o['extra'] ) ) { $s = array_merge( $s, $o['extra'] ); }
-	if ( isset( $o['cls'] ) ) { $s['_css_classes'] = $o['cls']; }
+	// A container's CSS-classes control is `css_classes`; only widgets use the
+	// underscored `_css_classes`. Writing the widget key here saves without
+	// error and renders nothing at all.
+	if ( isset( $o['cls'] ) ) { $s['css_classes'] = $o['cls']; }
 	return array( 'id' => gwl_id(), 'elType' => 'container', 'settings' => $s, 'elements' => $children, 'isInner' => ! empty( $o['inner'] ) );
 }
 
