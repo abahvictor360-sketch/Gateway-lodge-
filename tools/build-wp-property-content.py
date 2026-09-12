@@ -7,8 +7,8 @@ writes wordpress/novamira-sandbox/gwl-property-content.php, which the Elementor
 builder loads.
 
 Only the handful of fields the static pages have no equivalent for are declared
-here: the inner-page banners, how the twelve gallery images split across Home and
-Facilities, the FAQ pairs, and the per-page SEO.
+here: the inner-page banners, where each property's gallery splits between Home
+and Facilities, the FAQ pairs, and the per-page SEO.
 
 Run from the repo root:  python3 tools/build-wp-property-content.py
 """
@@ -170,7 +170,9 @@ BANNER_SUBS = {
 # The Contact page banner, and how the gallery splits between Home and Facilities.
 LAYOUT = {
     "novaridge": {"banner_contact": "hallway", "home_gallery": 6},
-    "lakeside": {"banner_contact": None, "home_gallery": 6},
+    # Named rather than left to fall through to gallery[-1], which moves every
+    # time an image is added to the set.
+    "lakeside": {"banner_contact": "entrance-gate", "home_gallery": 6},
     "tamale": {"banner_contact": "stairwell", "home_gallery": 6},
 }
 
