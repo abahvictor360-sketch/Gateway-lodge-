@@ -169,79 +169,76 @@ PROPERTIES = [
         "region": "Greater Accra",
         "address": "Lakeside Estate, Accra, Ghana",
         "units": "12 Units",
-        "tagline": "Twelve units on the quiet side of Accra, where the drive home ends beside "
-                   "the water instead of in the traffic.",
-        "meta_desc": "Gateway Lodge Lakeside offers twelve serviced rooms and units in Lakeside "
-                     "Estate, Accra, with calm surroundings, full facilities and the Gateway "
-                     "Lodge Group standard of hospitality. Book direct.",
-        "hero_video": None,
-        "hero_poster": "media/726ee4b1-f8fd-45a0-bd12-98235b1d3c98.jpg",
+        "tagline": "Twelve serviced apartments in Lakeside Estate, on the quiet side of Accra, "
+                   "with a full kitchen in every one.",
+        "meta_desc": "Gateway Lodge Lakeside offers twelve serviced apartments in Lakeside "
+                     "Estate, Accra, each with a fitted kitchen, laundry and secure parking. "
+                     "Short and long stays. Book direct.",
+        "hero_video": "media/lakeside-tour.mp4",
+        "hero_poster": "media/exterior-frontage.jpg",
         "map": "https://www.google.com/maps?q=Lakeside%20Estate%2C%20Accra%2C%20Ghana&z=14&output=embed",
-        "stats": [("12", "Rooms and units"), ("24/7", "Front desk"), ("On site", "Dining"), ("Free", "Parking")],
-        "about_image": "media/9b1028a4-660c-497a-9914-83998ffb6fb7.jpg",
-        "about_image_alt": "Waterfront at dusk near Gateway Lodge Lakeside, Accra",
+        "stats": [("12", "Serviced apartments"), ("Full", "Kitchens"), ("24/7", "Security"), ("Free", "Parking")],
+        "about_image": "media/exterior-approach.jpg",
+        "about_image_alt": "The frontage of Gateway Lodge Lakeside, Lakeside Estate, Accra",
         "about_kicker": "The Lodge",
         "about_head": "The largest of the three, and the calmest.",
         "about_body": [
             "Lakeside sits east of the centre in the Lakeside Estate, far enough out that the "
             "evenings are quiet and close enough that the city is still a drive rather than a "
-            "journey. Twelve rooms and units, a front desk that is staffed around the clock, and "
-            "grounds you can actually walk in.",
+            "journey. Twelve serviced apartments in one gated block, each with its own kitchen, "
+            "laundry and living room.",
             "It is the property guests choose when they are travelling as a family, when a team "
-            "needs several rooms under one roof, or when the point of the trip is to slow down "
-            "for a few days.",
+            "needs several apartments under one roof, or when the point of the trip is to slow "
+            "down for a few days.",
         ],
         "pillars": [
-            ("Room for a group", "Twelve units means a family, a team or a small event fits in one place."),
-            ("Genuinely quiet", "Residential surroundings and grounds, rather than a main-road frontage."),
-            ("Full service", "A staffed front desk, dining on site and housekeeping every day."),
+            ("Room for a group", "Twelve apartments means a family, a team or a small event fits in one place."),
+            ("Genuinely quiet", "A gated residential estate, rather than a main-road frontage."),
+            ("Properly self-contained", "A full kitchen and laundry in every apartment, not a kitchenette."),
         ],
-        # Lakeside has not been photographed yet. Until it is, the room cards show
-        # real interiors from Nova Ridge and Tamale, and their alt text says so
-        # rather than claiming to be Lakeside. Swap these for the real shoot.
         "rooms": [
-            ("media/nr-bedroom-window.jpg", "Suite bedroom in a Gateway Lodge Group apartment",
+            ("media/bedroom-suite.jpg", "Suite bedroom at Gateway Lodge Lakeside",
              "Lakeside Suite", "The largest category: a king bed, a separate seating area and a full bathroom."),
-            ("media/tm-bedroom-second.jpg", "Second bedroom in a Gateway Lodge Group apartment",
-             "Twin Room", "Two beds and a garden outlook, for colleagues travelling together or a family."),
-            ("media/nr-lounge-open-plan.jpg", "Open-plan living area in a Gateway Lodge Group apartment",
-             "Serviced Unit", "A kitchenette, a living area and a desk, built for stays measured in weeks."),
-            ("media/nr-bedroom-king.jpg", "Double bedroom in a Gateway Lodge Group apartment",
+            ("media/bedroom-twin.jpg", "Twin bedroom at Gateway Lodge Lakeside",
+             "Twin Room", "Two beds and a quiet outlook, for colleagues travelling together or a family."),
+            ("media/living-open.jpg", "Open-plan living area at Gateway Lodge Lakeside",
+             "Serviced Unit", "A full kitchen, a living area and a desk, built for stays measured in weeks."),
+            ("media/bedroom-double.jpg", "Double bedroom at Gateway Lodge Lakeside",
              "Double Room", "A comfortable double with everything a short stay needs, nothing it does not."),
         ],
-        "facilities_image": "media/nr-lounge-dining.jpg",
-        "facilities_image_alt": "Dining area in a Gateway Lodge Group apartment",
+        "facilities_image": "media/kitchen-island.jpg",
+        "facilities_image_alt": "Fitted kitchen and island at Gateway Lodge Lakeside",
         "facilities_head": "A lodge that runs properly, every day",
-        "facilities_body": "Twelve units is the size where service either holds or slips. Lakeside is "
-                           "staffed to hold it: a desk that is always answered, kitchen hours "
-                           "that suit real arrivals, and housekeeping that does not need chasing.",
+        "facilities_body": "Twelve apartments is the size where service either holds or slips. Lakeside is "
+                           "staffed to hold it: a gate that is always manned, standby power that "
+                           "picks up without anyone asking, and housekeeping that does not need chasing.",
         "facilities": [
-            ("concierge", "24-Hour Front Desk", "Staffed through the night for late arrivals and early departures."),
-            ("wifi", "High-Speed Wi-Fi", "Covered across the rooms and the common areas."),
+            ("kitchen", "Full Kitchen", "Cooker, oven, fridge and full worktop in every apartment."),
+            ("wifi", "High-Speed Wi-Fi", "Covered across the apartments and the common areas."),
             ("ac", "Air Conditioning", "In every room, individually controlled."),
-            ("kitchen", "On-Site Dining", "Breakfast daily, with lunch and dinner served to order."),
-            ("housekeeping", "Daily Housekeeping", "Rooms serviced every day, linen changed on schedule."),
+            ("laundry", "In-Apartment Laundry", "A washing machine in the kitchen of each apartment."),
+            ("housekeeping", "Daily Housekeeping", "Apartments serviced every day, linen changed on schedule."),
             ("power", "Backup Power", "Standby generation so the property stays lit and cool."),
-            ("water", "Lakeside Grounds", "Walkable grounds and seating out by the water."),
+            ("tv", "Smart Television", "A mounted television in each living room."),
             ("parking", "Ample Parking", "On-site parking for guests, at no extra charge."),
-            ("security", "24-Hour Security", "Manned gate and patrolled grounds."),
-            ("laundry", "Laundry Service", "Same-day laundry and pressing on request."),
+            ("security", "24-Hour Security", "Manned gate and a walled, gated block."),
+            ("water", "Balconies", "A private balcony to most apartments, above the estate."),
             ("family", "Family Friendly", "Connecting arrangements and extra beds available."),
-            ("tv", "Meetings &amp; Events", "Space for a small board meeting, a birthday or a family gathering."),
+            ("concierge", "Long-Stay Rates", "Weekly and monthly terms for stays measured in months."),
         ],
         "gallery": [
-            ("media/726ee4b1-f8fd-45a0-bd12-98235b1d3c98.jpg", "Pool and grounds at Gateway Lodge Lakeside"),
-            ("media/nr-hero-living.jpg", "Living area in a Gateway Lodge Group apartment"),
-            ("media/tm-living-lounge.jpg", "Lounge seating in a Gateway Lodge Group apartment"),
-            ("media/84eced95-da88-4037-adc3-b8ea69c30f30.jpg", "Gateway Lodge Lakeside lit at dusk"),
-            ("media/nr-kitchen-dining.jpg", "Kitchen and dining in a Gateway Lodge Group apartment"),
-            ("media/9b1028a4-660c-497a-9914-83998ffb6fb7.jpg", "The lake at sunset beside Gateway Lodge Lakeside"),
-            ("media/tm-kitchen-wide.jpg", "Fitted kitchen in a Gateway Lodge Group apartment"),
-            ("media/nr-bathroom.jpg", "Bathroom in a Gateway Lodge Group apartment"),
-            ("media/tm-terrace.jpg", "Terrace at a Gateway Lodge Group property"),
-            ("media/nr-balcony-skyline.jpg", "Balcony at a Gateway Lodge Group property"),
-            ("media/tm-bathroom-shower.jpg", "Shower room in a Gateway Lodge Group apartment"),
-            ("media/860bbcfd-9e64-4281-b392-e2d06ac5b441.jpg", "Approach and frontage at Gateway Lodge Lakeside"),
+            ("media/exterior-frontage.jpg", "The frontage of Gateway Lodge Lakeside"),
+            ("media/living-lounge.jpg", "Living room at Gateway Lodge Lakeside"),
+            ("media/kitchen-wide.jpg", "Fitted kitchen at Gateway Lodge Lakeside"),
+            ("media/bedroom-king.jpg", "King bedroom at Gateway Lodge Lakeside"),
+            ("media/living-tv.jpg", "Living room and television wall at Gateway Lodge Lakeside"),
+            ("media/balcony.jpg", "Balcony at Gateway Lodge Lakeside"),
+            ("media/kitchen-laundry.jpg", "Kitchen and laundry at Gateway Lodge Lakeside"),
+            ("media/bathroom.jpg", "Bathroom at Gateway Lodge Lakeside"),
+            ("media/bedroom-tv.jpg", "Bedroom at Gateway Lodge Lakeside"),
+            ("media/walkway.jpg", "Walkway at Gateway Lodge Lakeside"),
+            ("media/bathroom-shower.jpg", "Shower room at Gateway Lodge Lakeside"),
+            ("media/exterior-approach.jpg", "Approach to Gateway Lodge Lakeside"),
         ],
         "location_points": [
             "Set inside Lakeside Estate, away from the main-road noise",
