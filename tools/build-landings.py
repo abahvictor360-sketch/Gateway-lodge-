@@ -162,6 +162,11 @@ PROPERTIES = [
         ],
         "phone": "+233 24 000 0000",
         "email": "reservations@gatewaylodgegroup.com",
+        # STAAH. booking_url is the Book Now destination; booking_widget is the
+        # property id the quick-book widget script is registered under. Tamale's two
+        # ids genuinely differ, so neither is derived from the other.
+        "booking_url": "https://www.swiftbook.io/inst/#home?propertyId=461NnntLbWKIGVxtZxB6tDGdj7kTg2OTM=&JDRN=Y",
+        "booking_widget": "461NnntLbWKIGVxtZxB6tDGdj7kTg2OTM=",
     },
     {
         "slug": "lakeside",
@@ -264,6 +269,10 @@ PROPERTIES = [
         ],
         "phone": "+233 24 000 0000",
         "email": "reservations@gatewaylodgegroup.com",
+        # STAAH has not issued Lakeside its ids yet, so Book Now stays on WhatsApp
+        # and the availability panel is left off rather than rendered empty.
+        "booking_url": "",
+        "booking_widget": "",
     },
     {
         "slug": "tamale",
@@ -359,6 +368,11 @@ PROPERTIES = [
         ],
         "phone": "+233 24 000 0000",
         "email": "reservations@gatewaylodgegroup.com",
+        # STAAH. booking_url is the Book Now destination; booking_widget is the
+        # property id the quick-book widget script is registered under. Tamale's two
+        # ids genuinely differ, so neither is derived from the other.
+        "booking_url": "https://www.swiftbook.io/inst/#home?propertyId=803NTgtOlMyR9PnYyqKQDZn5MGOae2kWrWJzO6xGFwLT2u2OTY=&JDRN=Y",
+        "booking_widget": "601NDCEXjHMj2XNhZuhRkhmWBMfhdLWsVVTg2OTY=",
     },
 ]
 
@@ -438,6 +452,25 @@ button, input, select, textarea { font-family: inherit; font-size: 1rem; }
   margin-bottom: 0.75rem;
 }
 .divider { width: 46px; height: 2px; background: var(--gold-500); margin-bottom: var(--space-3); }
+
+/* The STAAH availability panel, carrying the group site's own card so a guest
+   meets the same thing here as on gatewaylodgegroup.com. It rides up over the
+   stat bar, so it has to sit above it. */
+.booking-panel {
+  background: var(--white);
+  border: 1px solid var(--border);
+  box-shadow: 0 18px 40px -32px rgba(0,0,0,0.55);
+  padding: var(--space-4);
+  margin-top: calc(var(--space-4) * -1);
+  position: relative;
+  z-index: 5;
+}
+.booking-panel h2 { font-size: 1.4rem; }
+.booking-panel > p { color: var(--ink-600); margin-top: 0.35rem; }
+/* The widget writes its own markup at its own width, so keep it from pushing
+   the card wider than the screen on a phone. */
+.booking-panel .Configure-quickBook-Widget { margin-top: var(--space-3); max-width: 100%; overflow-x: auto; }
+.booking-note { font-size: 0.8rem; color: var(--ink-400); margin-top: var(--space-2); }
 .section-head { max-width: 62ch; margin-bottom: var(--space-4); }
 .section-head.center { margin-inline: auto; text-align: center; }
 .section-head.center .divider { margin-inline: auto; }
@@ -835,6 +868,32 @@ def hero_media(p):
     )
 
 
+def booking_panel(p):
+    """The STAAH quick-book panel, styled like the group site's own.
+
+    The widget writes its own markup, so this is the property's embed verbatim
+    inside the same panel the group home page uses. A property without ids gets
+    nothing rather than an empty card: the Book Now routes still work.
+    """
+    if not p["booking_widget"]:
+        return ""
+    wid = p["booking_widget"]
+    return f"""
+<section class="container" id="availability">
+  <div class="booking-panel">
+    <span class="eyebrow">Book Direct With Gateway Lodge</span>
+    <div class="divider"></div>
+    <h2>Check Availability at {p["short"]}</h2>
+    <p>Book on this site for our best available rate, with no third-party booking fees.</p>
+    <div id="quickbook-widget-{wid}-{wid}" class="Configure-quickBook-Widget"></div>
+    <script src="https://www.swiftbook.io/cwplugin/displaywidget/preview/booking-service.min.js?propertyId={wid}&amp;scriptId={wid}" id="propInfo"></script>
+    <p class="booking-note">Powered by the STAAH Booking Engine, search live availability and
+      book direct for the best rate, no third-party fees.</p>
+  </div>
+</section>
+"""
+
+
 def build(p):
     out = os.path.join(ROOT, p["slug"])
     os.makedirs(out, exist_ok=True)
@@ -870,6 +929,14 @@ def build(p):
         for label, href, path in SOCIALS
     )
     whatsapp = "https://wa.me/" + p["phone"].replace(" ", "").replace("+", "")
+    # Book Now opens the booking engine in a new tab where the property has one;
+    # WhatsApp remains the route for a property STAAH has not issued ids for.
+    book_href = (p["booking_url"] or whatsapp).replace("&", "&amp;")
+    book_attrs = ' target="_blank" rel="noopener"' if p["booking_url"] else ""
+    # In-page Book Now buttons jump to the availability panel where there is one,
+    # and to the booking band, which carries the phone and enquiry routes, where
+    # there is not.
+    book_anchor = "#availability" if p["booking_widget"] else "#book"
     tel = "tel:" + p["phone"].replace(" ", "")
 
     html = f"""<!doctype html>
@@ -937,7 +1004,7 @@ def build(p):
     </nav>
     <label for="nav-toggle" class="nav-backdrop" aria-hidden="true"></label>
     <div class="header-actions">
-      <a href="#book" class="btn-book">Book Now</a>
+      <a href="{book_anchor}" class="btn-book">Book Now</a>
       <label for="nav-toggle" class="nav-toggle-label" role="button" tabindex="0" aria-label="Open menu">
         <span class="burger" aria-hidden="true"></span>
       </label>
@@ -958,7 +1025,7 @@ def build(p):
     </div>
     <p>{p["tagline"]}</p>
     <div class="btn-row">
-      <a class="btn btn-gold" href="#book">Book Now</a>
+      <a class="btn btn-gold" href="{book_anchor}">Book Now</a>
       <a class="btn btn-ghost" href="#about">Explore the property</a>
     </div>
   </div>
@@ -970,6 +1037,7 @@ def build(p):
     <div class="stat-grid">{stats}</div>
   </div>
 </section>
+{booking_panel(p)}
 
 <section class="section" id="about">
   <div class="container split">
@@ -1095,13 +1163,10 @@ def build(p):
     <p>Book direct for the best available rate. Reservations answer by phone and WhatsApp every
       day, or send the enquiry form and we will come back to you.</p>
     <div class="btn-row">
-      <a class="btn btn-gold" href="{whatsapp}">Book Now</a>
+      <a class="btn btn-gold" href="{book_href}"{book_attrs}>Book Now</a>
       <a class="btn btn-ghost" href="{tel}">Call reservations</a>
       <a class="btn btn-ghost" href="#contact">Send an enquiry</a>
     </div>
-    <!-- STAAH booking engine: paste the property's booking widget embed here to take
-         reservations directly on this page. It replaces nothing above; the WhatsApp,
-         phone and enquiry routes stay as fallbacks. -->
   </div>
 </section>
 
@@ -1152,7 +1217,7 @@ def build(p):
   </div>
 </footer>
 
-<div class="mobile-book"><a class="btn btn-gold" href="#book">Book Now</a></div>
+<div class="mobile-book"><a class="btn btn-gold" href="{book_anchor}">Book Now</a></div>
 
 <script>
 {JS}</script>

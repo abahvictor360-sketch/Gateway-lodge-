@@ -101,6 +101,47 @@ function gwl_nrp_banner( $imgkey, $eyebrow, $title, $sub = '' ) {
 	);
 }
 
+/**
+ * The STAAH availability panel, carrying the group site's own card.
+ *
+ * The widget is a vendor script, so it goes in through Elementor's native
+ * shortcode widget, the same route WPForms takes, rather than an HTML widget.
+ * A property with no ids yet gets no panel at all.
+ */
+function gwl_nrp_booking( $c ) {
+	if ( empty( $c['booking_widget'] ) ) { return null; }
+	return gwl_container(
+		array(
+			gwl_container(
+				array(
+					gwl_eyebrow( 'Book Direct With Gateway Lodge', 'left' ),
+					gwl_slash( 'left' ),
+					gwl_heading( 'Check Availability at ' . $c['short'], array( 'tag' => 'h2', 'align' => 'left', 'size' => 30, 'size_m' => 24 ) ),
+					gwl_text(
+						'<p>Book on this site for our best available rate, with no third-party booking fees.</p>',
+						array( 'align' => 'left', 'size' => 16, 'maxw' => 620 )
+					),
+					gwl_widget( 'shortcode', array( 'shortcode' => '[gwl_booking slug="' . $c['slug'] . '"]' ) ),
+					gwl_text(
+						'<p>Powered by the STAAH Booking Engine, search live availability and book direct for the best rate, no third-party fees.</p>',
+						array( 'align' => 'left', 'size' => 13, 'color' => '#8A8078' )
+					),
+				),
+				array(
+					'width' => 'boxed',
+					'gap'   => 10,
+					'bg'    => '#FFFFFF',
+					'pad'   => gwl_pad( 34, 34, 30, 34 ),
+					'cls'   => 'gwl-booking-panel',
+					'border_color' => '#E6DDD3',
+					'extra' => array( 'padding_mobile' => gwl_pad( 24, 20, 22, 20 ) ),
+				)
+			),
+		),
+		array( 'width' => 'boxed', 'pad' => gwl_pad( 0, 0, 0, 0 ), 'extra' => array( 'z_index' => 5 ) )
+	);
+}
+
 /** The maroon figures band. */
 function gwl_nrp_stats( $stats ) {
 	$cells = array();
@@ -252,14 +293,12 @@ function gwl_nrp_cta( $contact_url ) {
 					),
 					gwl_container(
 						array(
-							gwl_button( 'Book Now', $c['whatsapp'], 'gold' ),
+							gwl_button( 'Book Now', $c['booking_url'] ? $c['booking_url'] : $c['whatsapp'], 'gold' ),
 							gwl_button( 'Call reservations', 'tel:' . str_replace( ' ', '', $c['phone'] ), 'outline_light' ),
 							gwl_button( 'Send an enquiry', $contact_url, 'outline_light' ),
 						),
 						array( 'width' => 'full', 'dir' => 'row', 'gap' => 14, 'justify' => 'center', 'extra' => array( 'flex_wrap' => 'wrap' ) )
 					),
-					// STAAH booking engine: drop the property's booking widget into this
-					// container to take reservations on the page itself.
 				),
 				array( 'width' => 'boxed', 'gap' => 10, 'align' => 'center' )
 			),
@@ -328,6 +367,8 @@ function gwl_nrp_home( $urls ) {
 		) ),
 
 		gwl_nrp_stats( $c['stats'] ),
+
+		gwl_nrp_booking( $c ),
 
 		gwl_nrp_split(
 			$c['about_image'],
@@ -934,6 +975,13 @@ function gwl_nrp_custom_css() {
 		. ".gwl-video-hero::before { z-index: 1; }\n"
 		. ".gwl-video-hero > .e-con,\n"
 		. ".gwl-video-hero > .elementor-element { position: relative; z-index: 2; }\n"
+		. "\n"
+		. "/* The availability panel rides up over the figures band, the way the\n"
+		. "   group site's does, and the widget writes its own markup at its own\n"
+		. "   width, so it is kept from pushing the card wider than a phone. */\n"
+		. ".gwl-booking-panel { margin-top: -46px; box-shadow: 0 18px 40px -32px rgba(0,0,0,0.55); }\n"
+		. ".gwl-booking-panel .Configure-quickBook-Widget { max-width: 100%; overflow-x: auto; }\n"
+		. "@media (max-width: 767px) { .gwl-booking-panel { margin-top: -28px; } }\n"
 		. "/* GWL-END */";
 
 	$existing = wp_get_custom_css();

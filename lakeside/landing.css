@@ -74,6 +74,25 @@ button, input, select, textarea { font-family: inherit; font-size: 1rem; }
   margin-bottom: 0.75rem;
 }
 .divider { width: 46px; height: 2px; background: var(--gold-500); margin-bottom: var(--space-3); }
+
+/* The STAAH availability panel, carrying the group site's own card so a guest
+   meets the same thing here as on gatewaylodgegroup.com. It rides up over the
+   stat bar, so it has to sit above it. */
+.booking-panel {
+  background: var(--white);
+  border: 1px solid var(--border);
+  box-shadow: 0 18px 40px -32px rgba(0,0,0,0.55);
+  padding: var(--space-4);
+  margin-top: calc(var(--space-4) * -1);
+  position: relative;
+  z-index: 5;
+}
+.booking-panel h2 { font-size: 1.4rem; }
+.booking-panel > p { color: var(--ink-600); margin-top: 0.35rem; }
+/* The widget writes its own markup at its own width, so keep it from pushing
+   the card wider than the screen on a phone. */
+.booking-panel .Configure-quickBook-Widget { margin-top: var(--space-3); max-width: 100%; overflow-x: auto; }
+.booking-note { font-size: 0.8rem; color: var(--ink-400); margin-top: var(--space-2); }
 .section-head { max-width: 62ch; margin-bottom: var(--space-4); }
 .section-head.center { margin-inline: auto; text-align: center; }
 .section-head.center .divider { margin-inline: auto; }

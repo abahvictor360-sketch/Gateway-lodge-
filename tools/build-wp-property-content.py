@@ -291,6 +291,12 @@ def build(prop):
         "group": "https://www.gatewaylodgegroup.com",
         "site": f"https://{prop['domain']}",
         "map_address": prop["address"],
+        # STAAH: the Book Now destination and the quick-book widget's property id.
+        # The mu-plugin reads booking_widget from here, so the widget and the
+        # pages cannot drift onto different properties.
+        "booking_url": prop["booking_url"],
+        "booking_widget": prop["booking_widget"],
+
         "tagline": prop["tagline"],
         "meta_desc": prop["meta_desc"],
 
