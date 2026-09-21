@@ -269,10 +269,11 @@ PROPERTIES = [
         ],
         "phone": "+233 24 000 0000",
         "email": "reservations@gatewaylodgegroup.com",
-        # STAAH has not issued Lakeside its ids yet, so Book Now stays on WhatsApp
-        # and the availability panel is left off rather than rendered empty.
-        "booking_url": "",
-        "booking_widget": "",
+        # STAAH. booking_url is the Book Now destination; booking_widget is the
+        # property id the quick-book widget script is registered under. Lakeside's
+        # two ids differ, as Tamale's do, so neither is derived from the other.
+        "booking_url": "https://www.swiftbook.io/inst/#home?propertyId=621NkUtBtq8dnQ3PU1dAhnFjhXd6NGP5TKmTg3MDA=&JDRN=Y",
+        "booking_widget": "483NTgov7qxVAzdobkc0e2YYwgR1Se3MDA=",
     },
     {
         "slug": "tamale",
