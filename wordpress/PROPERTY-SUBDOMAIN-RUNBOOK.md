@@ -436,6 +436,48 @@ Both were proved against the real broken inputs: the original 18MB film, a
 hand-edited generated file, and the underscored key.
 
 
+## 6b. The STAAH booking engine
+
+Each property has two STAAH ids, and they are not interchangeable:
+
+- **`booking_url`** - where Book Now goes, opened in a new tab.
+- **`booking_widget`** - the property id the quick-book widget is registered
+  under, used for both `propertyId` and `scriptId` and for the div's own id.
+
+Tamale's two genuinely differ, so never derive one from the other. Both live in
+`PROPERTIES`, and `tools/build-wp-property-content.py` copies them into the
+generated content file.
+
+The widget is a vendor `<script>`, which the house rules forbid putting in an
+HTML widget. It goes in the same way WPForms does, through Elementor's native
+shortcode widget:
+
+```php
+gwl_widget( 'shortcode', array( 'shortcode' => '[gwl_booking slug="tamale"]' ) )
+```
+
+`[gwl_booking]` is registered by `wordpress/mu-plugins/gwl-booking.php`, a
+must-use plugin, because a shortcode has to exist on every request and not only
+while a build runs. It is the only file of ours that loads on a visitor request.
+It carries no ids of its own - it reads them from `gwl-property-content.php`, so
+the widget and the pages cannot drift onto different properties.
+
+Two details worth keeping:
+
+- **The script tag goes out as STAAH supplied it.** Their script finds itself by
+  the id `propInfo` and reads its own query string, so `wp_enqueue_script()` is
+  wrong here: it would rename the id to a handle. The id also ends in `=`, which
+  is matched literally, so it is never URL-encoded.
+- **A property with no ids renders no panel**, rather than an empty card. When
+  this was written Lakeside had neither id, and its Book Now stays on WhatsApp.
+  Adding a property later is two lines in `PROPERTIES` and a rebuild.
+
+`gwl_nrp_booking()` returning null for such a property is what turned up the
+top-level null filter in `gwl_nrp_save_page()`: `gwl_container()` drops nulls
+among its children, but the top level of a page tree did not, so Elementor was
+handed a null element and fataled on its missing `elType`.
+
+
 ## 7. Building a property
 
 Everything is driven by slug. Once the install and connector exist:
