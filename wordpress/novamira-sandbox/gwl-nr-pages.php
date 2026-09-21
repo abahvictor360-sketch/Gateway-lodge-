@@ -654,6 +654,11 @@ function gwl_nrp_make_responsive( &$elements ) {
 
 /** Builds a page's elements and saves them with the responsive pass applied. */
 function gwl_nrp_save_page( $page_id, $elements ) {
+	// A section helper with nothing to render returns null - the availability
+	// panel does, for a property STAAH has not issued ids for. gwl_container()
+	// drops those among its children; the top level of a page needs the same,
+	// or Elementor is handed a null element and fatals on its missing elType.
+	$elements = array_values( array_filter( (array) $elements ) );
 	gwl_nrp_make_responsive( $elements );
 	gwl_save_elementor( $page_id, $elements );
 }
