@@ -10,7 +10,8 @@
  * Rules this file holds to:
  *   - Native Elementor containers only. No sections, no inner sections, no
  *     atomic elements (e-div-block / e-flexbox / e-grid).
- *   - No HTML widgets. WPForms goes in through the core shortcode widget.
+ *   - No HTML widgets, with one exception the client asked for: the STAAH
+ *     booking embed. WPForms goes in through the core shortcode widget.
  *   - Header and footer use XPRO widgets (site logo, horizontal menu, social
  *     icon) rather than Elementor Pro's.
  *
@@ -104,10 +105,29 @@ function gwl_nrp_banner( $imgkey, $eyebrow, $title, $sub = '' ) {
 /**
  * The STAAH availability panel, carrying the group site's own card.
  *
- * The widget is a vendor script, so it goes in through Elementor's native
- * shortcode widget, the same route WPForms takes, rather than an HTML widget.
+ * The embed is the one STAAH issues, placed in an HTML widget at the client's
+ * direction - the single exception to the no-HTML-widgets rule, and only for
+ * this vendor embed. The ids still come from PROPERTIES by way of the
+ * generated content file, so nothing here is hand-typed per property.
+ *
  * A property with no ids yet gets no panel at all.
  */
+/**
+ * The STAAH embed for one property id, exactly as the vendor issues it.
+ *
+ * Their script finds its own tag by the id `propInfo` and reads the query
+ * string off it, and the property id ends in "=" which they match literally,
+ * so neither is rewritten here.
+ */
+function gwl_nrp_booking_embed( $id ) {
+	return sprintf(
+		'<div id="quickbook-widget-%1$s-%1$s" class="Configure-quickBook-Widget"></div>'
+		. '<script src="https://www.swiftbook.io/cwplugin/displaywidget/preview/booking-service.min.js'
+		. '?propertyId=%1$s&scriptId=%1$s" id="propInfo"></script>',
+		$id
+	);
+}
+
 function gwl_nrp_booking( $c ) {
 	if ( empty( $c['booking_widget'] ) ) { return null; }
 	return gwl_container(
@@ -121,7 +141,7 @@ function gwl_nrp_booking( $c ) {
 						'<p>Book on this site for our best available rate, with no third-party booking fees.</p>',
 						array( 'align' => 'left', 'size' => 16, 'maxw' => 620 )
 					),
-					gwl_widget( 'shortcode', array( 'shortcode' => '[gwl_booking slug="' . $c['slug'] . '"]' ) ),
+					gwl_widget( 'html', array( 'html' => gwl_nrp_booking_embed( $c['booking_widget'] ) ) ),
 					gwl_text(
 						'<p>Powered by the STAAH Booking Engine, search live availability and book direct for the best rate, no third-party fees.</p>',
 						array( 'align' => 'left', 'size' => 13, 'color' => '#8A8078' )

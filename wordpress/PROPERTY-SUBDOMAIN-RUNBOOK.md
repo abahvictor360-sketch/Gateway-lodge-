@@ -448,26 +448,31 @@ Tamale's two genuinely differ, so never derive one from the other. Both live in
 `PROPERTIES`, and `tools/build-wp-property-content.py` copies them into the
 generated content file.
 
-The widget is a vendor `<script>`, which the house rules forbid putting in an
-HTML widget. It goes in the same way WPForms does, through Elementor's native
-shortcode widget:
+The widget is a vendor `<script>`, and it goes in an **HTML widget** - the one
+exception to the no-HTML-widgets rule, which the client asked for and which
+covers this embed only:
 
 ```php
-gwl_widget( 'shortcode', array( 'shortcode' => '[gwl_booking slug="tamale"]' ) )
+gwl_widget( 'html', array( 'html' => gwl_nrp_booking_embed( $c['booking_widget'] ) ) )
 ```
 
-`[gwl_booking]` is registered by `wordpress/mu-plugins/gwl-booking.php`, a
-must-use plugin, because a shortcode has to exist on every request and not only
-while a build runs. It is the only file of ours that loads on a visitor request.
-It carries no ids of its own - it reads them from `gwl-property-content.php`, so
-the widget and the pages cannot drift onto different properties.
+`gwl_nrp_booking_embed()` builds the markup from the property id, so nothing is
+hand-typed per property and the ids still come from `PROPERTIES`.
+
+It was first built the other way, through a shortcode registered by a must-use
+plugin, to hold the no-HTML-widgets line. That worked - the shortcode returned
+each property's embed byte for byte - but the client preferred the HTML widget,
+so the plugin is gone. If a shortcode is ever wanted again, the embed builder is
+the piece to reuse.
 
 Two details worth keeping:
 
 - **The script tag goes out as STAAH supplied it.** Their script finds itself by
   the id `propInfo` and reads its own query string, so `wp_enqueue_script()` is
   wrong here: it would rename the id to a handle. The id also ends in `=`, which
-  is matched literally, so it is never URL-encoded.
+  is matched literally, so it is never URL-encoded or escaped.
+- **One `propInfo` per page.** The id is not unique-able, so two booking embeds
+  on one page would collide. The panel is on Home only.
 - **A property with no ids renders no panel**, rather than an empty card. When
   this was written Lakeside had neither id, and its Book Now stays on WhatsApp.
   Adding a property later is two lines in `PROPERTIES` and a rebuild.

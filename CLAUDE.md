@@ -54,7 +54,9 @@ section 6 of the runbook.
 ## House rules for the pages
 
 - Native Elementor containers only. No sections, no inner sections, no atomic
-  elements, no HTML widgets, no Elementor Pro widgets.
+  elements, no Elementor Pro widgets.
+- No HTML widgets, with one exception the client asked for: the STAAH booking
+  embed. Everything else that needs markup goes through a shortcode widget.
 - Header and footer are XPRO Theme Builder templates, built from XPRO widgets.
 - Forms are WPForms, placed through Elementor's shortcode widget.
 - No em dash in customer-facing copy.
