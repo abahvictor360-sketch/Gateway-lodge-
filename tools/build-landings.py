@@ -462,7 +462,10 @@ button, input, select, textarea { font-family: inherit; font-size: 1rem; }
   border: 1px solid var(--border);
   box-shadow: 0 18px 40px -32px rgba(0,0,0,0.55);
   padding: var(--space-4);
-  margin-top: calc(var(--space-4) * -1);
+  /* The group site's panel rides up over its hero photograph. Here it follows
+     the figures band, whose labels sit right at the bottom edge, so a negative
+     pull would cover them. It clears the band instead. */
+  margin-top: var(--space-3);
   position: relative;
   z-index: 5;
 }

@@ -1004,7 +1004,11 @@ function gwl_nrp_custom_css() {
 		. "/* The availability panel rides up over the figures band, the way the\n"
 		. "   group site's does, and the widget writes its own markup at its own\n"
 		. "   width, so it is kept from pushing the card wider than a phone. */\n"
-		. ".gwl-booking-panel { margin-top: -46px; box-shadow: 0 18px 40px -32px rgba(0,0,0,0.55); }\n"
+		. "/* The group site's panel rides up over its hero photograph. Here it sits\n"
+		. "   under the figures band, which carries its labels right at the bottom\n"
+		. "   edge, so the same negative pull covered them. It clears the band\n"
+		. "   instead. */\n"
+		. ".gwl-booking-panel { margin-top: 26px; box-shadow: 0 18px 40px -32px rgba(0,0,0,0.55); }\n"
 		. "\n"
 		. "/* The booking widget opens its date picker as a layer taller than the row\n"
 		. "   it sits in, so every ancestor has to stay visible or the calendar is cut\n"
@@ -1022,7 +1026,7 @@ function gwl_nrp_custom_css() {
 		. ".gwl-booking-panel .elementor-widget-html { width: 100%; }\n"
 		. ".gwl-booking-panel .Configure-quickBook-Widget { width: 100%; }\n"
 		. "\n"
-		. "@media (max-width: 767px) { .gwl-booking-panel { margin-top: -28px; } }\n"
+		. "@media (max-width: 767px) { .gwl-booking-panel { margin-top: 18px; } }\n"
 		. "/* GWL-END */";
 
 	$existing = wp_get_custom_css();
