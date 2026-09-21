@@ -113,6 +113,17 @@ function gwl_nrp_banner( $imgkey, $eyebrow, $title, $sub = '' ) {
  * A property with no ids yet gets no panel at all.
  */
 /**
+ * Where a Book Now button goes.
+ *
+ * Every one of them - header, hero and the booking band - opens the property's
+ * booking engine. $fallback is where it goes for a property STAAH has not
+ * issued ids for: the contact page from the chrome, WhatsApp from the band.
+ */
+function gwl_nrp_book_url( $c, $fallback ) {
+	return empty( $c['booking_url'] ) ? $fallback : $c['booking_url'];
+}
+
+/**
  * The STAAH embed for one property id, exactly as the vendor issues it.
  *
  * Their script finds its own tag by the id `propInfo` and reads the query
@@ -313,7 +324,7 @@ function gwl_nrp_cta( $contact_url ) {
 					),
 					gwl_container(
 						array(
-							gwl_button( 'Book Now', $c['booking_url'] ? $c['booking_url'] : $c['whatsapp'], 'gold' ),
+							gwl_button( 'Book Now', gwl_nrp_book_url( $c, $c['whatsapp'] ), 'gold' ),
 							gwl_button( 'Call reservations', 'tel:' . str_replace( ' ', '', $c['phone'] ), 'outline_light' ),
 							gwl_button( 'Send an enquiry', $contact_url, 'outline_light' ),
 						),
@@ -379,7 +390,7 @@ function gwl_nrp_home( $urls ) {
 			gwl_text( '<p>' . $c['tagline'] . '</p>', array( 'align' => 'left', 'color' => 'rgba(255,255,255,0.9)', 'size' => 18, 'maxw' => 560 ) ),
 			gwl_container(
 				array(
-					gwl_button( 'Book Now', $urls['contact'], 'gold', 'left' ),
+					gwl_button( 'Book Now', gwl_nrp_book_url( $c, $urls['contact'] ), 'gold', 'left' ),
 					gwl_button( 'Explore the property', $urls['about'], 'outline_light', 'left' ),
 				),
 				array( 'width' => 'full', 'dir' => 'row', 'gap' => 14, 'extra' => array( 'flex_wrap' => 'wrap' ) )
@@ -764,7 +775,7 @@ function gwl_nrp_header_template( $menu_slug, $contact_url ) {
 				'close_color'                 => '#5C1620',
 				'close_size'                  => array( 'unit' => 'px', 'size' => 22 ),
 			) ),
-			gwl_nrp_auto_width( gwl_button( 'Book Now', $contact_url, 'gold', 'right' ) ),
+			gwl_nrp_auto_width( gwl_button( 'Book Now', gwl_nrp_book_url( $c, $contact_url ), 'gold', 'right' ) ),
 		),
 		array(
 			'width' => 'full', 'dir' => 'row', 'gap' => 18, 'align' => 'center', 'justify' => 'flex-end',

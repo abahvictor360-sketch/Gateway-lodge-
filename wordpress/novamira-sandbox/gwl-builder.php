@@ -128,9 +128,12 @@ function gwl_text( $html, $o = array() ) {
 
 /** style: primary | outline_light | outline_dark | gold */
 function gwl_button( $text, $url, $style = 'primary', $align = 'center' ) {
+	// A link off this site opens in a new tab, so a guest part-way through a
+	// booking does not lose the page they came from.
+	$external = ( 0 === strpos( $url, 'http' ) && false === strpos( $url, home_url() ) ) ? 'on' : '';
 	$s = array(
 		'text' => $text,
-		'link' => array( 'url' => $url, 'is_external' => '', 'nofollow' => '' ),
+		'link' => array( 'url' => $url, 'is_external' => $external, 'nofollow' => '' ),
 		'align' => $align,
 		'typography_typography' => 'custom',
 		'typography_font_family' => 'Jost',

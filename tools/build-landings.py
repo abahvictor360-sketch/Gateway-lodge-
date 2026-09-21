@@ -937,10 +937,12 @@ def build(p):
     # WhatsApp remains the route for a property STAAH has not issued ids for.
     book_href = (p["booking_url"] or whatsapp).replace("&", "&amp;")
     book_attrs = ' target="_blank" rel="noopener"' if p["booking_url"] else ""
-    # In-page Book Now buttons jump to the availability panel where there is one,
-    # and to the booking band, which carries the phone and enquiry routes, where
-    # there is not.
-    book_anchor = "#availability" if p["booking_widget"] else "#book"
+    # Every Book Now goes to the booking engine. Where a property has no ids
+    # yet, they fall back to the in-page routes: the availability panel if one
+    # is rendered, otherwise the booking band with its phone and enquiry links.
+    book_anchor = book_href if p["booking_url"] else (
+        "#availability" if p["booking_widget"] else "#book")
+    anchor_attrs = book_attrs
     tel = "tel:" + p["phone"].replace(" ", "")
 
     html = f"""<!doctype html>
@@ -1008,7 +1010,7 @@ def build(p):
     </nav>
     <label for="nav-toggle" class="nav-backdrop" aria-hidden="true"></label>
     <div class="header-actions">
-      <a href="{book_anchor}" class="btn-book">Book Now</a>
+      <a href="{book_anchor}" class="btn-book"{anchor_attrs}>Book Now</a>
       <label for="nav-toggle" class="nav-toggle-label" role="button" tabindex="0" aria-label="Open menu">
         <span class="burger" aria-hidden="true"></span>
       </label>
@@ -1029,7 +1031,7 @@ def build(p):
     </div>
     <p>{p["tagline"]}</p>
     <div class="btn-row">
-      <a class="btn btn-gold" href="{book_anchor}">Book Now</a>
+      <a class="btn btn-gold" href="{book_anchor}"{anchor_attrs}>Book Now</a>
       <a class="btn btn-ghost" href="#about">Explore the property</a>
     </div>
   </div>
@@ -1221,7 +1223,7 @@ def build(p):
   </div>
 </footer>
 
-<div class="mobile-book"><a class="btn btn-gold" href="{book_anchor}">Book Now</a></div>
+<div class="mobile-book"><a class="btn btn-gold" href="{book_anchor}"{anchor_attrs}>Book Now</a></div>
 
 <script>
 {JS}</script>
