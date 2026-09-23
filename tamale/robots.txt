@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tamale.gatewaylodgegroup.com/sitemap.xml
