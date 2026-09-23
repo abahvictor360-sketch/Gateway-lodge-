@@ -483,6 +483,48 @@ among its children, but the top level of a page tree did not, so Elementor was
 handed a null element and fataled on its missing `elType`.
 
 
+### 6c. The group booking engine on gatewaylodgegroup.com
+
+The group has its own STAAH ids, and the group widget is **not the same shape
+as a property's**:
+
+| | property widget | group widget |
+|---|---|---|
+| script | `/cwplugin/displaywidget/preview/booking-service.min.js` | `/plugin/js/booking-service.min.js` |
+| configured by | query string (`propertyId`, `scriptId`) | attributes (`groupid`, `cal-rendererid`, `jdrn`, `location`) |
+| renders into | `#quickbook-widget-<id>-<id>` | `#quickbook-widget` |
+
+So the property embed builder cannot be reused for the group, and the group's
+ids are not in `PROPERTIES`: they belong to the group site, and they live in
+`wordpress/novamira-sandbox/gateway-lodge-site.php` as `GWL_GROUP_BOOKING_ID`
+and `GWL_GROUP_BOOKING_URL`.
+
+The group site already had the booking slot as a shortcode,
+`[gateway_booking]`, placed on Home with Elementor's Shortcode widget, with a
+mode switch in Settings > Gateway Booking. So the widget went in through the
+mode that was waiting for it rather than through a new HTML widget: the
+shortcode's `embed` mode now falls back to the group widget when no
+administrator has pasted an embed of their own, and it renders inside the same
+card as the old placeholder bar, which is the card the property landings use.
+Both the plugin's defaults and a one-time migration (`gwl_booking_group_migrated`)
+move the saved settings over, so the option in the database and the build file
+agree and neither one alone is the truth.
+
+The Book Now buttons on that site are Elementor button widgets inside
+`_elementor_data`, not template markup, so there is nothing to regenerate:
+`wordpress/novamira-sandbox/gwl-group-booking-links.php` rewrites them, matching
+on the button's own label (`Book Now`, `Book Your Stay`, `Check Availability`,
+`Book Direct`) and setting `is_external` so they open in a new tab. It is
+idempotent - `gwl_group_booking_links( false )` reports without writing, and a
+second write run reports zero - and it is the file to re-run after any page is
+rebuilt. 27 buttons across 20 pages and the header template on the first run.
+
+One trap when writing Elementor data from outside Elementor:
+`update_metadata()` unslashes whatever it is handed, and Elementor's own save
+passes `wp_slash( wp_json_encode( $data ) )`. JSON that is not slashed first
+comes back out with its escapes stripped, which corrupts every page it touches.
+
+
 ## 7. Building a property
 
 Everything is driven by slug. Once the install and connector exist:

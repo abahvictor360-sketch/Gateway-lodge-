@@ -15,6 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'GWL_BOOKING_OPTION', 'gwl_staah_settings' );
 
+// The group's STAAH booking engine. One booking link and one group widget for
+// the whole site: the properties' own ids live in tools/build-landings.py and
+// are only used by the three property landings.
+define( 'GWL_GROUP_BOOKING_ID', '202NTbXvK6b2PKOg2OTI=' );
+define( 'GWL_GROUP_BOOKING_URL', 'https://www.swiftbook.io/inst/#group?groupId=202NTbXvK6b2PKOg2OTI=&JDRN=Y' );
+
 /* ==========================================================================
    1. Desktop submenu accordion for the Xpro header drawer
    --------------------------------------------------------------------------
@@ -131,9 +137,9 @@ add_action( 'wp_enqueue_scripts', 'gwl_enqueue_menu_script', 20 );
 
 function gwl_booking_defaults() {
 	return array(
-		'mode'        => 'placeholder', // placeholder | embed | url
-		'embed'       => '',
-		'booking_url' => '',
+		'mode'        => 'embed', // placeholder | embed | url
+		'embed'       => '', // empty in embed mode means the group widget below
+		'booking_url' => GWL_GROUP_BOOKING_URL,
 		'heading'     => 'Check Availability Across Our Properties',
 		'intro'       => 'Book on this site for our best available rate, with no third-party booking fees.',
 		'cta'         => 'Check Availability',
@@ -148,6 +154,43 @@ function gwl_booking_settings() {
 	return wp_parse_args( $saved, gwl_booking_defaults() );
 }
 
+/**
+ * The group booking widget, exactly as STAAH supplies it.
+ *
+ * It is not the same shape as the per-property widget the three landings use:
+ * a different script, configured by attributes rather than a query string, and
+ * a plain container div it renders into.
+ */
+function gwl_group_booking_embed() {
+	return '<script src="https://www.swiftbook.io/plugin/js/booking-service.min.js"'
+		. ' id="propInfo" groupid="' . esc_attr( GWL_GROUP_BOOKING_ID ) . '"'
+		. ' cal-rendererid="quickbook-widget" jdrn="Y" location="off"></script>'
+		. '<div id="quickbook-widget"></div>';
+}
+
+/**
+ * The booking slot shipped as a placeholder while STAAH was being set up. Now
+ * that the group id exists, move the saved settings over once, leaving alone a
+ * site where an administrator has already chosen something for themselves.
+ */
+function gwl_booking_migrate_to_group() {
+	if ( 'done' === get_option( 'gwl_booking_group_migrated' ) ) {
+		return;
+	}
+	$s = get_option( GWL_BOOKING_OPTION, array() );
+	if ( ! is_array( $s ) ) {
+		$s = array();
+	}
+	if ( ( ! isset( $s['mode'] ) || 'placeholder' === $s['mode'] )
+		&& '' === trim( (string) ( isset( $s['embed'] ) ? $s['embed'] : '' ) ) ) {
+		$s['mode']        = 'embed';
+		$s['booking_url'] = GWL_GROUP_BOOKING_URL;
+		update_option( GWL_BOOKING_OPTION, $s );
+	}
+	update_option( 'gwl_booking_group_migrated', 'done' );
+}
+add_action( 'init', 'gwl_booking_migrate_to_group' );
+
 function gwl_booking_shortcode( $atts ) {
 	$s    = gwl_booking_settings();
 	$atts = shortcode_atts(
@@ -160,10 +203,32 @@ function gwl_booking_shortcode( $atts ) {
 		'gateway_booking'
 	);
 
-	// STAAH (or any provider) embed code, pasted by an administrator.
-	if ( 'embed' === $s['mode'] && '' !== trim( (string) $s['embed'] ) ) {
-		return '<div class="gwl-booking gwl-booking--embed" data-property="'
-			. esc_attr( $atts['property'] ) . '">' . $s['embed'] . '</div>';
+	// The booking engine itself: the group widget, or an embed an administrator
+	// pasted in its place. Same card as the placeholder below, and the same card
+	// the three property landings use, so the group site and the landings read
+	// as one booking.
+	if ( 'embed' === $s['mode'] ) {
+		$embed = trim( (string) $s['embed'] );
+		if ( '' === $embed ) {
+			$embed = gwl_group_booking_embed();
+		}
+
+		ob_start();
+		?>
+		<div class="gwl-booking gwl-booking--embed" data-property="<?php echo esc_attr( $atts['property'] ); ?>">
+			<span class="gwl-booking__eyebrow">Book Direct With Gateway Lodge</span>
+			<span class="gwl-booking__slash" aria-hidden="true">/</span>
+			<?php if ( $atts['heading'] ) : ?>
+				<h2 class="gwl-booking__heading"><?php echo esc_html( $atts['heading'] ); ?></h2>
+			<?php endif; ?>
+			<?php if ( $atts['intro'] ) : ?>
+				<p class="gwl-booking__intro"><?php echo esc_html( $atts['intro'] ); ?></p>
+			<?php endif; ?>
+			<div class="gwl-booking__engine"><?php echo $embed; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
+			<p class="gwl-booking__note">Powered by the STAAH Booking Engine, search live availability and book direct for the best rate, no third-party fees.</p>
+		</div>
+		<?php
+		return ob_get_clean();
 	}
 
 	$action = ( 'url' === $s['mode'] && $s['booking_url'] )
@@ -262,6 +327,17 @@ function gwl_booking_styles() {
 		letter-spacing:.16em;text-transform:uppercase;color:#fff;background:#5C1620;border:1px solid #5C1620;
 		border-radius:0;padding:0 32px;height:48px;cursor:pointer;transition:background .25s ease;}
 	.gwl-booking__submit:hover{background:#4A1119;}
+	/* The booking widget opens its date picker as a layer taller than the row
+	   it sits in, so every ancestor has to stay visible or the calendar is cut
+	   off at the card edge. Setting one axis to a non-visible value makes the
+	   used value of the other axis auto, so this cannot be overflow-x alone. */
+	.gwl-booking--embed,
+	.gwl-booking__engine,
+	.gwl-booking__engine .Configure-quickBook-Widget{overflow:visible;}
+	/* The widget lays itself out against the width it is given, so give it the
+	   whole card rather than the text column. */
+	.gwl-booking__engine{width:100%;margin-top:24px;}
+	.gwl-booking__engine #quickbook-widget{width:100%;}
 	@media(max-width:1024px){
 		.gwl-booking__form{grid-template-columns:repeat(2,minmax(0,1fr));}
 	}

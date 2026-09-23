@@ -79,7 +79,7 @@
           <span class="burger" aria-hidden="true"><span></span><span></span><span></span></span>
           <span class="nav-toggle-text">Menu</span>
         </label>
-        <a href="contact.html" class="btn-book" role="button">Book Now</a>
+        <a href="https://www.swiftbook.io/inst/#group?groupId=202NTbXvK6b2PKOg2OTI=&amp;JDRN=Y" class="btn-book" role="button" target="_blank" rel="noopener">Book Now</a>
       </div>
     </div>
   </header>
@@ -95,7 +95,7 @@
     <p class="hero-sub">Discover exceptional stays, memorable experiences and a growing collection
     of hospitality and property destinations across Ghana.</p>
     <div class="btn-row">
-      <a href="contact.html" class="btn btn-primary">Book Your Stay</a>
+      <a href="https://www.swiftbook.io/inst/#group?groupId=202NTbXvK6b2PKOg2OTI=&amp;JDRN=Y" class="btn btn-primary" target="_blank" rel="noopener">Book Your Stay</a>
       <a href="properties.html" class="btn btn-outline">Explore Our Properties</a>
     </div>
   </div>
@@ -106,37 +106,13 @@
     <span class="eyebrow">Book Direct With Gateway Lodge</span>
     <div class="divider"></div>
     <h2>Check Availability Across Our Properties</h2>
-    <form class="booking-fields" action="https://book-directly.staah.net/REPLACE-WITH-GROUP-CODE" method="get">
-      <div class="field">
-        <label for="bk-property">Property</label>
-        <select id="bk-property" name="property">
-          <option value="">All Properties</option>
-          <option value="nova-ridge">Gateway Nova Ridge</option>
-          <option value="lakeside">Gateway Lodge Lakeside</option>
-          <option value="tamale">Gateway Lodge Tamale</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="bk-checkin">Check-in</label>
-        <input type="date" id="bk-checkin" name="checkin" required>
-      </div>
-      <div class="field">
-        <label for="bk-checkout">Check-out</label>
-        <input type="date" id="bk-checkout" name="checkout" required>
-      </div>
-      <div class="field">
-        <label for="bk-guests">Guests</label>
-        <select id="bk-guests" name="guests">
-          <option value="1">1 Guest</option>
-          <option value="2" selected>2 Guests</option>
-          <option value="3">3 Guests</option>
-          <option value="4">4+ Guests</option>
-        </select>
-      </div>
-      <div class="field">
-        <button type="submit" class="btn btn-primary" style="width:100%;">Check Availability</button>
-      </div>
-    </form>
+    <!-- The group's STAAH quick-book widget, exactly as STAAH supplies it. It
+         configures itself from the attributes on the script and renders into
+         the div below. Property landings use a different, per-property widget. -->
+    <div class="booking-engine">
+      <script src="https://www.swiftbook.io/plugin/js/booking-service.min.js" id="propInfo" groupid="202NTbXvK6b2PKOg2OTI=" cal-rendererid="quickbook-widget" jdrn="Y" location="off"></script>
+      <div id="quickbook-widget"></div>
+    </div>
     <p class="booking-note">Powered by the STAAH Booking Engine, search live availability and book direct for the best rate, no third-party fees.</p>
   </div>
 </section>
@@ -404,6 +380,5 @@
       </ul>
     </div>
   </footer>
-<script src="booking.js" defer></script>
 </body>
 </html>
