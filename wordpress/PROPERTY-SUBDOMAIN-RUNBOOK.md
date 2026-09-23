@@ -554,6 +554,44 @@ first, point the group site's menu and cards at it, and only then retire
 whatever page the property had.
 
 
+### 6e. The properties' own photographs on the group site
+
+The group site was built before the three shoots, so every picture of a
+property on it was stock. Thirty of those frames are now the real
+photographs:
+
+- **The property cards** - Home, About Us, Our Properties, Stay and
+  Accommodation - take one photograph each: Nova Ridge's balcony over Accra,
+  Lakeside's frontage, Tamale's courtyard.
+- **The gallery's three property strips** take four each, reading exterior,
+  bedroom, kitchen, living. Nova Ridge has no exterior in its shoot, so its
+  first frame is the living room and entrance hall.
+
+`wordpress/novamira-sandbox/gwl-group-property-photos.php` does it, and two
+details in it are worth keeping:
+
+- **The photographs are sideloaded from each property's own landing site**,
+  not uploaded again. One copy of a photograph is the original; the group
+  site's copy carries the same description the landing page gives it. A stem
+  such as `bedroom-king` exists for all three properties, so the group site's
+  copies are named `nr-`, `lk-` and `tm-`.
+- **The gallery rules are pinned to widget ids, not to the file.** The same
+  stock files appear again further down that page under headings that are not
+  a property - parking, breakfast service, an event - and matching on the file
+  caught those too. Matching on the first use of each file instead looked
+  right on the first run and then walked down the page on the second: once the
+  strip carried new files, the first use of the old one was the generic
+  section. A rule that is not idempotent is a rule that damages the page the
+  second time it runs.
+
+What is deliberately left alone: the generic strips just named, the offers and
+contact imagery, and the group hero. They are stock, but they are not claiming
+to be a particular property - except for a few alt texts that do (a swimming
+pool and a restaurant at Lakeside, a suite interior at Nova Ridge), which is
+the same open question as Lakeside's dining and front desk copy. Nothing in
+any of the three shoots shows a pool or a restaurant.
+
+
 ## 7. Building a property
 
 Everything is driven by slug. Once the install and connector exist:
