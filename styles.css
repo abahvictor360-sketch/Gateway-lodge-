@@ -924,7 +924,9 @@ body:has(.nav-toggle:checked) { overflow: hidden; }
   .footer-top { grid-template-columns: 1fr; padding-block: var(--space-5) var(--space-4); }
   .form-grid { grid-template-columns: 1fr; }
   .hero h1 { font-size: 2.1rem; }
-  .booking-panel { margin-top: var(--space-3); }
+  /* The booking widget needs the width more than the card needs the inset,
+     so ease the padding off on a phone, as the WordPress build does. */
+  .booking-panel { margin-top: var(--space-3); padding: var(--space-3) var(--space-2); }
 }
 
 @media (max-width: 430px) {
