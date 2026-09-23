@@ -525,6 +525,35 @@ passes `wp_slash( wp_json_encode( $data ) )`. JSON that is not slashed first
 comes back out with its escapes stripped, which corrupts every page it touches.
 
 
+### 6d. Retiring the group site's property pages
+
+Once a property has its own landing site, its page on the group site is a
+second, staler copy of the same property. The three were retired:
+
+- **Trashed, not deleted** - `gateway-nova-ridge`, `gateway-lodge-lakeside`,
+  `gateway-lodge-tamale` (#11065, #11066, #11067), by
+  `wordpress/novamira-sandbox/gwl-retire-property-pages.php`, which is
+  idempotent and reports rather than assumes.
+- **Their URLs 301 to the subdomains**, from section 5 of
+  `gateway-lodge-site.php`. The redirect matches on the request path rather
+  than looking a page up, so it still fires once the page is gone, and it uses
+  `wp_redirect()` rather than `wp_safe_redirect()`, which refuses a different
+  host.
+- **Nothing linked to them by then.** The menu, the home page cards and the Our
+  Properties page already pointed at the subdomains. The retire script checks
+  for links left behind before and after, and reported none.
+
+The static source moved with the site: the three `property-*.html` files are
+gone, and the 243 links to them across the other 37 pages now go to the
+subdomain. `gwl-convert.php`'s href map loses its three entries with them - it
+is the one-time HTML-to-Elementor converter, and a link that now leaves the
+site has no group page to map to.
+
+Adding a fourth property later reverses this order: build the landing site
+first, point the group site's menu and cards at it, and only then retire
+whatever page the property had.
+
+
 ## 7. Building a property
 
 Everything is driven by slug. Once the install and connector exist:

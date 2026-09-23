@@ -553,3 +553,44 @@ JS;
 	wp_add_inline_script( $handle, $js );
 }
 add_action( 'wp_enqueue_scripts', 'gwl_enqueue_sticky_header', 20 );
+
+/* ==========================================================================
+   5. Retired property pages
+   --------------------------------------------------------------------------
+   Each property now has its own landing site on its own subdomain, so the
+   group site's three property pages were retired. Everything on the site
+   already points at the subdomains - the menu, the home page cards and the
+   Our Properties page - but the old URLs were published, so they redirect
+   rather than 404: a link in someone's mail, a bookmark or a search result
+   still lands on the property.
+
+   The redirect is matched on the request path, not on a page lookup, so it
+   keeps working once the pages themselves are gone.
+   ========================================================================== */
+
+function gwl_retired_property_pages() {
+	return array(
+		'gateway-nova-ridge'     => 'https://novaridge.gatewaylodgegroup.com/',
+		'gateway-lodge-lakeside' => 'https://lakeside.gatewaylodgegroup.com/',
+		'gateway-lodge-tamale'   => 'https://tamale.gatewaylodgegroup.com/',
+	);
+}
+
+function gwl_redirect_retired_property_pages() {
+	if ( is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+		return;
+	}
+
+	$path = wp_parse_url( isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '', PHP_URL_PATH );
+	$path = trim( (string) $path, '/' );
+
+	$map = gwl_retired_property_pages();
+	if ( ! isset( $map[ $path ] ) ) {
+		return;
+	}
+
+	// wp_safe_redirect would refuse these: the subdomains are a different host.
+	wp_redirect( $map[ $path ], 301 );
+	exit;
+}
+add_action( 'template_redirect', 'gwl_redirect_retired_property_pages', 1 );
