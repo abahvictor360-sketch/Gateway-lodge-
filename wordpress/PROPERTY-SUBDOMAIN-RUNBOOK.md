@@ -829,8 +829,17 @@ What the document asked for, and where it lives now:
 - **Nightly rates** - deliberately not on the sites. The client said twice
   that the rate does not apply to the website. Rates were added once and
   removed; do not put them back without being asked.
-- **reservations@gatewaylodgegroup.com** - the client runs the mailbox. The
-  address is on the pages and nothing else is ours to do.
+- **The reservations mailbox** - `PROPERTIES`, `email`. Each property now has
+  its own: `ridge@`, `lakeside@` and `tamale@gatewaylodgegroup.com`, in place
+  of the shared `reservations@`. The client runs the mailboxes.
+
+  Changing it is not only copy. It is the contact line, the `mailto:`, the
+  footer, the landing page's `formsubmit.co` action **and the WPForms
+  notification address**, which is where an enquiry actually lands. A build
+  skips an existing form so as not to overwrite the client's edits, so
+  `gwl_nrp_form_sync()` reaches into that one field (and the confirmation
+  message) and leaves the rest of the form alone. Without it the pages would
+  show the new address while every enquiry went on arriving at the old one.
 
 The group site's copy of all this is not generated: it is applied by
 `wordpress/novamira-sandbox/gwl-group-review-copy.php` against

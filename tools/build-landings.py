@@ -175,7 +175,7 @@ PROPERTIES = [
             "Ridge Hospital and Accra&rsquo;s main clinics close by",
         ],
         "phone": "+233 XXX XX XXXX",
-        "email": "reservations@gatewaylodgegroup.com",
+        "email": "ridge@gatewaylodgegroup.com",
         # STAAH. booking_url is the Book Now destination; booking_widget is the
         # property id the quick-book widget script is registered under. Tamale's two
         # ids genuinely differ, so neither is derived from the other.
@@ -283,7 +283,7 @@ PROPERTIES = [
             "Shops, pharmacies and fuel within a few minutes&rsquo; drive",
         ],
         "phone": "+233 50 400 0000",
-        "email": "reservations@gatewaylodgegroup.com",
+        "email": "lakeside@gatewaylodgegroup.com",
         # STAAH. booking_url is the Book Now destination; booking_widget is the
         # property id the quick-book widget script is registered under. Lakeside's
         # two ids differ, as Tamale's do, so neither is derived from the other.
@@ -384,7 +384,7 @@ PROPERTIES = [
             "Banks, fuel and supermarkets close by",
         ],
         "phone": "+233 53 723 9889",
-        "email": "reservations@gatewaylodgegroup.com",
+        "email": "tamale@gatewaylodgegroup.com",
         # STAAH. booking_url is the Book Now destination; booking_widget is the
         # property id the quick-book widget script is registered under. Tamale's two
         # ids genuinely differ, so neither is derived from the other.

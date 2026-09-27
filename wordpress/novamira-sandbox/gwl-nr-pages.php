@@ -878,20 +878,36 @@ function gwl_nrp_form_message( $c ) {
 
 /**
  * An existing form is left alone on a rebuild, because the client may have
- * edited it. The confirmation message is the one exception: it names a way to
- * reach reservations, so it has to follow the number. Nothing else is touched.
+ * edited it. Two fields are the exception, because both come from PROPERTIES
+ * and a stale one is not cosmetic:
+ *
+ *   - the confirmation message, which names a way to reach reservations and
+ *     so has to follow the number;
+ *   - the notification address, which is where an enquiry actually lands. A
+ *     form left on the old mailbox goes on quietly delivering to it.
+ *
+ * Nothing else is touched.
  */
 function gwl_nrp_form_sync( $form_id, $c ) {
 	$post = get_post( $form_id );
 	if ( ! $post ) { return; }
 	$form = json_decode( $post->post_content, true );
 	if ( ! is_array( $form ) ) { return; }
-	$want = gwl_nrp_form_message( $c );
-	if ( isset( $form['settings']['confirmations'][1]['message'] )
-		&& $form['settings']['confirmations'][1]['message'] === $want ) {
-		return;
+
+	$dirty = false;
+	$want  = gwl_nrp_form_message( $c );
+	if ( ! isset( $form['settings']['confirmations'][1]['message'] )
+		|| $form['settings']['confirmations'][1]['message'] !== $want ) {
+		$form['settings']['confirmations'][1]['message'] = $want;
+		$dirty = true;
 	}
-	$form['settings']['confirmations'][1]['message'] = $want;
+	if ( ! isset( $form['settings']['notifications'][1]['email'] )
+		|| $form['settings']['notifications'][1]['email'] !== $c['email'] ) {
+		$form['settings']['notifications'][1]['email'] = $c['email'];
+		$dirty = true;
+	}
+	if ( ! $dirty ) { return; }
+
 	// update_metadata unslashes what it is handed, and so does wp_update_post:
 	// the JSON goes back slashed or it comes out of the database corrupted.
 	wp_update_post( array( 'ID' => $form_id, 'post_content' => wp_slash( wp_json_encode( $form ) ) ) );
