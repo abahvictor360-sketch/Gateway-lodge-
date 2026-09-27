@@ -697,10 +697,58 @@ Lakeside Suite card.
 
 ## 9. Still open on Nova Ridge
 
-- Phone is the site-wide placeholder `+233 24 000 0000`.
-- STAAH booking engine needs credentials via Ace Management Consult. A comment in
-  the booking band marks where the widget goes.
-- Only the home page has been rendered and inspected visually; the other three
-  were checked structurally.
-- The booking button reads **Book Now** (it still links to WhatsApp until the
-  STAAH engine is wired up).
+- Phone is the site-wide placeholder `+233 24 000 0000`, on the contact page,
+  the footer, the call link and the WhatsApp link. The review leaves it as
+  `+233 XXX XX XXXX`, so it stays a placeholder until the client gives the
+  number.
+- Home and contact have been mirrored and rendered at 1440 / 900 / 390; about
+  and facilities were checked structurally.
+
+Closed since the first build: the STAAH engine is wired (section 6b), Book Now
+goes to Nova Ridge's own property on it, and the four pages carry the review's
+address, airport and digital-address changes.
+
+
+## 10. The client review document
+
+`Gateway_Lodge_Website_Review_Feedback.pdf` is the brief. Four sections: A is
+the group domain, B Nova Ridge, C Tamale, D Lakeside. Where it and the site
+disagree, it wins; where it is silent, the site is not changed to match it by
+inference.
+
+That last part is the one worth holding to. A3 says the swimming pool is only
+at Nova, and the group site's Leisure, Facilities, Events and FAQ pages now
+say so. It does not follow that a pool tile belongs in Nova Ridge's own
+facilities list on its subdomain: section B asks for four things, and that is
+not one of them. A tile was added and then taken out again. Read a section as
+scoped to the site it names.
+
+What the document asked for, and where it lives now:
+
+- **Addresses and digital addresses** - `PROPERTIES` in
+  `tools/build-landings.py`, as `address` and `digital_address`. Both the
+  landing pages and the WordPress contact pages render the street address with
+  `Digital address <code>` under it. The maps are built from the same string
+  (`https://www.google.com/maps?q=<urlencoded address>&z=16&output=embed`), so
+  a corrected address moves its pin on the next build.
+- **Kotoka - Accra International Airport** - `PROPERTIES`, three places, plus
+  the WordPress prose in `tools/build-wp-property-content.py`.
+- **Phone and WhatsApp numbers** - `PROPERTIES`, `phone`. Everything derives
+  from it: `tel:`, `wa.me/`, the footer's WhatsApp icon and the contact list.
+  The footer icon used to be hardcoded in `SOCIALS` and pointed at the
+  placeholder on all three properties; it now reads the property's own number.
+- **No onsite dining, restaurant or lounge** - `PROPERTIES` and the FAQ and
+  meta copy in `tools/build-wp-property-content.py`. Lakeside had the most of
+  it: breakfast, a restaurant and a lounge, all removed.
+- **The pool at Nova only** - group site only, per the scoping note above.
+- **Nightly rates** - deliberately not on the sites. The client said twice
+  that the rate does not apply to the website. Rates were added once and
+  removed; do not put them back without being asked.
+- **reservations@gatewaylodgegroup.com** - the client runs the mailbox. The
+  address is on the pages and nothing else is ours to do.
+
+The group site's copy of all this is not generated: it is applied by
+`wordpress/novamira-sandbox/gwl-group-review-copy.php` against
+`gwl-group-review-copy.json`, and section 6c has the rules that file has to
+hold to (long rules before short ones, phone numbers parked behind a token so
+a re-run cannot append a digit).

@@ -130,11 +130,6 @@ return array(
 				'Table and chairs, and a long view over the Ridge treeline.',
 			),
 			array(
-				'fas fa-swimming-pool',
-				'Swimming Pool',
-				'A pool on site in the building, open to the apartment&rsquo;s guests.',
-			),
-			array(
 				'fas fa-car',
 				'Secure Parking',
 				'Gated, monitored parking within the building for one vehicle.',

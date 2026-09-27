@@ -134,7 +134,6 @@ PROPERTIES = [
             ("laundry", "Laundry", "In-apartment washing, with a pressing and laundry service on request."),
             ("workspace", "Desk &amp; Workspace", "A proper surface to work from, not a chair pulled up to the dining table."),
             ("balcony", "Private Balcony", "Table and chairs, and a long view over the Ridge treeline."),
-            ("pool", "Swimming Pool", "A pool on site in the building, open to the apartment&rsquo;s guests."),
             ("parking", "Secure Parking", "Gated, monitored parking within the building for one vehicle."),
             ("security", "24-Hour Security", "Manned entry and CCTV across the building&rsquo;s common areas."),
             ("concierge", "Guest Support", "One number, answered at any hour, for anything the stay needs."),
