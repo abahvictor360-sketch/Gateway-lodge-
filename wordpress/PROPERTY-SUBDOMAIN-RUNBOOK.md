@@ -691,6 +691,44 @@ the same open question as Lakeside's dining and front desk copy. Nothing in
 any of the three shoots shows a pool or a restaurant.
 
 
+### 6f. The group site's generated imagery
+
+Every picture on the group site was an AI rendering - `image/image-<uuid>.jpg`
+and two `text_to_video` films - because the site was built before the three
+shoots. They showed a swimming pool, a restaurant and buildings that do not
+exist, which is the same class of problem as the copy that claimed onsite
+dining.
+
+`tools/group-real-photos.py` replaces all of it: 196 references across 35
+pages, every one now a frame from the Nova Ridge, Lakeside or Tamale shoot.
+Four things in it are worth keeping:
+
+- **The hero is handled before anything else**, because a page's poster, its
+  `og:image` and its `twitter:image` all have to be a frame of the film that
+  is about to play over them. Map them separately and the hero changes
+  property the moment the video starts.
+- **One rendering was reused several times on a page** - the offers grid ran
+  the same frame on every card - so a rendering maps to a *list* of
+  photographs and the nth use on a page takes the nth entry. Mapping one to
+  one put the same bedroom on four cards.
+- **A photograph already on the page counts too.** Two of the replacement choices
+  collided with frames the property-card work had put there earlier, which a
+  duplicate check across every page caught before it shipped.
+- **Descriptions come from `PROPERTIES`**, where each frame was described by
+  what is in it. Six filenames across the three shoots do not match their
+  contents, so nothing here is derived from a filename.
+
+The script is idempotent and re-runnable: a second run reports zero, and it
+fails loudly if a page still carries a generated reference, so a page added
+later cannot quietly reintroduce one.
+
+**The WordPress group site is a separate job.** This covers the static site
+only. `gwl-group-property-photos.php` did the property cards and the gallery
+strips on gatewaylodgegroup.com, but the rest of that site's imagery is still
+generated, and the group connector has to be authorised before anything can
+be done about it.
+
+
 ## 7. Building a property
 
 Everything is driven by slug. Once the install and connector exist:
