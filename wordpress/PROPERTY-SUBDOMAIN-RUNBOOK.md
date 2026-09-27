@@ -54,6 +54,31 @@ Confirm the target before writing anything:
 return [ 'home' => home_url(), 'abspath' => ABSPATH, 'theme' => get_stylesheet() ];
 ```
 
+### Getting the builder onto the server
+
+This environment cannot reach the subdomains, so nothing can be pushed up
+from here, and hand-copying ~135KB of PHP through `write-file` is both slow
+and a chance to corrupt a byte. The server can reach GitHub, and the
+repository is public, so let it pull:
+
+```php
+$base = 'https://raw.githubusercontent.com/abahvictor360-sketch/Gateway-lodge-/<sha>/wordpress/novamira-sandbox/';
+$body = wp_remote_retrieve_body( wp_remote_get( $base . $f, array( 'timeout' => 25 ) ) );
+file_put_contents( WP_CONTENT_DIR . '/novamira-sandbox/' . $f, $body );
+return md5( $body );   // compare against the repo before building
+```
+
+Use the **commit sha**, not the branch name: the CDN caches by URL, so a
+branch path can serve the previous commit for several minutes and a build
+then runs against code that looks current and is not. Return the md5 and
+check it against the repo's own; a build on a file that did not match has
+to be redone anyway.
+
+Four files make a build: `gwl-builder.php`, `gwl-pages.php`,
+`gwl-nr-pages.php`, and the two generated ones. The first three sit
+disabled between builds (Gotcha 7), so enable them, build, then disable
+them again.
+
 ---
 
 ## 3. Build order
