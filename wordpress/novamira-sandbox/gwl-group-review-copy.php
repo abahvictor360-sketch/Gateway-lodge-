@@ -155,6 +155,16 @@ function gwl_grc_widget_text() {
 
 		// The eating out page.
 		'dce679e' => 'Cook In, Whenever You Would Rather',
+
+		// Contact. All three map widgets were set to "Accra, Ghana", so the
+		// Tamale map showed Accra. Each takes its own address, and the lines
+		// beneath them take the Ghana Post digital code with it.
+		'847b228' => 'Nova by DevtracoPlus, Continental Road, Ridge, Accra, Ghana',
+		'84de727' => '21 South Boundary Road, Lakeside Estate, Accra, Ghana',
+		'cf03fa7' => 'QD55 Maidenhair Street, Watherston Residential Area, Tamale, Ghana',
+		'71f5dea' => 'Nova by DevtracoPlus, Continental Road, Ridge, Accra<br>Digital address G4-061-8151',
+		'1997f76' => '21 South Boundary Road, Lakeside Estate, Accra<br>Digital address GD-118-3802',
+		'fc2a2b5' => 'QD55 Maidenhair Street, Watherston Residential Area, Tamale<br>Digital address NT-0065-2009',
 	);
 }
 
@@ -188,7 +198,7 @@ function gwl_grc_set_widget_text( $write = true ) {
 			foreach ( $els as &$el ) {
 				if ( ! empty( $el['id'] ) && isset( $map[ $el['id'] ] ) && ! empty( $el['settings'] ) ) {
 					$text = $map[ $el['id'] ];
-					foreach ( array( 'title', 'title_text', 'editor' ) as $key ) {
+					foreach ( array( 'title', 'title_text', 'editor', 'address' ) as $key ) {
 						if ( ! isset( $el['settings'][ $key ] ) ) {
 							continue;
 						}
