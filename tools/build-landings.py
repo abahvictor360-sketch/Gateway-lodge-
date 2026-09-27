@@ -78,7 +78,8 @@ PROPERTIES = [
         "domain": "novaridge.gatewaylodgegroup.com",
         "locality": "Ridge, Accra",
         "region": "Greater Accra",
-        "address": "4 Drake Avenue area, Ridge, Accra, Ghana",
+        "address": "Nova by DevtracoPlus, Continental Road, Ridge, Accra",
+        "digital_address": "G4-061-8151",
         "units": "1 Unit",
         "tagline": "A private high-rise residence in Accra&rsquo;s most established address, "
                    "kept to the Gateway Lodge standard and yours alone for the length of your stay.",
@@ -106,7 +107,7 @@ PROPERTIES = [
         "pillars": [
             ("Yours alone", "A single unit, so the apartment is never shared, split or reassigned mid-stay."),
             ("Built for longer stays", "A real kitchen, laundry and a desk: the things that matter after night three."),
-            ("A settled address", "Ridge puts the ministries, the CBD and Kotoka within an easy drive."),
+            ("A settled address", "Ridge puts the ministries, the CBD and the airport within an easy drive."),
         ],
         "rooms": [
             ("media/bedroom-king.jpg", "King bedroom with upholstered headboard at Gateway Nova Ridge",
@@ -156,7 +157,7 @@ PROPERTIES = [
         ],
         "location_points": [
             "Walking distance to Ridge&rsquo;s embassies and government offices",
-            "About 15 minutes by car to Kotoka International Airport",
+            "About 15 minutes by car to Accra International Airport",
             "Ten minutes to Osu, Airport Residential and the CBD",
             "Ridge Hospital and Accra&rsquo;s main clinics close by",
         ],
@@ -165,6 +166,8 @@ PROPERTIES = [
         # STAAH. booking_url is the Book Now destination; booking_widget is the
         # property id the quick-book widget script is registered under. Tamale's two
         # ids genuinely differ, so neither is derived from the other.
+        "rate_usd": "185",
+        "rate_ghs": "2,220",
         "booking_url": "https://www.swiftbook.io/inst/#home?propertyId=461NnntLbWKIGVxtZxB6tDGdj7kTg2OTM=&JDRN=Y",
         "booking_widget": "461NnntLbWKIGVxtZxB6tDGdj7kTg2OTM=",
     },
@@ -175,7 +178,8 @@ PROPERTIES = [
         "domain": "lakeside.gatewaylodgegroup.com",
         "locality": "Lakeside, Accra",
         "region": "Greater Accra",
-        "address": "Lakeside Estate, Accra, Ghana",
+        "address": "21 South Boundary Road, Lakeside Estate, Accra",
+        "digital_address": "GD-118-3802",
         "units": "12 Units",
         "tagline": "Twelve serviced apartments in Lakeside Estate, on the quiet side of Accra, "
                    "with a full kitchen in every one.",
@@ -263,7 +267,7 @@ PROPERTIES = [
         ],
         "location_points": [
             "Set inside Lakeside Estate, away from the main-road noise",
-            "Around 40 minutes by car to Kotoka International Airport",
+            "Around 40 minutes by car to Accra International Airport",
             "Easy reach of the Accra&ndash;Aburi road and the eastern suburbs",
             "Shops, pharmacies and fuel within a few minutes&rsquo; drive",
         ],
@@ -272,6 +276,8 @@ PROPERTIES = [
         # STAAH. booking_url is the Book Now destination; booking_widget is the
         # property id the quick-book widget script is registered under. Lakeside's
         # two ids differ, as Tamale's do, so neither is derived from the other.
+        "rate_usd": "125",
+        "rate_ghs": "1,500",
         "booking_url": "https://www.swiftbook.io/inst/#home?propertyId=621NkUtBtq8dnQ3PU1dAhnFjhXd6NGP5TKmTg3MDA=&JDRN=Y",
         "booking_widget": "483NTgov7qxVAzdobkc0e2YYwgR1Se3MDA=",
     },
@@ -282,7 +288,8 @@ PROPERTIES = [
         "domain": "tamale.gatewaylodgegroup.com",
         "locality": "Tamale, Northern Region",
         "region": "Northern Region",
-        "address": "Tamale, Northern Region, Ghana",
+        "address": "QD55 Maidenhair Street, Watherston Residential Area, Tamale",
+        "digital_address": "NT-0065-2009",
         "units": "6 Units",
         "tagline": "Six fully furnished apartments in Tamale, built for the way people actually "
                    "work in the north, for a night, a week, or a whole season.",
@@ -367,11 +374,13 @@ PROPERTIES = [
             "Convenient for Northern Region project sites and NGO offices",
             "Banks, fuel and supermarkets close by",
         ],
-        "phone": "+233 24 000 0000",
+        "phone": "+233 53 723 9889",
         "email": "reservations@gatewaylodgegroup.com",
         # STAAH. booking_url is the Book Now destination; booking_widget is the
         # property id the quick-book widget script is registered under. Tamale's two
         # ids genuinely differ, so neither is derived from the other.
+        "rate_usd": "135",
+        "rate_ghs": "1,620",
         "booking_url": "https://www.swiftbook.io/inst/#home?propertyId=803NTgtOlMyR9PnYyqKQDZn5MGOae2kWrWJzO6xGFwLT2u2OTY=&JDRN=Y",
         "booking_widget": "601NDCEXjHMj2XNhZuhRkhmWBMfhdLWsVVTg2OTY=",
     },
@@ -702,6 +711,10 @@ button, input, select, textarea { font-family: inherit; font-size: 1rem; }
 .book-band .container { max-width: 74ch; }
 .book-band .divider { margin-inline: auto; }
 .book-band .btn-row { justify-content: center; }
+/* The nightly rate, sized between the heading and the body copy so it reads as
+   a fact about the property rather than a promotion. */
+.rate-line { font-size: 1.15rem; letter-spacing: 0.01em; margin-bottom: 0.4rem; }
+.rate-line strong { font-weight: 600; color: var(--color-gold-500); }
 .book-note { font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-top: var(--space-3); }
 
 /* ---------- Footer ---------- */
@@ -1114,7 +1127,8 @@ def build(p):
             loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
         </div>
         <dl class="contact-details" style="margin-top: var(--space-3)">
-          <div><dt>Address</dt><dd>{p["address"]}</dd></div>
+          <div><dt>Address</dt><dd>{p["address"]}<br>
+            Digital address {p["digital_address"]}</dd></div>
           <div><dt>Reservations</dt><dd><a href="{tel}">{p["phone"]}</a> &middot;
             <a href="{whatsapp}">WhatsApp</a></dd></div>
           <div><dt>Email</dt><dd><a href="mailto:{p["email"]}">{p["email"]}</a></dd></div>
@@ -1166,6 +1180,8 @@ def build(p):
     <span class="eyebrow">Ready when you are</span>
     <div class="divider"></div>
     <h2>Book {p["name"]}</h2>
+    <p class="rate-line">From <strong>${p["rate_usd"]}</strong> per night,
+      about GH&#8373;{p["rate_ghs"]}</p>
     <p>Book direct for the best available rate. Reservations answer by phone and WhatsApp every
       day, or send the enquiry form and we will come back to you.</p>
     <div class="btn-row">

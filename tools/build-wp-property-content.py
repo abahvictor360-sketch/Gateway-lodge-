@@ -59,10 +59,11 @@ FAQS = {
         ("Can you take a group?",
          "Yes. Twelve rooms and units means a family, a team or a small event can stay under one "
          "roof. Tell reservations how many of you there are and we will hold the right mix."),
-        ("Is breakfast included?",
-         "Breakfast is served daily, with lunch and dinner cooked to order. Ask when you book."),
+        ("Is there anywhere to cook?",
+         "Every unit has a fully equipped kitchen, with a cooker, a fridge and everything to "
+         "use them. We do not run a restaurant, and there are shops close by."),
         ("How far is the airport?",
-         "About 40 minutes by car to Kotoka International Airport, traffic depending."),
+         "About 40 minutes by car to Accra International Airport, traffic depending."),
         ("Is there parking?",
          "Yes, on-site parking for guests at no extra charge, behind a manned gate."),
     ],
@@ -122,8 +123,8 @@ ABOUT_SECTIONS = {
         ]),
         ("How we run it", "A desk that is always answered.", [
             "Twelve units is the size where service either holds or slips. Lakeside is staffed to "
-            "hold it: a front desk through the night for late arrivals, breakfast every morning "
-            "with lunch and dinner to order, and housekeeping that does not need chasing.",
+            "hold it: a front desk through the night for late arrivals, a fully equipped kitchen in "
+            "every unit, and housekeeping that does not need chasing.",
         ]),
     ],
     "tamale": [
@@ -156,7 +157,7 @@ BANNER_SUBS = {
     },
     "lakeside": {
         "about": "Twelve rooms and units on the quiet side of Accra.",
-        "facilities": "A staffed desk, dining on site and grounds to walk in.",
+        "facilities": "A staffed desk, a full kitchen in every unit and grounds to walk in.",
         "contact": "Reservations answer by phone and WhatsApp every day.",
     },
     "tamale": {
@@ -191,9 +192,9 @@ SEO = {
     "lakeside": {
         "about": ("About Gateway Lodge Lakeside | Accra",
                   "Twelve serviced rooms and units in Lakeside Estate, Accra: quiet surroundings, "
-                  "a staffed front desk and dining on site."),
+                  "a staffed front desk and a fully equipped kitchen in every unit."),
         "facilities": ("Facilities & Amenities | Gateway Lodge Lakeside, Accra",
-                       "24-hour front desk, on-site dining, daily housekeeping, backup power, "
+                       "24-hour front desk, fully equipped kitchens, daily housekeeping, backup power, "
                        "grounds and ample parking at Gateway Lodge Lakeside."),
         "contact": ("Contact & Location | Gateway Lodge Lakeside, Accra",
                     "Find Gateway Lodge Lakeside in Lakeside Estate, Accra. Call or WhatsApp "

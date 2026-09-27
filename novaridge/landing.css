@@ -323,6 +323,10 @@ button, input, select, textarea { font-family: inherit; font-size: 1rem; }
 .book-band .container { max-width: 74ch; }
 .book-band .divider { margin-inline: auto; }
 .book-band .btn-row { justify-content: center; }
+/* The nightly rate, sized between the heading and the body copy so it reads as
+   a fact about the property rather than a promotion. */
+.rate-line { font-size: 1.15rem; letter-spacing: 0.01em; margin-bottom: 0.4rem; }
+.rate-line strong { font-weight: 600; color: var(--color-gold-500); }
 .book-note { font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-top: var(--space-3); }
 
 /* ---------- Footer ---------- */
