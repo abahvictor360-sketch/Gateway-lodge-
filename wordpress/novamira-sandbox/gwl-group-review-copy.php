@@ -233,6 +233,74 @@ function gwl_grc_set_widget_text( $write = true ) {
 }
 
 /**
+ * The reservations number, set rather than substituted.
+ *
+ * A plain find-and-replace is not safe here: the eight-digit form the review
+ * first gave is a prefix of the nine-digit one, so running it twice would
+ * append a digit. This pass parks the canonical value behind a token first, so
+ * it lands on the same result whatever state it finds. It also reaches the
+ * WhatsApp link inside the footer's social-icon repeater, which the widget map
+ * above cannot address.
+ */
+function gwl_grc_reservations_number() {
+	return array( 'digits' => '233504000000', 'display' => '+233 50 400 0000' );
+}
+
+function gwl_grc_set_phone( $write = true ) {
+	global $wpdb;
+
+	$num    = gwl_grc_reservations_number();
+	$report = array();
+
+	$rows = $wpdb->get_results(
+		"SELECT p.ID, p.post_title, m.meta_value AS data
+		   FROM {$wpdb->postmeta} m
+		   JOIN {$wpdb->posts} p ON p.ID = m.post_id
+		  WHERE m.meta_key = '_elementor_data'
+		    AND p.post_status IN ( 'publish', 'draft' )
+		    AND p.post_type <> 'revision'",
+		ARRAY_A
+	);
+
+	foreach ( $rows as $row ) {
+		if ( ! gwl_grc_is_gateway_page( (int) $row['ID'] ) ) {
+			continue;
+		}
+		$before = $row['data'];
+		$after  = $before;
+
+		// The old number is a prefix of the new one, so a plain replace would
+		// append a digit on a second run. Parking the canonical value behind a
+		// token first makes the pass idempotent whatever state it finds.
+		$token = 'GWLRESERVATIONSNUMBER';
+
+		$after = str_replace( $num['digits'], $token, $after );
+		foreach ( array( '23350400000', '233240000000' ) as $old ) {
+			$after = str_replace( $old, $token, $after );
+		}
+		$after = str_replace( $token, $num['digits'], $after );
+
+		$after = str_replace( $num['display'], $token, $after );
+		$after = str_replace( '+233 50 400 000', $num['display'], $after );
+		$after = str_replace( $token, $num['display'], $after );
+
+		if ( $after === $before ) {
+			continue;
+		}
+		$report[] = $row['post_title'] . ' (#' . $row['ID'] . ')';
+		if ( $write ) {
+			update_metadata( 'post', (int) $row['ID'], '_elementor_data', wp_slash( $after ) );
+		}
+	}
+
+	if ( $write && $report && class_exists( '\\Elementor\\Plugin' ) ) {
+		\Elementor\Plugin::$instance->files_manager->clear_cache();
+	}
+
+	return $report ? $report : array( 'nothing to change' );
+}
+
+/**
  * The Dining category becomes the kitchen, and Dining Experiences becomes
  * eating out: page titles, slugs and the menu entries that point at them.
  */

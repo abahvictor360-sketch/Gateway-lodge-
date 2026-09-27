@@ -270,7 +270,7 @@ PROPERTIES = [
             "Easy reach of the Accra&ndash;Aburi road and the eastern suburbs",
             "Shops, pharmacies and fuel within a few minutes&rsquo; drive",
         ],
-        "phone": "+233 50 400 000",
+        "phone": "+233 50 400 0000",
         "email": "reservations@gatewaylodgegroup.com",
         # STAAH. booking_url is the Book Now destination; booking_widget is the
         # property id the quick-book widget script is registered under. Lakeside's
