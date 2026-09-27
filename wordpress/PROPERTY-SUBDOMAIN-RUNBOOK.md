@@ -375,6 +375,13 @@ the export happened to hold. The landing footers had the same fault and were
 fixed earlier; `build-wp-footers.py` now rewrites that item per property, and
 drops it while the number is pending.
 
+That fix went in as a **second `elif w == "xpro-social-icon"`** in the same
+chain as the existing one, which silently shadowed it: the branch that sets
+`social_icon_column_grid` never ran again, and the footer icons went back to
+the 3-column default. A render caught it. The widget now has one branch,
+which settles the icons first and reads the column count off them - five
+icons want five columns, not six.
+
 ### 17. Other
 
 - `xpro-contact-form` is XPRO's own form builder, **not** WPForms.

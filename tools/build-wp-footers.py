@@ -145,20 +145,6 @@ class Transformer:
                     ).format(g=GROUP)
                     s["align_mobile"] = "left"
 
-            elif w == "xpro-social-icon":
-                # The template's WhatsApp icon carries the number of whichever
-                # property the footer was first exported from, so every other
-                # property inherited it. Point it at this property's own, or
-                # drop it while the number is still a mask.
-                items = []
-                for it in s.get("item", []):
-                    if (it.get("icon", {}).get("value") or "").endswith("fa-whatsapp"):
-                        if self.number_pending:
-                            continue
-                        it["link"] = link(self.whatsapp, "on")
-                    items.append(it)
-                s["item"] = items
-
             elif w == "xpro-site-logo":
                 # The widget defaults to the 150px thumbnail at full size, which makes
                 # the brand lockup three times taller than the link columns beside it.
@@ -168,11 +154,24 @@ class Transformer:
                 s["object-fit"] = "contain"
 
             elif w == "xpro-social-icon":
+                # The template's WhatsApp icon carries the number of whichever
+                # property the footer was first exported from, so every other
+                # property inherited it. Point it at this property's own, or
+                # drop it while the number is still a mask.
+                items = []
                 for item in s.get("item", []):
+                    if (item.get("icon", {}).get("value") or "").endswith("fa-whatsapp"):
+                        if self.number_pending:
+                            continue
+                        item["link"] = link(self.whatsapp, "on")
                     item["_id"] = self.new_id(item.get("_id", ""))
+                    items.append(item)
+                s["item"] = items
                 # The wrapper is a CSS grid whose column count defaults to 3, so six
-                # icons break onto a second row. One column per icon keeps them inline.
-                s["social_icon_column_grid"] = str(max(1, min(6, len(s.get("item", [])))))
+                # icons break onto a second row. One column per icon keeps them
+                # inline, which is why the count is read after the icons are settled
+                # rather than assumed to be six.
+                s["social_icon_column_grid"] = str(max(1, min(6, len(items))))
                 s.pop("social_icon_spacing", None)  # not a control on this widget
                 s["social_icon_item_space_vertical"] = {"unit": "px", "size": 12}
                 s["social_item_space_between"] = {"unit": "px", "size": 12}
