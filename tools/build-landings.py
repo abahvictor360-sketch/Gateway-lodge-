@@ -166,8 +166,6 @@ PROPERTIES = [
         # STAAH. booking_url is the Book Now destination; booking_widget is the
         # property id the quick-book widget script is registered under. Tamale's two
         # ids genuinely differ, so neither is derived from the other.
-        "rate_usd": "185",
-        "rate_ghs": "2,220",
         "booking_url": "https://www.swiftbook.io/inst/#home?propertyId=461NnntLbWKIGVxtZxB6tDGdj7kTg2OTM=&JDRN=Y",
         "booking_widget": "461NnntLbWKIGVxtZxB6tDGdj7kTg2OTM=",
     },
@@ -276,8 +274,6 @@ PROPERTIES = [
         # STAAH. booking_url is the Book Now destination; booking_widget is the
         # property id the quick-book widget script is registered under. Lakeside's
         # two ids differ, as Tamale's do, so neither is derived from the other.
-        "rate_usd": "125",
-        "rate_ghs": "1,500",
         "booking_url": "https://www.swiftbook.io/inst/#home?propertyId=621NkUtBtq8dnQ3PU1dAhnFjhXd6NGP5TKmTg3MDA=&JDRN=Y",
         "booking_widget": "483NTgov7qxVAzdobkc0e2YYwgR1Se3MDA=",
     },
@@ -379,8 +375,6 @@ PROPERTIES = [
         # STAAH. booking_url is the Book Now destination; booking_widget is the
         # property id the quick-book widget script is registered under. Tamale's two
         # ids genuinely differ, so neither is derived from the other.
-        "rate_usd": "135",
-        "rate_ghs": "1,620",
         "booking_url": "https://www.swiftbook.io/inst/#home?propertyId=803NTgtOlMyR9PnYyqKQDZn5MGOae2kWrWJzO6xGFwLT2u2OTY=&JDRN=Y",
         "booking_widget": "601NDCEXjHMj2XNhZuhRkhmWBMfhdLWsVVTg2OTY=",
     },
@@ -711,10 +705,6 @@ button, input, select, textarea { font-family: inherit; font-size: 1rem; }
 .book-band .container { max-width: 74ch; }
 .book-band .divider { margin-inline: auto; }
 .book-band .btn-row { justify-content: center; }
-/* The nightly rate, sized between the heading and the body copy so it reads as
-   a fact about the property rather than a promotion. */
-.rate-line { font-size: 1.15rem; letter-spacing: 0.01em; margin-bottom: 0.4rem; }
-.rate-line strong { font-weight: 600; color: var(--color-gold-500); }
 .book-note { font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-top: var(--space-3); }
 
 /* ---------- Footer ---------- */
@@ -1180,8 +1170,6 @@ def build(p):
     <span class="eyebrow">Ready when you are</span>
     <div class="divider"></div>
     <h2>Book {p["name"]}</h2>
-    <p class="rate-line">From <strong>${p["rate_usd"]}</strong> per night,
-      about GH&#8373;{p["rate_ghs"]}</p>
     <p>Book direct for the best available rate. Reservations answer by phone and WhatsApp every
       day, or send the enquiry form and we will come back to you.</p>
     <div class="btn-row">
