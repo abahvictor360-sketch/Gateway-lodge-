@@ -175,7 +175,7 @@ PROPERTIES = [
         "name": "Gateway Lodge Lakeside",
         "short": "Lakeside",
         "domain": "lakeside.gatewaylodgegroup.com",
-        "locality": "Lakeside, Accra",
+        "locality": "Lakeside Estate, Accra",
         "region": "Greater Accra",
         "address": "21 South Boundary Road, Lakeside Estate, Accra",
         "digital_address": "GD-118-3802",
@@ -366,7 +366,7 @@ PROPERTIES = [
             ("media/bedroom-suite.jpg", "Gateway Lodge Tamale seen from the road"),
         ],
         "location_points": [
-            "In Tamale, within reach of the central business area and the markets",
+            "In the Watherston residential area, close to Tamale&rsquo;s business district",
             "A short drive from Tamale International Airport",
             "Convenient for Northern Region project sites and NGO offices",
             "Banks, fuel and supermarkets close by",

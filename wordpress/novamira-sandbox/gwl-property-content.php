@@ -271,7 +271,7 @@ return array(
 		'slug' => 'lakeside',
 		'property' => 'Gateway Lodge Lakeside',
 		'short' => 'Lakeside',
-		'locality' => 'Lakeside, Accra',
+		'locality' => 'Lakeside Estate, Accra',
 		'region' => 'Greater Accra',
 		'address' => '21 South Boundary Road, Lakeside Estate, Accra',
 		'units' => '12 Units',
@@ -771,7 +771,7 @@ return array(
 			'terrace' => 'tamale/media/terrace.jpg',
 		),
 		'location_points' => array(
-			'In Tamale, within reach of the central business area and the markets',
+			'In the Watherston residential area, close to Tamale&rsquo;s business district',
 			'A short drive from Tamale International Airport',
 			'Convenient for Northern Region project sites and NGO offices',
 			'Banks, fuel and supermarkets close by',

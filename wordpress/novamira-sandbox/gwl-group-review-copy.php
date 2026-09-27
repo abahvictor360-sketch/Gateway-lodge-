@@ -165,6 +165,12 @@ function gwl_grc_widget_text() {
 		'71f5dea' => 'Nova by DevtracoPlus, Continental Road, Ridge, Accra<br>Digital address G4-061-8151',
 		'1997f76' => '21 South Boundary Road, Lakeside Estate, Accra<br>Digital address GD-118-3802',
 		'fc2a2b5' => 'QD55 Maidenhair Street, Watherston Residential Area, Tamale<br>Digital address NT-0065-2009',
+
+		// Facilities. The three location tags were at three different levels
+		// of detail - a district, a city, a region - so each takes the locality
+		// its address gives it.
+		'73b8e1b' => 'Lakeside Estate, Accra',
+		'0be9b1e' => 'Watherston, Tamale',
 	);
 }
 
