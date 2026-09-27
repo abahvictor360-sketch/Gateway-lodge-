@@ -24,18 +24,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 function gwl_gpp_photos() {
 	return array(
 		'nr-balcony-skyline' => array( 'novaridge', 'balcony-skyline', 'Balcony seating overlooking Accra at Gateway Nova Ridge' ),
+		'nr-lounge-open-plan' => array( 'novaridge', 'lounge-open-plan', 'Open-plan living room and kitchen at Gateway Nova Ridge' ),
 		'nr-hero-living'     => array( 'novaridge', 'hero-living', 'Living room and entrance hall at Gateway Nova Ridge' ),
 		'nr-bedroom-king'    => array( 'novaridge', 'bedroom-king', 'King bedroom with upholstered headboard at Gateway Nova Ridge' ),
 		'nr-kitchen-wide'    => array( 'novaridge', 'kitchen-wide', 'Full fitted kitchen at Gateway Nova Ridge' ),
 		'nr-balcony'         => array( 'novaridge', 'balcony', 'Balcony and glass balustrade at Gateway Nova Ridge' ),
 
 		'lk-exterior-frontage' => array( 'lakeside', 'exterior-frontage', 'The frontage of Gateway Lodge Lakeside' ),
+		'lk-living-wide'       => array( 'lakeside', 'living-wide', 'Living room looking through to the kitchen at Gateway Lodge Lakeside' ),
 		'lk-exterior-approach' => array( 'lakeside', 'exterior-approach', 'Approach to Gateway Lodge Lakeside' ),
 		'lk-bedroom-king'      => array( 'lakeside', 'bedroom-king', 'King bedroom at Gateway Lodge Lakeside' ),
 		'lk-kitchen-wide'      => array( 'lakeside', 'kitchen-wide', 'Fitted kitchen at Gateway Lodge Lakeside' ),
 		'lk-living-open'       => array( 'lakeside', 'living-open', 'Open-plan living area at Gateway Lodge Lakeside' ),
 
 		'tm-hero-courtyard'  => array( 'tamale', 'hero-courtyard', 'Courtyard and two-storey frontage at Gateway Lodge Tamale' ),
+		'tm-terrace'         => array( 'tamale', 'terrace', 'Shaded terrace table and chairs at Gateway Lodge Tamale' ),
 		'tm-exterior-street' => array( 'tamale', 'exterior-street', 'Street view of Gateway Lodge Tamale' ),
 		'tm-bedroom-king'    => array( 'tamale', 'bedroom-king', 'Bedroom with teal curtains at Gateway Lodge Tamale' ),
 		'tm-kitchen'         => array( 'tamale', 'kitchen', 'Fitted kitchen with cooker and washing machine at Gateway Lodge Tamale' ),
@@ -51,9 +54,12 @@ function gwl_gpp_photos() {
  */
 function gwl_gpp_swaps() {
 	$cards = array(
-		11027 => 'nr-balcony-skyline',
-		11028 => 'lk-exterior-frontage',
-		11029 => 'tm-hero-courtyard',
+		11027 => 'nr-lounge-open-plan',
+		11028 => 'lk-living-wide',
+		11029 => 'tm-terrace',
+		11184 => 'nr-lounge-open-plan',
+		11189 => 'lk-living-wide',
+		11194 => 'tm-terrace',
 	);
 
 	return array(
@@ -92,6 +98,12 @@ function gwl_gpp_widget_swaps() {
 			'477e495' => 'tm-bedroom-king',
 			'54f14be' => 'tm-kitchen',
 			'7c095bd' => 'tm-living-open',
+
+			// The strip that was Dining, now the kitchens themselves.
+			'ae70267' => 'nr-kitchen-wide',
+			'722052e' => 'lk-kitchen-wide',
+			'911a2a4' => 'tm-kitchen',
+			'5c04904' => 'lk-living-open',
 		),
 	);
 }

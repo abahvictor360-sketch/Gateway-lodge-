@@ -576,6 +576,19 @@ function gwl_retired_property_pages() {
 	);
 }
 
+/**
+ * Pages that moved rather than retired. The client's September review took the
+ * Dining category off the site; what it described is the fully equipped kitchen
+ * every unit has, so the page moved there and Dining Experiences moved to the
+ * neighbourhoods around each property.
+ */
+function gwl_moved_paths() {
+	return array(
+		'dining'             => 'https://www.gatewaylodgegroup.com/kitchen/',
+		'dining-experiences' => 'https://www.gatewaylodgegroup.com/eating-out/',
+	);
+}
+
 function gwl_redirect_retired_property_pages() {
 	if ( is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 		return;
@@ -584,7 +597,7 @@ function gwl_redirect_retired_property_pages() {
 	$path = wp_parse_url( isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '', PHP_URL_PATH );
 	$path = trim( (string) $path, '/' );
 
-	$map = gwl_retired_property_pages();
+	$map = array_merge( gwl_retired_property_pages(), gwl_moved_paths() );
 	if ( ! isset( $map[ $path ] ) ) {
 		return;
 	}
