@@ -130,7 +130,7 @@ function gwl_nr_content() {
 		'pillars' => array(
 			array( 'Yours alone', 'A single unit, so the apartment is never shared, split or reassigned mid-stay.' ),
 			array( 'Built for longer stays', 'A real kitchen, laundry and a desk: the things that matter after night three.' ),
-			array( 'A settled address', 'Ridge puts the ministries, the CBD and Kotoka within an easy drive.' ),
+			array( 'A settled address', 'Ridge puts the ministries, the CBD and the airport within an easy drive.' ),
 		),
 
 		'rooms' => array(
@@ -165,7 +165,7 @@ function gwl_nr_content() {
 
 		'location_points' => array(
 			'Walking distance to Ridge&rsquo;s embassies and government offices',
-			'About 15 minutes by car to Kotoka International Airport',
+			'About 15 minutes by car to Accra International Airport',
 			'Ten minutes to Osu, Airport Residential and the CBD',
 			'Ridge Hospital and Accra&rsquo;s main clinics close by',
 		),
