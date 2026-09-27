@@ -293,7 +293,24 @@ its own alphas, or Elementor's 0.5 default halves them.
 
 Only visible once the film plays, which is why it survived the first build.
 
-### 15. Other
+### 15. Icon names are Font Awesome 5, not 6
+
+Elementor bundles Font Awesome 5.15. A version 6 name renders as nothing at
+all: no glyph, no error, just the space where the icon should be, with the
+label sitting beside it and the list still looking almost right. The digital
+address line reached a render with `fas fa-location-crosshairs`, which is a
+version 6 rename of `fa-crosshairs`.
+
+Settle a name against the shipped stylesheet before using it:
+
+```
+grep -o 'fa-<name>:before' \
+  wp-content/plugins/elementor/assets/lib/font-awesome/css/all.min.css
+```
+
+No match means the icon does not exist on this site.
+
+### 16. Other
 
 - `xpro-contact-form` is XPRO's own form builder, **not** WPForms.
 - XPRO renders Font Awesome icons as inline SVG, so grepping for `fab fa-` finds

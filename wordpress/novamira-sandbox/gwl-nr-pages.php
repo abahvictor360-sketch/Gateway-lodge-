@@ -521,7 +521,7 @@ function gwl_nrp_contact( $urls, $form_id ) {
 		'icon_list' => array(
 			array( '_id' => gwl_id(), 'text' => $c['address'], 'selected_icon' => array( 'value' => 'fas fa-map-marker-alt', 'library' => 'fa-solid' ) ),
 			// Ghana Post GPS, which is how most people here are actually given a place.
-			array( '_id' => gwl_id(), 'text' => 'Digital address ' . $c['digital_address'], 'selected_icon' => array( 'value' => 'fas fa-location-crosshairs', 'library' => 'fa-solid' ) ),
+			array( '_id' => gwl_id(), 'text' => 'Digital address ' . $c['digital_address'], 'selected_icon' => array( 'value' => 'fas fa-map-pin', 'library' => 'fa-solid' ) ),
 			array( '_id' => gwl_id(), 'text' => $c['phone'], 'selected_icon' => array( 'value' => 'fas fa-phone', 'library' => 'fa-solid' ), 'link' => array( 'url' => 'tel:' . str_replace( ' ', '', $c['phone'] ), 'is_external' => '', 'nofollow' => '' ) ),
 			array( '_id' => gwl_id(), 'text' => 'WhatsApp reservations', 'selected_icon' => array( 'value' => 'fab fa-whatsapp', 'library' => 'fa-brands' ), 'link' => array( 'url' => $c['whatsapp'], 'is_external' => 'on', 'nofollow' => '' ) ),
 			array( '_id' => gwl_id(), 'text' => $c['email'], 'selected_icon' => array( 'value' => 'fas fa-envelope', 'library' => 'fa-solid' ), 'link' => array( 'url' => 'mailto:' . $c['email'], 'is_external' => '', 'nofollow' => '' ) ),
