@@ -761,6 +761,22 @@ Lakeside Suite card.
 - Home and contact have been mirrored and rendered at 1440 / 900 / 390; about
   and facilities were checked structurally.
 
+On Lakeside:
+
+- **The front desk contradiction is still live and still unanswered.** Nothing
+  in the shoot shows a front desk, so the facilities list dropped it, but the
+  About page still says "a front desk staffed around the clock" and "a front
+  desk through the night for late arrivals", and the Facilities page's meta
+  description still opens "24-hour front desk". The list and the prose now
+  disagree with each other on the same site. Which one is wrong depends on
+  whether the property has a desk, which is the client's to say. The review
+  document does not mention it, so nothing was guessed.
+- Home, contact and facilities have been mirrored and rendered at
+  1440 / 900 / 390: no horizontal scroll at any width, the hero film playing
+  (the live file is `lakeside-tour-web.mp4`, 7.1MB, `moov` at byte 36), six
+  gallery tiles on Home and nineteen on Facilities, six social icons on one
+  row.
+
 On Tamale:
 
 - **AIOSEO is not installed**, so the four pages fall back to WordPress's own
