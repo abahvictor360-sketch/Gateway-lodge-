@@ -43,7 +43,8 @@ SOCIALS = [
      '<rect x="6" y="6" width="12" height="12" rx="3.5" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="15.6" cy="8.4" r="0.9" fill="currentColor"/>'),
     ("LinkedIn", "https://linkedin.com/company/gatewaylodgegroup",
      '<rect x="6" y="10" width="2.2" height="8" fill="currentColor"/><circle cx="7.1" cy="7.2" r="1.3" fill="currentColor"/><path d="M11 10h2.1v1.2c.5-.8 1.4-1.4 2.6-1.4 2 0 3.3 1.3 3.3 3.9V18h-2.2v-3.9c0-1.1-.5-1.8-1.5-1.8-1 0-1.6.7-1.6 1.8V18H11v-8Z" fill="currentColor"/>'),
-    ("WhatsApp", "https://wa.me/233240000000",
+    # Href is filled in per property from its own phone number.
+    ("WhatsApp", "",
      '<path d="M12 6a6 6 0 0 0-5.1 9.2L6 18l2.9-.9A6 6 0 1 0 12 6Zm3.2 8.5c-.1.4-.8.8-1.2.9-.3 0-.7.1-2.2-.5-1.9-.8-3.1-2.7-3.2-2.8-.1-.1-.8-1-.8-1.9 0-.9.5-1.3.6-1.5.2-.2.4-.2.5-.2h.4c.1 0 .3 0 .5.4l.6 1.5c.1.1.1.3 0 .4l-.4.5c-.1.1-.2.3 0 .5.2.3.7 1.1 1.5 1.7.9.7 1.6.9 1.9 1 .2.1.4.1.5-.1l.5-.6c.2-.2.4-.2.6-.1l1.3.6c.2.1.3.2.3.3 0 .1 0 .5-.1.9Z" fill="currentColor"/>'),
 ]
 
@@ -269,7 +270,7 @@ PROPERTIES = [
             "Easy reach of the Accra&ndash;Aburi road and the eastern suburbs",
             "Shops, pharmacies and fuel within a few minutes&rsquo; drive",
         ],
-        "phone": "+233 24 000 0000",
+        "phone": "+233 50 400 000",
         "email": "reservations@gatewaylodgegroup.com",
         # STAAH. booking_url is the Book Now destination; booking_widget is the
         # property id the quick-book widget script is registered under. Lakeside's
@@ -930,12 +931,12 @@ def build(p):
         for src, alt in p["gallery"]
     )
     location_points = "".join(f"<li>{CHECK}{t}</li>" for t in p["location_points"])
+    whatsapp = "https://wa.me/" + p["phone"].replace(" ", "").replace("+", "")
     socials = "".join(
-        f'<a href="{href}" aria-label="{p["name"]} on {label}">'
+        f'<a href="{whatsapp if label == "WhatsApp" else href}" aria-label="{p["name"]} on {label}">'
         f'<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">{path}</svg></a>'
         for label, href, path in SOCIALS
     )
-    whatsapp = "https://wa.me/" + p["phone"].replace(" ", "").replace("+", "")
     # Book Now opens the booking engine in a new tab where the property has one;
     # WhatsApp remains the route for a property STAAH has not issued ids for.
     book_href = (p["booking_url"] or whatsapp).replace("&", "&amp;")
