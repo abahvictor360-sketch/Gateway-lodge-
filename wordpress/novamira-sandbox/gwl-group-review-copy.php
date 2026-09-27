@@ -99,8 +99,9 @@ function gwl_grc_apply( $write = true ) {
 		$apply = $rules['global'];
 		foreach ( $rules['scoped'] as $s ) {
 			if ( $s[0] === $row['post_name'] ) {
-				// A scoped rule beats the sitewide list, so it goes first.
-				array_unshift( $apply, array( $s[1], $s[2] ) );
+				// Scoped rules are short - a single word in some cases - so they
+				// run last, after every sentence-length rule has had its turn.
+				$apply[] = array( $s[1], $s[2] );
 			}
 		}
 
@@ -129,6 +130,96 @@ function gwl_grc_apply( $write = true ) {
 		'pages'   => $pages,
 		'log'     => array_slice( $log, 0, 40 ),
 	);
+}
+
+/**
+ * Widgets whose wording the first run mangled, before the ordering above was
+ * fixed: the scoped rules ran first and rewrote a word inside sentences that a
+ * longer rule should have replaced whole. Setting them by widget id is exact,
+ * where matching on the mangled text would not be - two of these phrases occur
+ * twice on the same page, meaning different things.
+ */
+function gwl_grc_widget_text() {
+	return array(
+		// The kitchen page.
+		'33604c9' => 'A Home Kitchen, Away From Home',
+		'9655e23' => 'Lakeside',
+		'2ad4066' => 'Nova Ridge',
+		'176af34' => 'Tamale',
+		'6ee868e' => 'Everything a Long Trip Needs',
+		'b6e47fe' => 'What You Will Find',
+		'c5aba00' => 'Gateway Lodge does not run a restaurant, and that is the point. A guest staying a week does not want a menu every evening; they want a fridge, a cooker and a table. Every unit has all three, which is what makes a long stay feel like living somewhere rather than visiting.',
+		'9129b23' => 'Cooker and Hob',
+		'b9f09ea' => 'Washing Machine',
+		'32db2ca' => 'Shops Within Reach',
+
+		// The eating out page.
+		'dce679e' => 'Cook In, Whenever You Would Rather',
+	);
+}
+
+function gwl_grc_set_widget_text( $write = true ) {
+	global $wpdb;
+
+	$map    = gwl_grc_widget_text();
+	$report = array();
+
+	$rows = $wpdb->get_results(
+		"SELECT p.ID, m.meta_value AS data
+		   FROM {$wpdb->postmeta} m
+		   JOIN {$wpdb->posts} p ON p.ID = m.post_id
+		  WHERE m.meta_key = '_elementor_data'
+		    AND p.post_status IN ( 'publish', 'draft' )
+		    AND p.post_type <> 'revision'",
+		ARRAY_A
+	);
+
+	foreach ( $rows as $row ) {
+		if ( ! gwl_grc_is_gateway_page( (int) $row['ID'] ) ) {
+			continue;
+		}
+		$data = json_decode( $row['data'], true );
+		if ( ! is_array( $data ) ) {
+			continue;
+		}
+
+		$changed = 0;
+		$walk = function ( &$els ) use ( &$walk, $map, &$changed, &$report ) {
+			foreach ( $els as &$el ) {
+				if ( ! empty( $el['id'] ) && isset( $map[ $el['id'] ] ) && ! empty( $el['settings'] ) ) {
+					$text = $map[ $el['id'] ];
+					foreach ( array( 'title', 'title_text', 'editor' ) as $key ) {
+						if ( ! isset( $el['settings'][ $key ] ) ) {
+							continue;
+						}
+						$want = ( 'editor' === $key ) ? '<p>' . $text . '</p>' : $text;
+						if ( $el['settings'][ $key ] === $want ) {
+							break;
+						}
+						$el['settings'][ $key ] = $want;
+						$report[] = $el['id'] . ' -> ' . mb_substr( $text, 0, 40 );
+						$changed++;
+						break;
+					}
+				}
+				if ( ! empty( $el['elements'] ) ) {
+					$walk( $el['elements'] );
+				}
+			}
+			unset( $el );
+		};
+		$walk( $data );
+
+		if ( $changed && $write ) {
+			update_metadata( 'post', (int) $row['ID'], '_elementor_data', wp_slash( wp_json_encode( $data ) ) );
+		}
+	}
+
+	if ( $write && $report && class_exists( '\\Elementor\\Plugin' ) ) {
+		\Elementor\Plugin::$instance->files_manager->clear_cache();
+	}
+
+	return $report ? $report : array( 'nothing to change' );
 }
 
 /**
