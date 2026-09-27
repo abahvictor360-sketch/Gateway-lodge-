@@ -116,6 +116,15 @@ Each step depends on the one before it.
    each of `gwl-builder.php`, `gwl-pages.php`, the property builder. The runtime
    chrome, if any, stays enabled.
 
+**Enable them in dependency order and disable them in reverse**, because the
+sandbox loader includes every enabled file on every request and
+`gwl-nr-pages.php` requires `gwl-pages.php`, which requires `gwl-builder.php`.
+Enabling the property builder first fatals the site: the loader catches it,
+writes `.crashed` and drops the whole sandbox into safe mode on the next
+request. Tamale was sitting in safe mode from a previous session for exactly
+this reason. MCP keeps working in safe mode, so the recovery is to fix the
+order and delete `wp-content/novamira-sandbox/.crashed`.
+
 ---
 
 ## 4. Gotchas, each of which cost a cycle
@@ -743,7 +752,7 @@ Lakeside Suite card.
 
 ---
 
-## 9. Still open on Nova Ridge
+## 9. Still open
 
 - The reservations number is the review's mask, `+233 XXX XX XXXX`, and shows
   as plain text while the call, WhatsApp and `tel:` routes stay off. Gotcha 16
@@ -751,6 +760,18 @@ Lakeside Suite card.
   `phone`, the generators, one build.
 - Home and contact have been mirrored and rendered at 1440 / 900 / 390; about
   and facilities were checked structurally.
+
+On Tamale:
+
+- **AIOSEO is not installed**, so the four pages fall back to WordPress's own
+  titles and carry no meta description at all. The builder writes the SEO
+  fields it is given; with no plugin to hold them there is nowhere for them to
+  go. Nova Ridge and Lakeside both have it. Installing a plugin on the
+  client's site is theirs to say yes to.
+- Home, contact and facilities have been mirrored and rendered at
+  1440 / 900 / 390: no horizontal scroll at any width, the hero film playing,
+  six gallery tiles on Home and twelve on Facilities, six social icons on one
+  row.
 
 Closed since the first build: the STAAH engine is wired (section 6b), Book Now
 goes to Nova Ridge's own property on it, and the four pages carry the review's
