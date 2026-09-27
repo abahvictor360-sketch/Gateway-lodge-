@@ -285,6 +285,7 @@ def build(prop):
         "locality": prop["locality"],
         "region": prop["region"],
         "address": prop["address"],
+        "digital_address": prop["digital_address"],
         "units": prop["units"],
         "phone": prop["phone"],
         "whatsapp": "https://wa.me/" + prop["phone"].replace(" ", "").replace("+", ""),
