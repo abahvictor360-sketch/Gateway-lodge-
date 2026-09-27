@@ -319,15 +319,17 @@ function gwl_nrp_cta( $contact_url ) {
 					gwl_slash(),
 					gwl_heading( 'Book ' . $c['property'], array( 'tag' => 'h2', 'size' => 44, 'color' => '#FFFFFF' ) ),
 					gwl_text(
-						'<p>Book direct for the best available rate. Reservations answer by phone and WhatsApp every day, or send the enquiry form and we will come back to you.</p>',
+						$c['tel']
+							? '<p>Book direct for the best available rate. Reservations answer by phone and WhatsApp every day, or send the enquiry form and we will come back to you.</p>'
+							: '<p>Book direct for the best available rate, or send the enquiry form and we will come back to you.</p>',
 						array( 'size' => 17, 'color' => 'rgba(255,255,255,0.8)', 'maxw' => 640 )
 					),
 					gwl_container(
-						array(
-							gwl_button( 'Book Now', gwl_nrp_book_url( $c, $c['whatsapp'] ), 'gold' ),
-							gwl_button( 'Call reservations', 'tel:' . str_replace( ' ', '', $c['phone'] ), 'outline_light' ),
+						array_values( array_filter( array(
+							gwl_button( 'Book Now', gwl_nrp_book_url( $c, $c['whatsapp'] ? $c['whatsapp'] : $contact_url ), 'gold' ),
+							$c['tel'] ? gwl_button( 'Call reservations', $c['tel'], 'outline_light' ) : null,
 							gwl_button( 'Send an enquiry', $contact_url, 'outline_light' ),
-						),
+						) ) ),
 						array( 'width' => 'full', 'dir' => 'row', 'gap' => 14, 'justify' => 'center', 'extra' => array( 'flex_wrap' => 'wrap' ) )
 					),
 				),
@@ -518,14 +520,16 @@ function gwl_nrp_contact( $urls, $form_id ) {
 	$c = gwl_nrp_content();
 
 	$details = gwl_widget( 'icon-list', array(
-		'icon_list' => array(
+		'icon_list' => array_values( array_filter( array(
 			array( '_id' => gwl_id(), 'text' => $c['address'], 'selected_icon' => array( 'value' => 'fas fa-map-marker-alt', 'library' => 'fa-solid' ) ),
 			// Ghana Post GPS, which is how most people here are actually given a place.
 			array( '_id' => gwl_id(), 'text' => 'Digital address ' . $c['digital_address'], 'selected_icon' => array( 'value' => 'fas fa-map-pin', 'library' => 'fa-solid' ) ),
-			array( '_id' => gwl_id(), 'text' => $c['phone'], 'selected_icon' => array( 'value' => 'fas fa-phone', 'library' => 'fa-solid' ), 'link' => array( 'url' => 'tel:' . str_replace( ' ', '', $c['phone'] ), 'is_external' => '', 'nofollow' => '' ) ),
-			array( '_id' => gwl_id(), 'text' => 'WhatsApp reservations', 'selected_icon' => array( 'value' => 'fab fa-whatsapp', 'library' => 'fa-brands' ), 'link' => array( 'url' => $c['whatsapp'], 'is_external' => 'on', 'nofollow' => '' ) ),
+			// A property whose number is still a mask gets the mask as plain text
+			// and no WhatsApp row: neither tel: nor wa.me works without digits.
+			array( '_id' => gwl_id(), 'text' => $c['phone'], 'selected_icon' => array( 'value' => 'fas fa-phone', 'library' => 'fa-solid' ), 'link' => array( 'url' => $c['tel'], 'is_external' => '', 'nofollow' => '' ) ),
+			$c['whatsapp'] ? array( '_id' => gwl_id(), 'text' => 'WhatsApp reservations', 'selected_icon' => array( 'value' => 'fab fa-whatsapp', 'library' => 'fa-brands' ), 'link' => array( 'url' => $c['whatsapp'], 'is_external' => 'on', 'nofollow' => '' ) ) : null,
 			array( '_id' => gwl_id(), 'text' => $c['email'], 'selected_icon' => array( 'value' => 'fas fa-envelope', 'library' => 'fa-solid' ), 'link' => array( 'url' => 'mailto:' . $c['email'], 'is_external' => '', 'nofollow' => '' ) ),
-		),
+		) ) ),
 		'view'          => 'traditional',
 		'icon_color'    => '#DBA845',
 		'icon_size'     => array( 'unit' => 'px', 'size' => 16 ),
@@ -865,11 +869,42 @@ function gwl_nrp_themer( $slug, $title, $type, $elements ) {
  * ====================================================================== */
 
 /** The Nova Ridge enquiry form, in WPForms. */
+/** The thank-you message names WhatsApp only where there is a number for it. */
+function gwl_nrp_form_message( $c ) {
+	return $c['whatsapp']
+		? '<p>Thank you. Reservations will come back to you shortly. For anything urgent, message us on WhatsApp.</p>'
+		: '<p>Thank you. Reservations will come back to you shortly.</p>';
+}
+
+/**
+ * An existing form is left alone on a rebuild, because the client may have
+ * edited it. The confirmation message is the one exception: it names a way to
+ * reach reservations, so it has to follow the number. Nothing else is touched.
+ */
+function gwl_nrp_form_sync( $form_id, $c ) {
+	$post = get_post( $form_id );
+	if ( ! $post ) { return; }
+	$form = json_decode( $post->post_content, true );
+	if ( ! is_array( $form ) ) { return; }
+	$want = gwl_nrp_form_message( $c );
+	if ( isset( $form['settings']['confirmations'][1]['message'] )
+		&& $form['settings']['confirmations'][1]['message'] === $want ) {
+		return;
+	}
+	$form['settings']['confirmations'][1]['message'] = $want;
+	// update_metadata unslashes what it is handed, and so does wp_update_post:
+	// the JSON goes back slashed or it comes out of the database corrupted.
+	wp_update_post( array( 'ID' => $form_id, 'post_content' => wp_slash( wp_json_encode( $form ) ) ) );
+}
+
 function gwl_nrp_form() {
 	$c        = gwl_nrp_content();
 	$option   = 'gwl_form_id_' . $c['slug'];
 	$existing = get_option( $option );
-	if ( $existing && get_post( $existing ) ) { return (int) $existing; }
+	if ( $existing && get_post( $existing ) ) {
+		gwl_nrp_form_sync( (int) $existing, $c );
+		return (int) $existing;
+	}
 	if ( ! post_type_exists( 'wpforms' ) ) { return 0; }
 
 	$post_id = wp_insert_post( array(
@@ -909,7 +944,7 @@ function gwl_nrp_form() {
 			'confirmations'          => array(
 				1 => array(
 					'type'    => 'message',
-					'message' => '<p>Thank you. Reservations will come back to you shortly. For anything urgent, message us on WhatsApp.</p>',
+					'message' => gwl_nrp_form_message( $c ),
 				),
 			),
 			'notifications'          => array(

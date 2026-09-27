@@ -335,7 +335,47 @@ grep -o 'fa-<name>:before' \
 
 No match means the icon does not exist on this site.
 
-### 16. Other
+### 16. A number that is not a number yet
+
+Nova Ridge's reservations number reads `+233 XXX XX XXXX`, which is what the
+review gives. Carrying that in `phone` alone would have been worse than the
+placeholder it replaced: every route is derived from that field, so the page
+would have offered `tel:+233XXXXXXXXX` and `wa.me/233XXXXXXXXX` - links that
+look live, and fail.
+
+`phone_pending()` in `tools/build-landings.py` is the single test (`X` in the
+number). Where it is true:
+
+- `tel` and `whatsapp` are emitted **empty**, on the landing pages and in
+  `gwl-property-content.php` alike, and everything downstream tests those
+  rather than re-deriving from `phone`.
+- The number still shows, as plain text. A guest sees that reservations have a
+  number coming; they are not given one that does not ring.
+- The WhatsApp icon leaves the footer, the WhatsApp row leaves the contact
+  list, and the Call reservations button leaves the booking band.
+- The copy that names those routes changes with them: the booking band, the
+  form note, the contact banner, the contact page's meta description and the
+  form's thank-you message all stop promising a phone call.
+- `telephone` leaves the LodgingBusiness schema. A mask there is worse than
+  silence.
+- An Elementor icon-list row whose `link.url` is `''` renders as text, which
+  is exactly what is wanted and needs no separate branch.
+
+`check_phone()` reports it on every build, because a page quietly losing five
+of its contact routes should not be something you have to remember.
+
+Putting a real number in is one edit to `phone` in `PROPERTIES`, then the
+generators and one `gwl_nrp_build()`.
+
+While fixing this, the WordPress footers turned out to carry
+`wa.me/233240000000` - Nova Ridge's old placeholder - on **all three**
+properties. The XPRO social-icon row comes straight from the exported group
+footer and nothing rewrote it, so every property inherited whichever number
+the export happened to hold. The landing footers had the same fault and were
+fixed earlier; `build-wp-footers.py` now rewrites that item per property, and
+drops it while the number is pending.
+
+### 17. Other
 
 - `xpro-contact-form` is XPRO's own form builder, **not** WPForms.
 - XPRO renders Font Awesome icons as inline SVG, so grepping for `fab fa-` finds
@@ -465,6 +505,7 @@ judgement call rather than a fault:
 | `check_card_shapes` | Room cards share a row, so mixed aspect ratios get cropped to 3:2. Tells you which photographs lose the most. |
 | `check_copy` | The em dash is banned in customer-facing copy. |
 | `check_media_orphans` | Lakeside's real shoot left 27 unused files behind, which then sat in the media library. Informational - a shoot delivers more than a page needs. |
+| `check_phone` | A masked reservations number turns off `tel:`, `wa.me`, the WhatsApp icon and the call button site-wide. Deliberate, and too much to lose quietly. Gotcha 16. |
 
 `check-wp-builder.py` **exits non-zero**, because both of its findings are
 faults rather than judgement calls:
@@ -697,10 +738,10 @@ Lakeside Suite card.
 
 ## 9. Still open on Nova Ridge
 
-- Phone is the site-wide placeholder `+233 24 000 0000`, on the contact page,
-  the footer, the call link and the WhatsApp link. The review leaves it as
-  `+233 XXX XX XXXX`, so it stays a placeholder until the client gives the
-  number.
+- The reservations number is the review's mask, `+233 XXX XX XXXX`, and shows
+  as plain text while the call, WhatsApp and `tel:` routes stay off. Gotcha 16
+  has how that works and what putting a real number in costs: one edit to
+  `phone`, the generators, one build.
 - Home and contact have been mirrored and rendered at 1440 / 900 / 390; about
   and facilities were checked structurally.
 

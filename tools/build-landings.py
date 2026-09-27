@@ -68,6 +68,17 @@ ICONS = {
     "housekeeping": '<path d="M6 21V9l4-6 4 6v12" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M6 13h8" stroke="currentColor" stroke-width="1.5"/>',
 }
 
+def phone_pending(phone):
+    """True while a property is still carrying a masked reservations number.
+
+    The client gives the number when they have assigned it. Until then the
+    page shows the mask rather than a number that looks dialable and is not,
+    and every route that needs real digits - tel:, wa.me - is left off rather
+    than pointed at a placeholder.
+    """
+    return "X" in phone.upper()
+
+
 CHECK = ('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">'
          '<path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2" '
          'stroke-linecap="round" stroke-linejoin="round"/></svg>')
@@ -163,7 +174,7 @@ PROPERTIES = [
             "Ten minutes to Osu, Airport Residential and the CBD",
             "Ridge Hospital and Accra&rsquo;s main clinics close by",
         ],
-        "phone": "+233 24 000 0000",
+        "phone": "+233 XXX XX XXXX",
         "email": "reservations@gatewaylodgegroup.com",
         # STAAH. booking_url is the Book Now destination; booking_widget is the
         # property id the quick-book widget script is registered under. Tamale's two
@@ -932,15 +943,18 @@ def build(p):
         for src, alt in p["gallery"]
     )
     location_points = "".join(f"<li>{CHECK}{t}</li>" for t in p["location_points"])
-    whatsapp = "https://wa.me/" + p["phone"].replace(" ", "").replace("+", "")
+    pending = phone_pending(p["phone"])
+    whatsapp = "" if pending else (
+        "https://wa.me/" + p["phone"].replace(" ", "").replace("+", ""))
     socials = "".join(
         f'<a href="{whatsapp if label == "WhatsApp" else href}" aria-label="{p["name"]} on {label}">'
         f'<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">{path}</svg></a>'
         for label, href, path in SOCIALS
+        if not (label == "WhatsApp" and pending)
     )
     # Book Now opens the booking engine in a new tab where the property has one;
     # WhatsApp remains the route for a property STAAH has not issued ids for.
-    book_href = (p["booking_url"] or whatsapp).replace("&", "&amp;")
+    book_href = (p["booking_url"] or whatsapp or "#contact").replace("&", "&amp;")
     book_attrs = ' target="_blank" rel="noopener"' if p["booking_url"] else ""
     # Every Book Now goes to the booking engine. Where a property has no ids
     # yet, they fall back to the in-page routes: the availability panel if one
@@ -948,7 +962,30 @@ def build(p):
     book_anchor = book_href if p["booking_url"] else (
         "#availability" if p["booking_widget"] else "#book")
     anchor_attrs = book_attrs
-    tel = "tel:" + p["phone"].replace(" ", "")
+    tel = "" if pending else "tel:" + p["phone"].replace(" ", "")
+    # The contact card, the booking band and the form note all name a way to
+    # reach reservations. With no number yet, they name the ones that work.
+    reservations_dd = (
+        f'{p["phone"]}'
+        if pending else
+        f'<a href="{tel}">{p["phone"]}</a> &middot; <a href="{whatsapp}">WhatsApp</a>'
+    )
+    call_btn = "" if pending else (
+        f'<a class="btn btn-ghost" href="{tel}">Call reservations</a>\n      ')
+    book_band_body = (
+        "Book direct for the best available rate, or send the enquiry form and we will come "
+        "back to you."
+        if pending else
+        "Book direct for the best available rate. Reservations answer by phone and WhatsApp "
+        "every day, or send the enquiry form and we will come back to you."
+    )
+    form_note = (
+        "We answer by email, usually the same day."
+        if pending else
+        "Or message reservations on WhatsApp for a same-day reply."
+    )
+    # Schema.org wants a real number or none at all; a mask is worse than silence.
+    telephone_ld = "" if pending else f'\n  "telephone": "{p["phone"]}",'
 
     html = f"""<!doctype html>
 <html lang="en">
@@ -979,8 +1016,7 @@ def build(p):
   "description": "{p["meta_desc"].replace("&mdash;", ",").replace("&rsquo;", "’")}",
   "url": "{url}",
   "image": "{og}",
-  "telephone": "{p["phone"]}",
-  "email": "{p["email"]}",
+  "email": "{p["email"]}",{telephone_ld}
   "address": {{
     "@type": "PostalAddress",
     "streetAddress": "{p["address"]}",
@@ -1121,8 +1157,7 @@ def build(p):
         <dl class="contact-details" style="margin-top: var(--space-3)">
           <div><dt>Address</dt><dd>{p["address"]}<br>
             Digital address {p["digital_address"]}</dd></div>
-          <div><dt>Reservations</dt><dd><a href="{tel}">{p["phone"]}</a> &middot;
-            <a href="{whatsapp}">WhatsApp</a></dd></div>
+          <div><dt>Reservations</dt><dd>{reservations_dd}</dd></div>
           <div><dt>Email</dt><dd><a href="mailto:{p["email"]}">{p["email"]}</a></dd></div>
         </dl>
         <ul class="icon-list">{location_points}</ul>
@@ -1159,7 +1194,7 @@ def build(p):
             <textarea id="message" name="Message"></textarea></div>
           <div class="field full">
             <button class="btn btn-outline" type="submit">Send enquiry</button>
-            <p class="form-note">Or message reservations on WhatsApp for a same-day reply.</p>
+            <p class="form-note">{form_note}</p>
           </div>
         </form>
       </div>
@@ -1172,12 +1207,10 @@ def build(p):
     <span class="eyebrow">Ready when you are</span>
     <div class="divider"></div>
     <h2>Book {p["name"]}</h2>
-    <p>Book direct for the best available rate. Reservations answer by phone and WhatsApp every
-      day, or send the enquiry form and we will come back to you.</p>
+    <p>{book_band_body}</p>
     <div class="btn-row">
       <a class="btn btn-gold" href="{book_href}"{book_attrs}>Book Now</a>
-      <a class="btn btn-ghost" href="{tel}">Call reservations</a>
-      <a class="btn btn-ghost" href="#contact">Send an enquiry</a>
+      {call_btn}<a class="btn btn-ghost" href="#contact">Send an enquiry</a>
     </div>
   </div>
 </section>
@@ -1396,9 +1429,23 @@ def check_hero_video(p):
     return []
 
 
+def check_phone(p):
+    """Say so, every build, while a property is still on a masked number.
+
+    The mask is deliberate - it is what the client's review gives - but it
+    turns off tel:, wa.me, the WhatsApp icon, the call button and the copy
+    that names them. That is a lot of a page to lose quietly, so it is
+    reported until a real number replaces it.
+    """
+    if not phone_pending(p["phone"]):
+        return []
+    return [f'{p["slug"]}: reservations number is still the mask {p["phone"]}, '
+            "so the call, WhatsApp and tel: routes are off site-wide"]
+
+
 if __name__ == "__main__":
     CHECKS = (check_media_exists, check_hero_video, check_image_weight,
-              check_card_shapes, check_copy, check_media_orphans)
+              check_card_shapes, check_copy, check_media_orphans, check_phone)
     problems = []
     for prop in PROPERTIES:
         build(prop)

@@ -45,8 +45,12 @@ class Transformer:
         self.seen = set()
         self.site = site
         self.short = short
-        tel = "tel:" + phone.replace(" ", "")
-        whatsapp = "https://wa.me/" + phone.replace(" ", "").replace("+", "")
+        # A masked number is shown, not linked, and takes WhatsApp with it:
+        # neither tel: nor wa.me works without real digits.
+        number_pending = "X" in phone.upper()
+        tel = "" if number_pending else "tel:" + phone.replace(" ", "")
+        whatsapp = "" if number_pending else (
+            "https://wa.me/" + phone.replace(" ", "").replace("+", ""))
         self.columns = [
             (short, [
                 ("Home", site + "/"),
@@ -62,12 +66,14 @@ class Transformer:
             ]),
             ("Reservations", [
                 (phone, tel),
-                ("WhatsApp", whatsapp),
+            ] + ([] if number_pending else [("WhatsApp", whatsapp)]) + [
                 (email, "mailto:" + email),
             ]),
         ]
         self.col = 0
         self.pending = None
+        self.whatsapp = whatsapp
+        self.number_pending = number_pending
 
     def new_id(self, old):
         for salt in range(200):
@@ -138,6 +144,20 @@ class Transformer:
                         'Terms &amp; Conditions</a></p>'
                     ).format(g=GROUP)
                     s["align_mobile"] = "left"
+
+            elif w == "xpro-social-icon":
+                # The template's WhatsApp icon carries the number of whichever
+                # property the footer was first exported from, so every other
+                # property inherited it. Point it at this property's own, or
+                # drop it while the number is still a mask.
+                items = []
+                for it in s.get("item", []):
+                    if (it.get("icon", {}).get("value") or "").endswith("fa-whatsapp"):
+                        if self.number_pending:
+                            continue
+                        it["link"] = link(self.whatsapp, "on")
+                    items.append(it)
+                s["item"] = items
 
             elif w == "xpro-site-logo":
                 # The widget defaults to the 150px thumbnail at full size, which makes

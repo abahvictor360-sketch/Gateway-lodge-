@@ -226,6 +226,10 @@ def media_refs(prop):
     return load_module().media_refs(prop)
 
 
+def phone_pending(phone):
+    return load_module().phone_pending(phone)
+
+
 def load_properties():
     spec = importlib.util.spec_from_file_location("build_landings", SRC)
     mod = importlib.util.module_from_spec(spec)
@@ -275,9 +279,20 @@ def media_manifest(prop):
 
 def build(prop):
     slug = prop["slug"]
+    # A property whose number is still a mask gets no tel: and no wa.me, and
+    # the copy that names them says something true instead. See phone_pending
+    # in build-landings.py.
+    pending = phone_pending(prop["phone"])
     layout = LAYOUT[slug]
     gallery = [key(g[0]) for g in prop["gallery"]]
     split = layout["home_gallery"]
+
+    banner_subs = dict(BANNER_SUBS[slug])
+    seo = {k: list(v) for k, v in SEO[slug].items()}
+    if pending:
+        banner_subs["contact"] = "Reservations answer by email every day."
+        seo["contact"][1] = seo["contact"][1].replace(
+            "Call or WhatsApp reservations, or send", "Send")
 
     return {
         "slug": slug,
@@ -289,7 +304,9 @@ def build(prop):
         "digital_address": prop["digital_address"],
         "units": prop["units"],
         "phone": prop["phone"],
-        "whatsapp": "https://wa.me/" + prop["phone"].replace(" ", "").replace("+", ""),
+        "tel": "" if pending else "tel:" + prop["phone"].replace(" ", ""),
+        "whatsapp": "" if pending else
+                    "https://wa.me/" + prop["phone"].replace(" ", "").replace("+", ""),
         "email": prop["email"],
         "group": "https://www.gatewaylodgegroup.com",
         "site": f"https://{prop['domain']}",
@@ -332,7 +349,7 @@ def build(prop):
             {"kicker": k, "head": h, "paras": p}
             for k, h, p in ABOUT_SECTIONS[slug]
         ],
-        "banner_subs": BANNER_SUBS[slug],
+        "banner_subs": banner_subs,
 
         # Every file the build will ask for, as key => repo path, so the media
         # upload is driven by the same source of truth as the pages rather than
@@ -341,7 +358,7 @@ def build(prop):
 
         "location_points": prop["location_points"],
         "faqs": [list(f) for f in FAQS[slug]],
-        "seo": {k: list(v) for k, v in SEO[slug].items()},
+        "seo": seo,
     }
 
 
