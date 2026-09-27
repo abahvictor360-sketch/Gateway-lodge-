@@ -35,6 +35,7 @@ ICONS = {
     "security": "fas fa-shield-alt",
     "workspace": "fas fa-laptop",
     "balcony": "fas fa-tree",
+    "pool": "fas fa-swimming-pool",
     "water": "fas fa-tint",
     "lift": "fas fa-elevator",
     "family": "fas fa-users",
