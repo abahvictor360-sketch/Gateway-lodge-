@@ -832,7 +832,55 @@ goes to Nova Ridge's own property on it, and the four pages carry the review's
 address, airport and digital-address changes.
 
 
-## 10. The client review document
+## 10. When a connector is attached
+
+One connector reaches one install, and only one is attached at a time, so a
+change lands in the repository first and reaches each site whenever its
+connector comes back. "Tamale is connected" is the whole instruction: what
+follows is fixed, and does not need asking about.
+
+```
+1. git log -1                       # the sha to pull, always a sha
+2. pull the five files onto the server, compare each md5 with the repo
+3. enable gwl-builder.php, then gwl-pages.php, then gwl-nr-pages.php
+4. gwl_nrp_build( '<slug>' )
+5. check the live pages for what the change was meant to do
+6. disable the three, in reverse order
+```
+
+Step 2 is the server fetching from raw.githubusercontent.com (section 2), and
+the sha matters: a branch path can serve the previous commit from CDN cache
+and the build then runs against code that looks current and is not. Step 3's
+order matters (build order, step 7). Step 5 is not optional: a build that
+reports success has only written the pages.
+
+The five files are `gwl-builder.php`, `gwl-pages.php`, `gwl-nr-pages.php`,
+`gwl-property-content.php` and `gwl-property-footers.php`. A file whose md5
+already matches can be skipped, but checking all five costs one request.
+
+### What each site is waiting for
+
+Kept current, because a site that has been disconnected for a while has no
+other record of what it has missed.
+
+| Site | Waiting for |
+|---|---|
+| Nova Ridge | Its own reservations mailbox, `ridge@gatewaylodgegroup.com`, on the pages and in the WPForms notification. |
+| Tamale | The same, as `tamale@gatewaylodgegroup.com`. |
+| Lakeside | Nothing. Built at `049affd`. |
+| Group site | Its remaining generated imagery, which is a different job from the property builds - see below. |
+
+The group site does not take a property build. Its pages are WordPress, its
+copy is applied by `gwl-group-review-copy.php` and its photography by
+`gwl-group-property-photos.php`, and what is outstanding there is the
+imagery that `tools/group-real-photos.py` has already replaced on the static
+site: everything beyond the property cards and the gallery strips is still a
+rendering. Its own mailboxes - `info@`, `reservations@`, `events@` and
+`corporate@` - are group addresses and stay as they are; only the three
+properties moved to their own.
+
+
+## 11. The client review document
 
 `Gateway_Lodge_Website_Review_Feedback.pdf` is the brief. Four sections: A is
 the group domain, B Nova Ridge, C Tamale, D Lakeside. Where it and the site
