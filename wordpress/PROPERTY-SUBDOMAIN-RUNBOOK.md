@@ -865,8 +865,8 @@ other record of what it has missed.
 
 | Site | Waiting for |
 |---|---|
-| Nova Ridge | Its own reservations mailbox, `ridge@gatewaylodgegroup.com`, on the pages and in the WPForms notification. |
-| Tamale | The same, as `tamale@gatewaylodgegroup.com`. |
+| Nova Ridge | Nothing. Built at `3a141be`. |
+| Tamale | Its own reservations mailbox, `tamale@gatewaylodgegroup.com`, on the pages and in the WPForms notification. |
 | Lakeside | Nothing. Built at `049affd`. |
 | Group site | Its remaining generated imagery, which is a different job from the property builds - see below. |
 
