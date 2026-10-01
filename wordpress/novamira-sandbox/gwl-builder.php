@@ -19,6 +19,9 @@ function gwl_pad( $t, $r, $b, $l ) {
 
 /** A container. $o keys: bg, bgimg, overlay, width(boxed|full), dir, gap, pad, align, cols, minh, id */
 function gwl_container( $children, $o = array() ) {
+	// A helper that has nothing to render returns null; drop those rather than
+	// letting a null land in the element tree.
+	$children = array_values( array_filter( (array) $children ) );
 	$s = array(
 		'content_width' => isset( $o['width'] ) ? $o['width'] : 'boxed',
 		'flex_direction' => isset( $o['dir'] ) ? $o['dir'] : 'column',
@@ -67,7 +70,10 @@ function gwl_container( $children, $o = array() ) {
 	}
 	if ( isset( $o['border_color'] ) ) { $s['border_border'] = 'solid'; $s['border_width'] = array( 'unit' => 'px', 'top' => '1', 'right' => '1', 'bottom' => '1', 'left' => '1', 'isLinked' => '1' ); $s['border_color'] = $o['border_color']; }
 	if ( isset( $o['extra'] ) ) { $s = array_merge( $s, $o['extra'] ); }
-	if ( isset( $o['cls'] ) ) { $s['_css_classes'] = $o['cls']; }
+	// A container's CSS-classes control is `css_classes`; only widgets use the
+	// underscored `_css_classes`. Writing the widget key here saves without
+	// error and renders nothing at all.
+	if ( isset( $o['cls'] ) ) { $s['css_classes'] = $o['cls']; }
 	return array( 'id' => gwl_id(), 'elType' => 'container', 'settings' => $s, 'elements' => $children, 'isInner' => ! empty( $o['inner'] ) );
 }
 
@@ -122,9 +128,12 @@ function gwl_text( $html, $o = array() ) {
 
 /** style: primary | outline_light | outline_dark | gold */
 function gwl_button( $text, $url, $style = 'primary', $align = 'center' ) {
+	// A link off this site opens in a new tab, so a guest part-way through a
+	// booking does not lose the page they came from.
+	$external = ( 0 === strpos( $url, 'http' ) && false === strpos( $url, home_url() ) ) ? 'on' : '';
 	$s = array(
 		'text' => $text,
-		'link' => array( 'url' => $url, 'is_external' => '', 'nofollow' => '' ),
+		'link' => array( 'url' => $url, 'is_external' => $external, 'nofollow' => '' ),
 		'align' => $align,
 		'typography_typography' => 'custom',
 		'typography_font_family' => 'Jost',
@@ -165,6 +174,7 @@ function gwl_image( $key, $o = array() ) {
 		$s['_element_custom_width'] = array( 'unit' => '%', 'size' => 100 );
 	}
 	if ( isset( $o['link'] ) ) { $s['link_to'] = 'custom'; $s['link'] = array( 'url' => $o['link'], 'is_external' => '', 'nofollow' => '' ); }
+	if ( isset( $o['cls'] ) ) { $s['_css_classes'] = $o['cls']; }
 	return gwl_widget( 'image', $s );
 }
 

@@ -600,7 +600,17 @@ body:has(.nav-toggle:checked) { overflow: hidden; }
   z-index: 5;
 }
 .booking-panel h2 { font-size: 1.4rem; }
-.booking-fields { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-2); align-items: end; margin-top: var(--space-3); }
+/* The group's STAAH quick-book widget sits in the panel and lays itself out
+   against the width it is given, so give it the whole card. It also opens its
+   date picker as a layer taller than the row it sits in, so every ancestor has
+   to stay visible or the calendar is cut off at the card edge: setting one axis
+   to a non-visible value makes the used value of the other axis auto, so this
+   cannot be overflow-x alone. */
+.booking-engine { margin-top: var(--space-3); width: 100%; }
+.booking-panel,
+.booking-engine,
+.booking-engine #quickbook-widget { overflow: visible; }
+.booking-engine #quickbook-widget { width: 100%; }
 .field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
 .field select, .field input { min-width: 0; width: 100%; }
 .field label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--color-ink-400); font-weight: 600; }
@@ -896,7 +906,6 @@ body:has(.nav-toggle:checked) { overflow: hidden; }
   .card-grid.cols-4, .card-grid.cols-6 { grid-template-columns: repeat(3, 1fr); }
   .feature-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-top { grid-template-columns: 1fr 1fr; }
-  .booking-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 760px) {
@@ -905,7 +914,6 @@ body:has(.nav-toggle:checked) { overflow: hidden; }
   .logo { font-size: 0.86rem; letter-spacing: 0.06em; gap: 0.45rem; min-width: 0; }
   .logo svg { width: 26px; height: 26px; }
   .header-inner { gap: var(--space-2); }
-  .booking-fields { grid-template-columns: minmax(0, 1fr); }
   .split { grid-template-columns: 1fr; gap: var(--space-3); }
   .split.reverse .split-media { order: 0; }
   .card-grid, .card-grid.cols-2, .card-grid.cols-3, .card-grid.cols-4, .card-grid.cols-6 { grid-template-columns: 1fr; }
@@ -916,7 +924,9 @@ body:has(.nav-toggle:checked) { overflow: hidden; }
   .footer-top { grid-template-columns: 1fr; padding-block: var(--space-5) var(--space-4); }
   .form-grid { grid-template-columns: 1fr; }
   .hero h1 { font-size: 2.1rem; }
-  .booking-panel { margin-top: var(--space-3); }
+  /* The booking widget needs the width more than the card needs the inset,
+     so ease the padding off on a phone, as the WordPress build does. */
+  .booking-panel { margin-top: var(--space-3); padding: var(--space-3) var(--space-2); }
 }
 
 @media (max-width: 430px) {

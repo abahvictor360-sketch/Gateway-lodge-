@@ -66,9 +66,8 @@ function gwl_c_href( $href ) {
 	$ids = get_option( 'gwl_page_ids', array() );
 	$map = array(
 		'index.html' => 'home', 'properties.html' => 'properties',
-		'property-nova-ridge.html' => 'gateway-nova-ridge',
-		'property-lakeside.html' => 'gateway-lodge-lakeside',
-		'property-tamale.html' => 'gateway-lodge-tamale',
+		// The three property pages were retired once each property got its own
+		// landing site; their links go to the subdomain, not to a group page.
 		'future-properties.html' => 'future-properties', 'stay.html' => 'stay',
 		'accommodation.html' => 'accommodation', 'rooms-units.html' => 'rooms-units',
 		'facilities.html' => 'facilities', 'dining.html' => 'dining',
